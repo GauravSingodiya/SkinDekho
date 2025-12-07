@@ -288,6 +288,13 @@
 .fruite .fruite-categorie .fruite-name {
     line-height: 40px;
 }
+.fruite-img {
+    width: 100%;
+    height: 214px; 
+    overflow: hidden;
+    border-radius: 8px 8px 0 0;
+}
+
 
 .fruite .fruite-categorie .fruite-name a {
     transition: 0.5s;
