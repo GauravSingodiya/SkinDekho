@@ -110,7 +110,15 @@
                   >3</span
                 >
               </a>
-              <a href="#" class="my-auto">
+              <!-- <a href="#" class="my-auto">
+                <i class="fas fa-user fa-2x"></i>
+              </a> -->
+              <a
+                href="javascript:void(0)"
+                class="my-auto"
+                data-bs-toggle="modal"
+                data-bs-target="#authModal"
+              >
                 <i class="fas fa-user fa-2x"></i>
               </a>
             </div>
@@ -1986,6 +1994,147 @@
       </div>
     </div>
     <!-- Copyright End -->
+
+    <!-- Login / Signup Modal Start -->
+    <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-3">
+          <div class="modal-header">
+            <h5 class="modal-title">Login / Sign Up</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+
+          <div class="modal-body">
+            <!-- Tabs -->
+            <ul class="nav nav-pills mb-3 justify-content-center" id="authTab">
+              <li class="nav-item">
+                <button
+                  class="nav-link active"
+                  data-bs-toggle="pill"
+                  data-bs-target="#loginTab"
+                >
+                  Login
+                </button>
+              </li>
+              <li class="nav-item">
+                <button
+                  class="nav-link"
+                  data-bs-toggle="pill"
+                  data-bs-target="#signupTab"
+                >
+                  Sign Up
+                </button>
+              </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+              <!-- Login -->
+              <div class="tab-pane fade show active" id="loginTab">
+                <form>
+                  <div class="mb-3">
+                    <label>Username</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Enter username"
+                      required
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label>Password</label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      placeholder="Enter password"
+                      required
+                    />
+                  </div>
+                  <button
+                    class="btn btn-primary w-100 py-2"
+                    style="color: #fff"
+                  >
+                    Login
+                  </button>
+                </form>
+              </div>
+
+              <!-- Signup -->
+              <div class="tab-pane fade" id="signupTab">
+                <form>
+                  <div class="mb-3">
+                    <label>Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Full Name"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label>Username</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Username"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label>Email</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      placeholder="Email"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label>Password</label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      placeholder="Password"
+                      required
+                    />
+                  </div>
+                  <div class="modal-footer justify-content-center auth-terms">
+                    <div class="form-check text-center">
+                      <input
+                        class="form-check-input me-2"
+                        type="checkbox"
+                        id="termsCheck"
+                        required
+                      />
+                      <label
+                        class="form-check-label text-muted"
+                        for="termsCheck"
+                      >
+                        By continuing, you agree to our
+                        <a href="#" class="text-primary">Terms</a> &
+                        <a href="#" class="text-primary">Privacy Policy</a>
+                      </label>
+                    </div>
+                  </div>
+                  <button
+                    class="btn btn-primary w-100 py-2"
+                    style="color: #fff"
+                  >
+                    Sign Up
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Login / Signup Modal End -->
 
     <!-- Back to Top -->
     <a
