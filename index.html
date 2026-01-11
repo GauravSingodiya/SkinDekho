@@ -2035,13 +2035,14 @@
             <div class="tab-content">
               <!-- Login -->
               <div class="tab-pane fade show active" id="loginTab">
-                <form>
+                <form id="loginForm">
                   <div class="mb-3">
-                    <label>Username</label>
+                    <label>Email</label>
                     <input
-                      type="text"
+                      type="email"
                       class="form-control"
-                      placeholder="Enter username"
+                      name="email"
+                      placeholder="Enter email"
                       required
                     />
                   </div>
@@ -2051,10 +2052,12 @@
                     <input
                       type="password"
                       class="form-control"
+                      name="password"
                       placeholder="Enter password"
                       required
                     />
                   </div>
+
                   <button
                     class="btn btn-primary w-100 py-2"
                     style="color: #fff"
@@ -2066,61 +2069,63 @@
 
               <!-- Signup -->
               <div class="tab-pane fade" id="signupTab">
-                <form>
+                <form id="signupForm">
                   <div class="mb-3">
-                    <label>Name</label>
+                    <label>First Name</label>
                     <input
                       type="text"
                       class="form-control"
-                      placeholder="Full Name"
+                      name="firstName"
+                      placeholder="First Name"
                       required
                     />
                   </div>
+
                   <div class="mb-3">
-                    <label>Username</label>
+                    <label>Last Name</label>
                     <input
                       type="text"
                       class="form-control"
-                      placeholder="Username"
+                      name="lastName"
+                      placeholder="Last Name"
                       required
                     />
                   </div>
+
                   <div class="mb-3">
                     <label>Email</label>
                     <input
                       type="email"
                       class="form-control"
+                      name="email"
                       placeholder="Email"
                       required
                     />
                   </div>
+
+                  <div class="mb-3">
+                    <label>Phone Number</label>
+                    <input
+                      type="tel"
+                      class="form-control"
+                      name="phoneNumber"
+                      placeholder="Phone Number"
+                      pattern="[0-9]{10}"
+                      required
+                    />
+                  </div>
+
                   <div class="mb-3">
                     <label>Password</label>
                     <input
                       type="password"
                       class="form-control"
+                      name="password"
                       placeholder="Password"
                       required
                     />
                   </div>
-                  <div class="modal-footer justify-content-center auth-terms">
-                    <div class="form-check text-center">
-                      <input
-                        class="form-check-input me-2"
-                        type="checkbox"
-                        id="termsCheck"
-                        required
-                      />
-                      <label
-                        class="form-check-label text-muted"
-                        for="termsCheck"
-                      >
-                        By continuing, you agree to our
-                        <a href="#" class="text-primary">Terms</a> &
-                        <a href="#" class="text-primary">Privacy Policy</a>
-                      </label>
-                    </div>
-                  </div>
+
                   <button
                     class="btn btn-primary w-100 py-2"
                     style="color: #fff"
@@ -2152,6 +2157,6 @@
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script type="module" src="js/main.js"></script>
   </body>
 </html>
