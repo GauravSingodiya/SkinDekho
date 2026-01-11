@@ -3,7 +3,9 @@
 import { BASE_URL, DEFAULT_HEADERS } from "./config.js";
 
 async function apiRequest(endpoint, method = "GET", body = null, token = null) {
-  const headers = { ...DEFAULT_HEADERS };
+  const headers = {
+    "Content-Type": "application/json",
+  };
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
@@ -21,9 +23,11 @@ async function apiRequest(endpoint, method = "GET", body = null, token = null) {
   try {
     const response = await fetch(BASE_URL + endpoint, options);
 
-    // 👇 IMPORTANT: read text first (prevents JSON crash)
     const text = await response.text();
-    const data = text ? JSON.parse(text) : {};
+    let data = {};
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {}
 
     if (!response.ok) {
       throw new Error(data.message || "API Error");
@@ -31,9 +35,10 @@ async function apiRequest(endpoint, method = "GET", body = null, token = null) {
 
     return data;
   } catch (error) {
-    console.error("FETCH FAILED:", error);
+    console.error("FETCH FAILED:", error.message);
     throw error;
   }
 }
+
 
 export default apiRequest;
