@@ -31,6 +31,7 @@ async function apiRequest(endpoint, method = "GET", body = null, token = null) {
 
     return data;
   } catch (error) {
+    console.log('error---', error)
     console.error("FETCH FAILED:", error);
     throw error;
   }
