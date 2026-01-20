@@ -1,12 +1,12 @@
 // endpoints.js
 export const API = {
   AUTH: {
-    LOGIN: "/auth/login",
-    SIGNUP: "/auth/signup",
+    LOGIN: "/api/auth/login",
+    SIGNUP: "/api/auth/signup",
   },
 
   PRODUCTS: {
-    GET_ALL: "/Products/GetAllProducts",
+    GET_ALL: "/api/Products/GetAllProducts", // ✅ FIXED
   },
 
   CART: {

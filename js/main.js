@@ -1,4 +1,5 @@
 import { loginUser, registerUser } from "./auth.js";
+import { getAllProducts } from "./products.js";
 
 (function ($) {
   "use strict";
@@ -104,6 +105,7 @@ import { loginUser, registerUser } from "./auth.js";
 
     const email = $(this).find("[name='email']").val();
     const password = $(this).find("[name='password']").val();
+    console.log("email---", email, password);
 
     try {
       const res = await loginUser(email, password);
@@ -112,8 +114,10 @@ import { loginUser, registerUser } from "./auth.js";
       alert("Login successful ✅");
       $("#authModal").modal("hide");
 
-      // Optional: save token
-      // localStorage.setItem("token", res.token);
+      sessionStorage.setItem("token", res.token);
+      // sessionStorage.setItem("user", JSON.stringify(res.user));
+      const token = sessionStorage.getItem("token");
+      console.log("Token:", token);
     } catch (err) {
       alert(err.message || "Login failed");
     }
@@ -132,7 +136,7 @@ import { loginUser, registerUser } from "./auth.js";
       phoneNumber: $(this).find("[name='phoneNumber']").val(),
       password: $(this).find("[name='password']").val(),
     };
-    console.log('payload---', payload);
+    console.log("payload---", payload);
     try {
       const res = await registerUser(payload);
       console.log("Signup Success:", res);
@@ -146,3 +150,90 @@ import { loginUser, registerUser } from "./auth.js";
     }
   });
 })(jQuery);
+
+async function loadProducts(category = "") {
+  try {
+    const res = await getAllProducts(category);
+    console.log("res---", res.result);
+
+    const products = res.result || [];
+    const $productList = $("#productList");
+
+    $productList.empty();
+
+    products.forEach((item) => {
+      if (!item.name || item.name === "string") return;
+      // const productLink = `${window.location.origin}/product.html?id=${item.id}`;
+      const productLink = `${window.location.origin}`;
+      const whatsappMessage = encodeURIComponent(
+        `🧴 *${item.name}*\n\n💰 Price: ₹${
+          item.discountPrice ?? item.price
+        }\n\n🔗 View product: ${productLink}`
+      );
+      const productCard = `
+        <div class="col-md-6 col-lg-4 col-xl-3">
+          <div class="rounded position-relative fruite-item h-100">
+
+            <div class="fruite-img">
+              <img
+                src="${item.imageUrl}"
+                class="img-fluid w-100 rounded-top"
+                alt="${item.name}"
+              />
+            </div>
+
+            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                 style="top:10px; left:10px">
+              ${item.category}
+            </div>
+
+            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+              <h4>${item.name}</h4>
+              <p class="text-muted small">${item.description}</p>
+
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="text-dark fs-5 fw-bold mb-0">
+                  ₹${item.discountPrice ?? item.price}
+                </p>
+
+                
+                <div class="d-flex align-items-center gap-2">
+                  <!-- Add to Cart -->
+                  <a href="javascript:void(0)"
+                    class="btn border border-secondary rounded-pill px-2 text-primary">
+                    <i class="fa fa-shopping-bag me-2"></i>
+                    Add to cart
+                  </a>
+
+                  <!-- WhatsApp Share -->
+                  <a href="https://wa.me/?text=${whatsappMessage}"
+                    target="_blank"
+                    class="border-success rounded-pill px-1 text-success whatsapp-btn"
+                    title="Share on WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      $productList.append(productCard);
+    });
+  } catch (err) {
+    console.error("Failed to load products", err);
+  }
+}
+
+$(document).on("click", "#categoryTabs a", function () {
+  $("#categoryTabs a").removeClass("active");
+  $(this).addClass("active");
+
+  const category = $(this).data("category") || "";
+  loadProducts(category);
+});
+
+$(document).ready(function () {
+  loadProducts(); // loads all products
+});
