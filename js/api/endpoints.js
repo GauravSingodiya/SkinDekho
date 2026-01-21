@@ -6,7 +6,7 @@ export const API = {
   },
 
   PRODUCTS: {
-    GET_ALL: "/Products/GetAllProducts",
+    GET_ALL: "/api/Products/GetAllProducts", // ✅ FIXED
   },
 
   CART: {
