@@ -306,16 +306,19 @@
 
 .fruite .fruite-item {
     height: 100%;
-    transition: 0.5s;
+    transition: 0.5s;    margin-bottom: 30px;
+
 }
 .fruite .fruite-item:hover {
-    box-shadow: 0 0 55px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 55px rgba(0, 0, 0, 0.3);
 }
 
 .fruite .fruite-item .fruite-img {
-    overflow: hidden;
-    transition: 0.5s;
-    border-radius: 10px 10px 0 0;
+  height: 214px; /* matches your existing design */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .fruite .fruite-item .fruite-img img {
@@ -325,6 +328,11 @@
 .fruite .fruite-item .fruite-img img:hover {
     transform: scale(1.3);
 }
+
+.whatsapp-btn i {
+  font-size: 25px;   /* increase icon size */
+}
+
 /*** Fruits End ***/
 
 

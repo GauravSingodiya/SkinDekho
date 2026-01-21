@@ -53,11 +53,11 @@
           <div class="top-info ps-2">
             <small class="me-3"
               ><i class="fas fa-map-marker-alt me-2 text-secondary"></i>
-              <a href="#" class="text-white">123 Street, New York</a></small
+              <a href="#" class="text-white">302016 jaipur, India</a></small
             >
             <small class="me-3"
               ><i class="fas fa-envelope me-2 text-secondary"></i
-              ><a href="#" class="text-white">Email@Example.com</a></small
+              ><a href="#" class="text-white">skindekho@gmail.com</a></small
             >
           </div>
           <div class="top-link pe-2">
@@ -351,74 +351,57 @@
             </div>
 
             <div class="col-12 text-start mt-3">
-              <ul class="nav nav-pills d-flex flex-wrap text-center mb-5">
-                <li class="nav-item">
-                  <a
-                    class="d-flex m-2 py-2 bg-light rounded-pill active"
-                    data-bs-toggle="pill"
-                    href="#tab-1"
-                  >
-                    <span class="text-dark" style="width: 130px"
-                      >All Products</span
-                    >
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="d-flex py-2 m-2 bg-light rounded-pill"
-                    data-bs-toggle="pill"
-                    href="#tab-2"
-                  >
-                    <span class="text-dark" style="width: 130px"
-                      >Moisturing Lotion</span
-                    >
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="d-flex m-2 py-2 bg-light rounded-pill"
-                    data-bs-toggle="pill"
-                    href="#tab-3"
-                  >
-                    <span class="text-dark" style="width: 130px"
-                      >Moisturing Cream</span
-                    >
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="d-flex m-2 py-2 bg-light rounded-pill"
-                    data-bs-toggle="pill"
-                    href="#tab-4"
-                  >
-                    <span class="text-dark" style="width: 130px"
-                      >Face Serum</span
-                    >
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="d-flex m-2 py-2 bg-light rounded-pill"
-                    data-bs-toggle="pill"
-                    href="#tab-5"
-                  >
-                    <span class="text-dark" style="width: 130px"
-                      >Sunscreen Lotion</span
-                    >
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="d-flex m-2 py-2 bg-light rounded-pill"
-                    data-bs-toggle="pill"
-                    href="#tab-5"
-                  >
-                    <span class="text-dark" style="width: 130px"
-                      >Face Wash</span
-                    >
-                  </a>
-                </li>
-              </ul>
+              <ul class="nav nav-pills d-flex flex-wrap text-center mb-5" id="categoryTabs">
+              <li class="nav-item">
+                <a class="d-flex m-2 py-2 bg-light rounded-pill active"
+                  data-category=""
+                  href="javascript:void(0)">
+                  <span class="text-dark" style="width:130px">All Products</span>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="d-flex m-2 py-2 bg-light rounded-pill"
+                  data-category="Moisturing Lotion"
+                  href="javascript:void(0)">
+                  <span class="text-dark" style="width:130px">Moisturing Lotion</span>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="d-flex m-2 py-2 bg-light rounded-pill"
+                  data-category="Moisturing Cream"
+                  href="javascript:void(0)">
+                  <span class="text-dark" style="width:130px">Moisturing Cream</span>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="d-flex m-2 py-2 bg-light rounded-pill"
+                  data-category="Face Serum"
+                  href="javascript:void(0)">
+                  <span class="text-dark" style="width:130px">Face Serum</span>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="d-flex m-2 py-2 bg-light rounded-pill"
+                  data-category="Sunscreen Lotion"
+                  href="javascript:void(0)">
+                  <span class="text-dark" style="width:130px">Sunscreen Lotion</span>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a class="d-flex m-2 py-2 bg-light rounded-pill"
+                  data-category="Face Wash"
+                  href="javascript:void(0)">
+                  <span class="text-dark" style="width:130px">Face Wash</span>
+                </a>
+              </li>
+
+            </ul>
+
             </div>
             <!-- <div class="col-lg-8 text-end">
               <div class="dropdown">
@@ -468,7 +451,7 @@
             </div> -->
           </div>
           <div class="tab-content">
-            <div id="tab-1" class="tab-pane fade show p-0 active">
+            <!-- <div id="tab-1" class="tab-pane fade show p-0 active">
               <div class="row g-4">
                 <div class="col-lg-12">
                   <div class="row g-4">
@@ -771,7 +754,13 @@
                   </div>
                 </div>
               </div>
+            </div> -->
+            <div id="tab-1" class="tab-pane fade show p-0 active">
+              <div class="container my-5">
+                <div class="row" id="productList"></div>
+              </div>
             </div>
+
             <div id="tab-2" class="tab-pane fade show p-0">
               <div class="row g-4">
                 <div class="col-lg-12">
@@ -1959,9 +1948,9 @@
           <div class="col-lg-3 col-md-6">
             <div class="footer-item">
               <h4 class="text-light mb-3">Contact</h4>
-              <p>Address: 1429 Netus Rd, NY 48247</p>
-              <p>Email: Example@gmail.com</p>
-              <p>Phone: +0123 4567 8910</p>
+              <p>Address: </p>
+              <p>Email: skindekho@gmail.com</p>
+              <p>Phone: +9194619727590</p>
               <p>Payment Accepted</p>
               <img src="img/payment.png" class="img-fluid" alt="" />
             </div>
