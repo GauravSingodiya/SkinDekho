@@ -8,6 +8,7 @@ export const API = {
   PRODUCTS: {
     GET_ALL: "/api/Products/GetAllProducts",
     FILTER: "/api/Products/GetProductsbyFilter",
+    CATEGORIES: "/api/Products/GetAllCategories",
   },
 
   CART: {

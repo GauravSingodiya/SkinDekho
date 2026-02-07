@@ -28,3 +28,7 @@ export function getProductsByFilter({
   );
   return apiRequest(`${API.PRODUCTS.FILTER}?${params.toString()}`, "GET");
 }
+
+export function getAllCategories() {
+  return apiRequest(API.PRODUCTS.CATEGORIES, "GET");
+}
