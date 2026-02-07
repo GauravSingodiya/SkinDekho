@@ -1,5 +1,5 @@
 import { loginUser, registerUser } from "./auth.js";
-import { getAllProducts } from "./products.js";
+import { getAllCategories, getAllProducts, getProductsByFilter } from "./products.js";
 
 (function ($) {
   "use strict";
@@ -154,32 +154,25 @@ import { getAllProducts } from "./products.js";
 async function loadProducts(category = "") {
   try {
     const res = await getAllProducts(category);
-    console.log("res---", res.result);
-
     const products = res.result || [];
     const $productList = $("#productList");
+
+    const isShopPage = $("body").hasClass("shop-page");
+
+    const colClass = isShopPage
+      ? "col-md-6 col-lg-4"   // SHOP
+      : "col-md-6 col-lg-3";  // HOME
 
     $productList.empty();
 
     products.forEach((item) => {
       if (!item.name || item.name === "string") return;
-      // const productLink = `${window.location.origin}/product.html?id=${item.id}`;
-      const productLink = `${window.location.origin}`;
-      const whatsappMessage = encodeURIComponent(
-        `🧴 *${item.name}*\n\n💰 Price: ₹${
-          item.discountPrice ?? item.price
-        }\n\n🔗 View product: ${productLink}`
-      );
-      const productCard = `
-        <div class="col-md-6 col-lg-4 col-xl-3">
-          <div class="rounded position-relative fruite-item h-100">
 
+      const productCard = `
+        <div class="${colClass}">
+          <div class="rounded position-relative fruite-item h-100">
             <div class="fruite-img">
-              <img
-                src="${item.imageUrl}"
-                class="img-fluid w-100 rounded-top"
-                alt="${item.name}"
-              />
+              <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" />
             </div>
 
             <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
@@ -196,21 +189,15 @@ async function loadProducts(category = "") {
                   ₹${item.discountPrice ?? item.price}
                 </p>
 
-                
-                <div class="d-flex align-items-center gap-2">
-                  <!-- Add to Cart -->
-                  <a href="javascript:void(0)"
-                    class="btn border border-secondary rounded-pill px-2 text-primary">
-                    <i class="fa fa-shopping-bag me-2"></i>
-                    Add to cart
+                <div class="d-flex gap-2">
+                  <a class="btn border border-secondary rounded-pill px-2 text-primary">
+                    <i class="fa fa-shopping-bag me-2"></i>Add to cart
                   </a>
 
-                  <!-- WhatsApp Share -->
-                  <a href="https://wa.me/?text=${whatsappMessage}"
-                    target="_blank"
-                    class="border-success rounded-pill px-1 text-success whatsapp-btn"
-                    title="Share on WhatsApp">
-                    <i class="fab fa-whatsapp"></i>
+                  <a href="https://wa.me/?text=${encodeURIComponent(item.name)}"
+                     target="_blank"
+                     class="border-success rounded-pill px-2 text-success">
+                    <i class="fab fa-whatsapp fs-4"></i>
                   </a>
                 </div>
               </div>
@@ -237,3 +224,177 @@ $(document).on("click", "#categoryTabs a", function () {
 $(document).ready(function () {
   loadProducts(); // loads all products
 });
+
+async function getFilterProducts(filters = {}) {
+  try {
+    const res = await getProductsByFilter(filters);
+    console.log("res---", res);
+    const products = res.result || [];
+    const $productList = $("#productList");
+
+    $productList.empty();
+
+    products.forEach((item) => {
+      if (!item.name || item.name === "string") return;
+
+      const whatsappMessage = encodeURIComponent(
+        `🧴 *${item.name}*\n\n💰 Price: ₹${item.discountPrice ?? item.price}`
+      );
+
+      const productCard = `
+        <div class="col-12 col-md-6 col-lg-4">
+          <div class="rounded position-relative fruite-item h-100">
+
+            <div class="fruite-img">
+              <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" />
+            </div>
+
+            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                 style="top:10px; left:10px">
+              ${item.category}
+            </div>
+
+            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+              <h4>${item.name}</h4>
+              <p class="text-muted small">${item.description}</p>
+
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="text-dark fs-5 fw-bold mb-0">
+                  ₹${item.discountPrice ?? item.price}
+                </p>
+
+                <div class="d-flex gap-2">
+                  <a class="btn border border-secondary rounded-pill px-2 text-primary">
+                    <i class="fa fa-shopping-bag me-2"></i>Add to cart
+                  </a>
+
+                  <a href="https://wa.me/?text=${whatsappMessage}"
+                     target="_blank"
+                     class="border-success rounded-pill px-1 text-success whatsapp-btn">
+                    <i class="fab fa-whatsapp"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      $productList.append(productCard);
+    });
+  } catch (err) {
+    console.error("Filter load failed", err);
+  }
+}
+
+$(document).on("click", "#categoryTabs a", function () {
+  const category = $(this).data("category") || "";
+
+  getFilterProducts({
+    category,
+  });
+});
+
+// $("#searchInput").on("input", function () {
+//   getFilterProducts({
+//     productName: $(this).val().trim(),
+//   });
+// });
+function handleSearch(value) {
+  getFilterProducts({
+    productName: value.trim(),
+  });
+}
+
+// Shop search
+$(document).on("input", "#shopSearchInput", function () {
+  handleSearch(this.value);
+});
+
+// Modal search
+$(document).on("input", "#modalSearchInput", function () {
+  handleSearch(this.value);
+});
+
+
+$("#rangeInput").on("input", function () {
+  getFilterProducts({
+    priceUnder: this.value,
+  });
+});
+
+$("#fruits").on("change", function () {
+  const value = $(this).val();
+
+  getFilterProducts({
+    priceSort: value === "low" ? 1 : value === "high" ? 2 : "",
+  });
+});
+
+$(document).ready(function () {
+  getFilterProducts(); // no filters
+});
+
+async function loadCategories() {
+  try {
+    const res = await getAllCategories();
+    const categories = res.result || res || [];
+    console.log("categories---", categories);
+    const $categoryTabs = $("#categoryTabs");
+    $categoryTabs.empty();
+
+    // ✅ All category
+    $categoryTabs.append(`
+      <li>
+        <div class="d-flex justify-content-between fruite-name">
+          <a href="#" class="active" data-category="">
+            <i class="fas fa-th-large me-2"></i>All
+          </a>
+        </div>
+      </li>
+    `);
+
+    categories.forEach((item) => {
+      if (!item.category || item.category === "string") return;
+
+      $categoryTabs.append(`
+        <li>
+          <div class="d-flex justify-content-between fruite-name">
+            <a href="#" data-category="${item.category}">
+              <i class="fas ${item.categoryIcon} me-2"></i>
+              ${item.category}
+            </a>
+          </div>
+        </li>
+      `);
+    });
+  } catch (err) {
+    console.error("Failed to load categories", err);
+  }
+}
+
+$(document).on("click", "#categoryTabs a", function (e) {
+  e.preventDefault();
+
+  $("#categoryTabs a").removeClass("active");
+  $(this).addClass("active");
+
+  const category = $(this).data("category") || "";
+
+  getFilterProducts({ category });
+});
+
+// $(document).ready(function () {
+//   loadCategories(); // 👈 categories from API
+//   getFilterProducts(); // 👈 all products
+// });
+$(document).ready(function () {
+  if ($("body").hasClass("shop-page")) {
+    loadCategories();
+    getFilterProducts();
+  }
+});
+
+
+
