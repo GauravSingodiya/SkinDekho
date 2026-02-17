@@ -35,4 +35,5 @@ export function getAllCategories() {
 
 export function getFeaturedProducts() {
   return apiRequest(API.PRODUCTS.FEATURED, "GET");
+
 }
