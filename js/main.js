@@ -6,7 +6,6 @@ import {
   getProductsByFilter,
 } from "./products.js";
 
-
 (function ($) {
   "use strict";
 
@@ -160,7 +159,6 @@ import {
 async function loadProducts(category = "") {
   try {
     const res = await getAllProducts(category);
-
     const products = res.result || [];
     const $productList = $("#productList");
 
@@ -181,7 +179,6 @@ async function loadProducts(category = "") {
 
       const productCard = `
         <div class="${colClass}">
-
           <div class="rounded position-relative fruite-item h-100">
             <div class="fruite-img">
               <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" />
@@ -210,12 +207,10 @@ async function loadProducts(category = "") {
                      target="_blank"
                      class="border-success rounded-pill px-2 text-success">
                     <i class="fab fa-whatsapp fs-4"></i>
-
                   </a>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       `;
@@ -223,118 +218,21 @@ async function loadProducts(category = "") {
       $productList.append(productCard);
     });
   } catch (err) {
-    console.error("Filter load failed", err);
+    console.error("Failed to load products", err);
   }
 }
 
 $(document).on("click", "#categoryTabs a", function () {
-  const category = $(this).data("category") || "";
-
-  getFilterProducts({
-    category,
-  });
-});
-
-// $("#searchInput").on("input", function () {
-//   getFilterProducts({
-//     productName: $(this).val().trim(),
-//   });
-// });
-function handleSearch(value) {
-  getFilterProducts({
-    productName: value.trim(),
-  });
-}
-
-// Shop search
-$(document).on("input", "#shopSearchInput", function () {
-  handleSearch(this.value);
-});
-
-// Modal search
-$(document).on("input", "#modalSearchInput", function () {
-  handleSearch(this.value);
-});
-
-
-$("#rangeInput").on("input", function () {
-  getFilterProducts({
-    priceUnder: this.value,
-  });
-});
-
-$("#fruits").on("change", function () {
-  const value = $(this).val();
-
-  getFilterProducts({
-    priceSort: value === "low" ? 1 : value === "high" ? 2 : "",
-  });
-});
-
-$(document).ready(function () {
-  getFilterProducts(); // no filters
-});
-
-async function loadCategories() {
-  try {
-    const res = await getAllCategories();
-    const categories = res.result || res || [];
-    console.log("categories---", categories);
-    const $categoryTabs = $("#categoryTabs");
-    $categoryTabs.empty();
-
-    // ✅ All category
-    $categoryTabs.append(`
-      <li>
-        <div class="d-flex justify-content-between fruite-name">
-          <a href="#" class="active" data-category="">
-            <i class="fas fa-th-large me-2"></i>All
-          </a>
-        </div>
-      </li>
-    `);
-
-    categories.forEach((item) => {
-      if (!item.category || item.category === "string") return;
-
-      $categoryTabs.append(`
-        <li>
-          <div class="d-flex justify-content-between fruite-name">
-            <a href="#" data-category="${item.category}">
-              <i class="fas ${item.categoryIcon} me-2"></i>
-              ${item.category}
-            </a>
-          </div>
-        </li>
-      `);
-    });
-  } catch (err) {
-    console.error("Failed to load categories", err);
-  }
-}
-
-$(document).on("click", "#categoryTabs a", function (e) {
-  e.preventDefault();
-
   $("#categoryTabs a").removeClass("active");
   $(this).addClass("active");
 
   const category = $(this).data("category") || "";
-
-  getFilterProducts({ category });
+  loadProducts(category);
 });
 
-// $(document).ready(function () {
-//   loadCategories(); // 👈 categories from API
-//   getFilterProducts(); // 👈 all products
-// });
 $(document).ready(function () {
-  if ($("body").hasClass("shop-page")) {
-    loadCategories();
-    getFilterProducts();
-  }
+  loadProducts(); // loads all products
 });
-
 
 let allProducts = [];
 let currentPage = 1;

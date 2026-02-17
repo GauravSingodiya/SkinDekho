@@ -10,7 +10,6 @@ export const API = {
     FILTER: "/api/Products/GetProductsbyFilter",
     CATEGORIES: "/api/Products/GetAllCategories",
     FEATURED: "/api/Products/GetFeaturedProducts",
-
   },
 
   CART: {
