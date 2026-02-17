@@ -32,3 +32,7 @@ export function getProductsByFilter({
 export function getAllCategories() {
   return apiRequest(API.PRODUCTS.CATEGORIES, "GET");
 }
+
+export function getFeaturedProducts() {
+  return apiRequest(API.PRODUCTS.FEATURED, "GET");
+}

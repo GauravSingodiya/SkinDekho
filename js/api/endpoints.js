@@ -9,6 +9,7 @@ export const API = {
     GET_ALL: "/api/Products/GetAllProducts",
     FILTER: "/api/Products/GetProductsbyFilter",
     CATEGORIES: "/api/Products/GetAllCategories",
+    FEATURED: "/api/Products/GetFeaturedProducts",
   },
 
   CART: {
