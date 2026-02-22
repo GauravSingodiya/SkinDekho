@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile | E-commerce</title>
+    <link rel="stylesheet" href="css/User.css">
+</head>
+<body>
+    <div class="profile-container">
+        <aside class="sidebar">
+            <div class="user-info">
+                <div class="avatar">GS</div>
+                <h3>Gaurav Saini</h3>
+                <p>Member since 2022</p>
+            </div>
+            <nav class="side-nav">
+                <a href="#" class="active">Personal Info</a>
+                <a href="#">My Orders</a>
+                <a href="#">Shipping Addresses</a>
+                <a href="#">Payment Methods</a>
+                <a href="#" class="logout">Logout</a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <section class="content-header">
+                <h2>Personal Information</h2>
+                <button class="edit-btn">Edit Profile</button>
+            </section>
+
+            <form class="profile-form">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" value="Gaurav Saini" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" value="gaurav.saini@example.com" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="text" value="+91 98765 43210" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Location</label>
+                    <input type="text" value="Jaipur, Rajasthan, India" readonly>
+                </div>
+            </form>
+
+            <div class="security-section">
+                <h3>Account Security</h3>
+                <div class="security-card">
+                    <div class="text">
+                        <strong>Two-Factor Authentication</strong>
+                        <p>Add an extra layer of security to your account.</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
