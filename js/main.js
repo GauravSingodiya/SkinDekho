@@ -162,15 +162,15 @@ async function loadProducts(category = "") {
     const products = res.result || [];
     const $productList = $("#productList");
 
-    const isShopPage = $("body").hasClass("shop-page");
+    const isShopPage = $("body").hasClass("shop-page") || window.location.pathname.includes("shop.html");
 
     if (!isShopPage) {
-      products = products.slice(0, 10);
+      products = products.slice(0, 8);
     }
 
     const colClass = isShopPage
-      ? "col-md-6 col-lg-4" // SHOP
-      : "col-md-6 col-lg-3"; // HOME
+      ? "col-md-6 col-lg-4 col-xl-3" // SHOP: 3 items/row on large, 4 on xl
+      : "col-md-6 col-lg-3 col-xl-3"; // HOME: 4 items/row on large+
 
     $productList.empty();
 
@@ -199,7 +199,12 @@ async function loadProducts(category = "") {
                 </p>
 
                 <div class="d-flex gap-2">
-                  <a class="btn border border-secondary rounded-pill px-2 text-primary">
+                  <a href="javascript:void(0)" 
+                     class="btn border border-secondary rounded-pill px-2 text-primary add-to-cart-btn"
+                     data-id="${item.id}"
+                     data-name="${item.name}"
+                     data-price="${item.discountPrice ?? item.price}"
+                     data-img="${item.imageUrl}">
                     <i class="fa fa-shopping-bag me-2"></i>Add to cart
                   </a>
 
@@ -290,7 +295,12 @@ function renderPaginatedProducts() {
               </p>
 
               <div class="d-flex gap-2">
-                <a class="btn border border-secondary rounded-pill px-2 text-primary">
+                <a href="javascript:void(0)" 
+                   class="btn border border-secondary rounded-pill px-2 text-primary add-to-cart-btn"
+                   data-id="${item.id}"
+                   data-name="${item.name}"
+                   data-price="${item.discountPrice ?? item.price}"
+                   data-img="${item.imageUrl}">
                   <i class="fa fa-shopping-bag me-2"></i>Add to cart
                 </a>
 
@@ -592,4 +602,42 @@ $(document).ready(function () {
     getFilterProducts();
     loadFeaturedProducts();
   }
+  updateCartBadge();
 });
+
+/* ==========================
+   Add to Cart Logic
+========================== */
+$(document).on("click", ".add-to-cart-btn", function (e) {
+  e.preventDefault();
+  
+  const product = {
+    id: $(this).data("id"),
+    name: $(this).data("name"),
+    price: parseFloat($(this).data("price")),
+    imageUrl: $(this).data("img"),
+    quantity: 1
+  };
+
+  let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+
+  const existingProductIndex = cart.findIndex(item => item.name === product.name); // Using name as ID might differ or be missing
+  
+  if (existingProductIndex > -1) {
+    cart[existingProductIndex].quantity += 1;
+  } else {
+    cart.push(product);
+  }
+
+  sessionStorage.setItem("cart", JSON.stringify(cart));
+  updateCartBadge();
+  alert(`${product.name} added to cart!`);
+});
+
+function updateCartBadge() {
+  const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  
+  // Assuming the badge is the span inside the navbar with the shopping bag icon
+  $(".fa-shopping-bag").next("span").text(totalItems);
+}
