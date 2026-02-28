@@ -154,6 +154,19 @@ import {
       alert(err.message || "Signup failed");
     }
   });
+
+  /* ==========================
+     USER ICON CLICKS
+  ========================== */
+  $(document).on("click", ".user-icon-link", function (e) {
+    e.preventDefault();
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      window.location.href = "User.html";
+    } else {
+      $("#authModal").modal("show");
+    }
+  });
 })(jQuery);
 
 async function loadProducts(category = "") {
@@ -162,14 +175,16 @@ async function loadProducts(category = "") {
     const products = res.result || [];
     const $productList = $("#productList");
 
-    const isShopPage = $("body").hasClass("shop-page") || window.location.pathname.includes("shop.html");
+    const isShopPage =
+      $("body").hasClass("shop-page") ||
+      window.location.pathname.includes("shop.html");
 
     if (!isShopPage) {
       products = products.slice(0, 8);
     }
 
     const colClass = isShopPage
-      ? "col-md-6 col-lg-4 col-xl-3" // SHOP: 3 items/row on large, 4 on xl
+      ? "col-md-6 col-lg-4 col-xl-4" // SHOP: 3 items/row on large and xl
       : "col-md-6 col-lg-3 col-xl-3"; // HOME: 4 items/row on large+
 
     $productList.empty();
@@ -266,6 +281,14 @@ function renderPaginatedProducts() {
 
   const productsToShow = allProducts.slice(start, end);
 
+  const isShopPage =
+    $("body").hasClass("shop-page") ||
+    window.location.pathname.includes("shop.html");
+
+  const colClass = isShopPage
+    ? "col-md-6 col-lg-4 col-xl-4" // SHOP: 3 items/row on large and xl
+    : "col-md-6 col-lg-3 col-xl-3"; // HOME: 4 items/row on large+
+
   productsToShow.forEach((item) => {
     if (!item.name || item.name === "string") return;
 
@@ -274,7 +297,7 @@ function renderPaginatedProducts() {
     );
 
     const productCard = `
-      <div class="col-md-6 col-lg-4">
+      <div class="${colClass}">
         <div class="rounded position-relative fruite-item h-100">
           <div class="fruite-img">
             <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" />
@@ -610,19 +633,21 @@ $(document).ready(function () {
 ========================== */
 $(document).on("click", ".add-to-cart-btn", function (e) {
   e.preventDefault();
-  
+
   const product = {
     id: $(this).data("id"),
     name: $(this).data("name"),
     price: parseFloat($(this).data("price")),
     imageUrl: $(this).data("img"),
-    quantity: 1
+    quantity: 1,
   };
 
   let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
 
-  const existingProductIndex = cart.findIndex(item => item.name === product.name); // Using name as ID might differ or be missing
-  
+  const existingProductIndex = cart.findIndex(
+    (item) => item.name === product.name,
+  ); // Using name as ID might differ or be missing
+
   if (existingProductIndex > -1) {
     cart[existingProductIndex].quantity += 1;
   } else {
@@ -637,7 +662,46 @@ $(document).on("click", ".add-to-cart-btn", function (e) {
 function updateCartBadge() {
   const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  
+
   // Assuming the badge is the span inside the navbar with the shopping bag icon
   $(".fa-shopping-bag").next("span").text(totalItems);
 }
+
+/* ==========================
+   Contact Form Logic
+========================== */
+import { sendContactMessage } from "./contact.js";
+
+$(document).on("submit", "#contactForm", async function (e) {
+  e.preventDefault();
+
+  const name = $(this).find("[name='name']").val();
+  const email = $(this).find("[name='email']").val();
+  const message = $(this).find("[name='message']").val();
+
+  const $submitBtn = $("#contactSubmitBtn");
+  const $spinner = $submitBtn.find(".spinner-border");
+  const $messageDiv = $("#contactMessage");
+
+  $submitBtn.prop("disabled", true);
+  $spinner.removeClass("d-none");
+  $messageDiv.removeClass("text-success text-danger").text("");
+
+  try {
+    const res = await sendContactMessage({ name, email, message });
+    console.log("res:::", res);
+
+    $messageDiv
+      .addClass("text-success")
+      .text("Message sent successfully! We will get back to you shortly.");
+    this.reset();
+  } catch (err) {
+    console.error("Contact Error:", err);
+    $messageDiv
+      .addClass("text-danger")
+      .text(err.message || "Failed to send message. Please try again.");
+  } finally {
+    $submitBtn.prop("disabled", false);
+    $spinner.addClass("d-none");
+  }
+});
