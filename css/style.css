@@ -67,6 +67,9 @@
   justify-content: center;
   font-weight: normal;
 }
+.navbar-brand img {
+    object-fit: contain;
+}
 
 .embed-map-responsive {
   position: relative;
