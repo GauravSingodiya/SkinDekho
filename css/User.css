@@ -1,11 +1,4 @@
 /* General Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
 body {
     background-color: #f4f7f9;
     padding: 40px 20px;
@@ -144,5 +137,15 @@ body {
     }
     .profile-form {
         grid-template-columns: 1fr;
+    }
+}
+
+.content-header-margin {
+    margin-top: 152px !important;
+}
+
+@media (max-width: 992px) {
+    .content-header-margin {
+        margin-top: 97px !important;
     }
 }

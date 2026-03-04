@@ -17,4 +17,8 @@ export const API = {
     LIST: "/cart",
     REMOVE: (id) => `/cart/remove/${id}`,
   },
+
+  CONTACT: {
+    SEND_MESSAGE: "/api/Contact/SendMessage",
+  },
 };
