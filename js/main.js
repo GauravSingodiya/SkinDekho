@@ -1,4 +1,4 @@
-import { loginUser, registerUser } from "./auth.js";
+import { loginUser, registerUser, getCurrentUser } from "./auth.js";
 import {
   getAllCategories,
   getAllProducts,
@@ -116,13 +116,28 @@ import {
       const res = await loginUser(email, password);
       console.log("Login Success:", res);
 
+      const token = res.result?.token?.accessToken || res.token;
+      if (!token) throw new Error("Token not received");
+
+      sessionStorage.setItem("token", token);
+      console.log("Token:", token);
+
+      try {
+        const userRes = await getCurrentUser(token);
+        console.log("Current User:", userRes);
+        const userData = userRes.result || userRes;
+        sessionStorage.setItem("user", JSON.stringify(userData));
+      } catch (userErr) {
+        console.error("Failed to fetch user data", userErr);
+      }
+
       alert("Login successful ✅");
       $("#authModal").modal("hide");
 
-      sessionStorage.setItem("token", res.token);
-      // sessionStorage.setItem("user", JSON.stringify(res.user));
-      const token = sessionStorage.getItem("token");
-      console.log("Token:", token);
+      // Optional: Refresh if already on a secured page
+      if (window.location.pathname.includes("User.html")) {
+        window.location.reload();
+      }
     } catch (err) {
       alert(err.message || "Login failed");
     }

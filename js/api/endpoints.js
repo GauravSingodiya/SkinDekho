@@ -3,6 +3,7 @@ export const API = {
   AUTH: {
     LOGIN: "/api/auth/login",
     SIGNUP: "/api/auth/signup",
+    GET_CURRENT_USER: "/api/auth/CurrentUser",
   },
 
   PRODUCTS: {
@@ -20,5 +21,6 @@ export const API = {
 
   CONTACT: {
     SEND_MESSAGE: "/api/Contact/SendMessage",
+    UPDATE_USER: (id) => `/api/Contact/update-user/${id}`,
   },
 };
