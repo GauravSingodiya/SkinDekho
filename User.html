@@ -59,9 +59,26 @@
       </div>
       <div class="container px-0">
         <nav class="navbar navbar-light bg-white navbar-expand-xl">
-          <a href="index.html" class="navbar-brand"
-            ><h1 class="text-primary display-6">SkinDekho</h1></a
-          >
+          <!-- 🔹 Logo -->
+          <a href="index.html" class="navbar-brand d-flex align-items-center">
+            <!-- Desktop Logo -->
+            <img
+              src="img/logo.png"
+              alt="Logo"
+              class="img-fluid d-none d-xl-block"
+              style="height: 55px"
+            />
+
+            <!-- Mobile Logo -->
+            <img
+              src="img/logo.png"
+              alt="Logo"
+              class="img-fluid d-xl-none"
+              style="height: 40px"
+            />
+          </a>
+
+          <!-- 🔹 Toggle Button -->
           <button
             class="navbar-toggler py-2 px-3"
             type="button"
@@ -70,14 +87,17 @@
           >
             <span class="fa fa-bars text-primary"></span>
           </button>
+
+          <!-- 🔹 Navbar Content -->
           <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
             <div class="navbar-nav mx-auto">
-              <a href="index.html" class="nav-item nav-link">Home</a>
+              <a href="index.html" class="nav-item nav-link active">Home</a>
               <a href="shop.html" class="nav-item nav-link">Shop</a>
               <a href="cart.html" class="nav-item nav-link">Shop Cart</a>
               <a href="chackout.html" class="nav-item nav-link">Checkout</a>
               <a href="contact.html" class="nav-item nav-link">Contact</a>
             </div>
+
             <div class="d-flex m-3 me-0">
               <button
                 class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
@@ -86,14 +106,16 @@
               >
                 <i class="fas fa-search text-primary"></i>
               </button>
-              <a href="cart.html" class="position-relative me-4 my-auto">
+
+              <a href="#" class="position-relative me-4 my-auto">
                 <i class="fa fa-shopping-bag fa-2x"></i>
                 <span
                   class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
                   style="top: -5px; left: 15px; height: 20px; min-width: 20px"
-                  >2</span
+                  >3</span
                 >
               </a>
+
               <a href="#" class="my-auto user-icon-link">
                 <i class="fas fa-user fa-2x"></i>
               </a>
@@ -107,55 +129,171 @@
     <div class="profile-container content-header-margin">
       <aside class="sidebar">
         <div class="user-info">
-          <div class="avatar">GS</div>
-          <h3>Gaurav Saini</h3>
-          <p>Member since 2022</p>
+          <div class="avatar" id="sidebarAvatar">U</div>
+          <h3 id="sidebarName">User</h3>
+          <p>Member</p>
         </div>
+
         <nav class="side-nav">
-          <a href="#" class="active">Personal Info</a>
-          <a href="#">My Orders</a>
-          <a href="#">Shipping Addresses</a>
-          <a href="#">Payment Methods</a>
+          <a href="#" class="nav-link active" data-section="personal"
+            >Personal Info</a
+          >
+          <a href="#" class="nav-link" data-section="orders">My Orders</a>
+          <a href="#" class="nav-link" data-section="address"
+            >Shipping Addresses</a
+          >
+          <a href="#" class="nav-link" data-section="payment"
+            >Payment Methods</a
+          >
           <a href="#" class="logout">Logout</a>
         </nav>
       </aside>
 
       <main class="main-content">
-        <section class="content-header">
-          <h2>Personal Information</h2>
-          <button class="edit-btn">Edit Profile</button>
-        </section>
-
-        <form class="profile-form">
-          <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" value="Gaurav Saini" readonly />
-          </div>
-          <div class="form-group">
-            <label>Email Address</label>
-            <input type="email" value="gaurav.saini@example.com" readonly />
-          </div>
-          <div class="form-group">
-            <label>Phone Number</label>
-            <input type="text" value="+91 98765 43210" readonly />
-          </div>
-          <div class="form-group">
-            <label>Location</label>
-            <input type="text" value="Jaipur, Rajasthan, India" readonly />
-          </div>
-        </form>
-
-        <div class="security-section">
-          <h3>Account Security</h3>
-          <div class="security-card">
-            <div class="text">
-              <strong>Two-Factor Authentication</strong>
-              <p>Add an extra layer of security to your account.</p>
+        <!-- ================= PERSONAL INFO ================= -->
+        <div id="personal" class="profile-section active-section">
+          <section class="content-header">
+            <h2>Personal Information</h2>
+            <div class="action-buttons">
+              <button class="edit-btn" id="editProfileBtn">Edit Profile</button>
+              <button
+                class="btn btn-outline-secondary d-none me-2"
+                id="cancelProfileBtn"
+              >
+                Cancel
+              </button>
+              <button class="btn btn-primary d-none" id="saveProfileBtn">
+                <span
+                  class="spinner-border spinner-border-sm d-none me-1"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+                Save Changes
+              </button>
             </div>
-            <label class="switch">
-              <input type="checkbox" checked />
-              <span class="slider"></span>
-            </label>
+          </section>
+
+          <form class="profile-form" id="profileForm">
+            <!-- Hidden input to store user ID for update -->
+            <input type="hidden" id="profileUserId" />
+
+            <div class="form-group">
+              <label>First Name</label>
+              <input
+                type="text"
+                id="profileFirstName"
+                value=""
+                readonly
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input
+                type="text"
+                id="profileLastName"
+                value=""
+                readonly
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input
+                type="email"
+                id="profileEmail"
+                value=""
+                readonly
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input type="text" id="profilePhone" value="" readonly required />
+            </div>
+          </form>
+
+          <div
+            id="profileMessage"
+            class="mt-2 text-center"
+            style="font-weight: 500"
+          ></div>
+
+          <div class="security-section mt-4">
+            <h3>Account Security</h3>
+            <div class="security-card">
+              <div class="text">
+                <strong>Two-Factor Authentication</strong>
+                <p>Add an extra layer of security to your account.</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= MY ORDERS ================= -->
+        <div id="orders" class="profile-section d-none">
+          <section class="content-header">
+            <h2>My Orders</h2>
+          </section>
+
+          <div class="order-card">
+            <div>
+              <h5>Order #SD1025</h5>
+              <p>Placed on 21 Feb 2026</p>
+            </div>
+            <div>
+              <span class="badge bg-success">Delivered</span>
+              <p class="price">₹1,299</p>
+            </div>
+          </div>
+
+          <div class="order-card">
+            <div>
+              <h5>Order #SD1024</h5>
+              <p>Placed on 15 Feb 2026</p>
+            </div>
+            <div>
+              <span class="badge bg-warning text-dark">Shipped</span>
+              <p class="price">₹799</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ================= SHIPPING ADDRESS ================= -->
+        <div id="address" class="profile-section d-none">
+          <section class="content-header">
+            <h2>Shipping Addresses</h2>
+            <button class="edit-btn">+ Add New</button>
+          </section>
+
+          <div class="address-card">
+            <h6>Home</h6>
+            <p>
+              <span id="addressName">User Name</span><br />
+              302016 Jaipur, Rajasthan<br />
+              India<br />
+              <span id="addressPhone">Phone</span>
+            </p>
+          </div>
+        </div>
+
+        <!-- ================= PAYMENT METHODS ================= -->
+        <div id="payment" class="profile-section d-none">
+          <section class="content-header">
+            <h2>Payment Methods</h2>
+            <button class="edit-btn">+ Add Card</button>
+          </section>
+
+          <div class="payment-card">
+            <i class="fab fa-cc-visa fa-2x text-primary"></i>
+            <div>
+              <p>Visa ending in 4567</p>
+              <small>Expires 12/27</small>
+            </div>
           </div>
         </div>
       </main>
@@ -167,12 +305,160 @@
 
     <!-- Template Javascript -->
     <script type="module" src="js/main.js"></script>
-    <script>
-      $(document).ready(function () {
+    <script type="module">
+      import { getCurrentUser, updateUser } from "./js/auth.js";
+
+      $(document).ready(async function () {
+        const token = sessionStorage.getItem("token");
+
+        if (!token) {
+          window.location.href = "index.html";
+          return;
+        }
+
+        let currentUser = null;
+
+        function populateProfile(user) {
+          currentUser = user;
+          const fullName =
+            `${user.firstName || ""} ${user.lastName || ""}`.trim();
+          const initials = `${user.firstName ? user.firstName[0] : ""}${user.lastName ? user.lastName[0] : ""}`;
+
+          $("#sidebarAvatar").text(initials.toUpperCase() || "U");
+          $("#sidebarName").text(fullName || "User");
+
+          $("#profileUserId").val(user.id);
+          $("#profileFirstName").val(user.firstName || "");
+          $("#profileLastName").val(user.lastName || "");
+          $("#profileEmail").val(user.email || "");
+          $("#profilePhone").val(user.phoneNumber || "");
+
+          $("#addressName").text(fullName || "User");
+          $("#addressPhone").text(user.phoneNumber || "");
+        }
+
+        function toggleEditMode(isEditing) {
+          $(
+            "#profileFirstName, #profileLastName, #profileEmail, #profilePhone",
+          ).prop("readonly", !isEditing);
+
+          if (isEditing) {
+            $("#editProfileBtn").addClass("d-none");
+            $("#cancelProfileBtn, #saveProfileBtn").removeClass("d-none");
+          } else {
+            $("#editProfileBtn").removeClass("d-none");
+            $("#cancelProfileBtn, #saveProfileBtn").addClass("d-none");
+          }
+        }
+
+        // Handle Edit Button Click
+        $("#editProfileBtn").on("click", function (e) {
+          e.preventDefault();
+          toggleEditMode(true);
+        });
+
+        // Handle Cancel Button Click
+        $("#cancelProfileBtn").on("click", function (e) {
+          e.preventDefault();
+          if (currentUser) {
+            populateProfile(currentUser); // Reset values back
+          }
+          toggleEditMode(false);
+          $("#profileMessage").text("").removeClass("text-success text-danger");
+        });
+
+        // Handle Save Button Click
+        $("#saveProfileBtn").on("click", async function (e) {
+          e.preventDefault();
+
+          const id = $("#profileUserId").val();
+          if (!id) {
+            alert("User ID missing. Try refreshing the page.");
+            return;
+          }
+
+          const userData = {
+            firstName: $("#profileFirstName").val().trim(),
+            lastName: $("#profileLastName").val().trim(),
+            email: $("#profileEmail").val().trim(),
+            phoneNumber: $("#profilePhone").val().trim(),
+          };
+
+          const $btn = $(this);
+          const $spinner = $btn.find(".spinner-border");
+          const $msg = $("#profileMessage");
+
+          $btn.prop("disabled", true);
+          $spinner.removeClass("d-none");
+          $msg.text("").removeClass("text-success text-danger");
+
+          try {
+            const res = await updateUser(id, userData, token);
+            const updatedUserResponse = res.data || res; // The backend returns `{ success: true, data: { ... } }`
+            console.log(updatedUserResponse, "----updatedUserResponse");
+
+            // Re-populate and update session
+            if (updatedUserResponse) {
+              const updatedSessionUser = {
+                ...currentUser,
+                ...updatedUserResponse,
+              };
+              sessionStorage.setItem(
+                "user",
+                JSON.stringify(updatedSessionUser),
+              );
+              populateProfile(updatedSessionUser);
+            }
+
+            $msg.text("Profile updated successfully!").addClass("text-success");
+            toggleEditMode(false);
+          } catch (err) {
+            console.error("Update failed", err);
+            $msg
+              .text(err.message || "Failed to update profile.")
+              .addClass("text-danger");
+          } finally {
+            $btn.prop("disabled", false);
+            $spinner.addClass("d-none");
+          }
+        });
+
+        try {
+          // Run API to get current user data
+          const res = await getCurrentUser(token);
+          const user = res.result || res;
+
+          if (user) {
+            // Optionally update the session storage with latest details
+            sessionStorage.setItem("user", JSON.stringify(user));
+            populateProfile(user);
+          }
+        } catch (e) {
+          console.error("Error fetching user data", e);
+          // If token is invalid or expired
+          if (e.message && e.message.toLowerCase().includes("unauthorized")) {
+            sessionStorage.removeItem("token");
+            sessionStorage.removeItem("user");
+            window.location.href = "index.html";
+          } else {
+            // Fallback to existing session storage if network error
+            const userDataStr = sessionStorage.getItem("user");
+            if (userDataStr) {
+              try {
+                const user = JSON.parse(userDataStr);
+                populateProfile(user);
+              } catch (fallbackErr) {
+                console.error("Error parsing fallback user data", fallbackErr);
+              }
+            }
+          }
+        }
+
         // Logout Logic
         $(".logout").on("click", function (e) {
           e.preventDefault();
           sessionStorage.removeItem("token");
+          sessionStorage.removeItem("user");
           window.location.href = "index.html";
         });
 
@@ -182,6 +468,19 @@
             handleSearch(this.value);
           }
         });
+      });
+
+      // Dashboard section switching
+      $(".nav-link").click(function (e) {
+        e.preventDefault();
+
+        $(".nav-link").removeClass("active");
+        $(this).addClass("active");
+
+        $(".profile-section").addClass("d-none");
+
+        const sectionId = $(this).data("section");
+        $("#" + sectionId).removeClass("d-none");
       });
     </script>
   </body>

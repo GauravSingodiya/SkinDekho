@@ -40,5 +40,4 @@ async function apiRequest(endpoint, method = "GET", body = null, token = null) {
   }
 }
 
-
 export default apiRequest;

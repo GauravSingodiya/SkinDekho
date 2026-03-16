@@ -75,9 +75,26 @@
       </div>
       <div class="container px-0">
         <nav class="navbar navbar-light bg-white navbar-expand-xl">
-          <a href="index.html" class="navbar-brand"
-            ><h1 class="text-primary display-6">SkinDekho</h1></a
-          >
+          <!-- 🔹 Logo -->
+          <a href="index.html" class="navbar-brand d-flex align-items-center">
+            <!-- Desktop Logo -->
+            <img
+              src="img/logo.png"
+              alt="Logo"
+              class="img-fluid d-none d-xl-block"
+              style="height: 65px"
+            />
+
+            <!-- Mobile Logo -->
+            <img
+              src="img/logo.png"
+              alt="Logo"
+              class="img-fluid d-xl-none"
+              style="height: 40px"
+            />
+          </a>
+
+          <!-- 🔹 Toggle Button -->
           <button
             class="navbar-toggler py-2 px-3"
             type="button"
@@ -86,16 +103,17 @@
           >
             <span class="fa fa-bars text-primary"></span>
           </button>
+
+          <!-- 🔹 Navbar Content -->
           <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
             <div class="navbar-nav mx-auto">
-              <a href="index.html" class="nav-item nav-link">Home</a>
+              <a href="index.html" class="nav-item nav-link active">Home</a>
               <a href="shop.html" class="nav-item nav-link">Shop</a>
               <a href="cart.html" class="nav-item nav-link">Shop Cart</a>
-              <a href="chackout.html" class="nav-item nav-link active"
-                >Checkout</a
-              >
+              <a href="chackout.html" class="nav-item nav-link">Checkout</a>
               <a href="contact.html" class="nav-item nav-link">Contact</a>
             </div>
+
             <div class="d-flex m-3 me-0">
               <button
                 class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
@@ -104,6 +122,7 @@
               >
                 <i class="fas fa-search text-primary"></i>
               </button>
+
               <a href="#" class="position-relative me-4 my-auto">
                 <i class="fa fa-shopping-bag fa-2x"></i>
                 <span
@@ -112,6 +131,7 @@
                   >3</span
                 >
               </a>
+
               <a href="#" class="my-auto user-icon-link">
                 <i class="fas fa-user fa-2x"></i>
               </a>
@@ -264,125 +284,8 @@
                       <th scope="col">Total</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row">
-                        <div class="d-flex align-items-center mt-2">
-                          <img
-                            src="img/vegetable-item-2.jpg"
-                            class="img-fluid rounded-circle"
-                            style="width: 90px; height: 90px"
-                            alt=""
-                          />
-                        </div>
-                      </th>
-                      <td class="py-5">Awesome Brocoli</td>
-                      <td class="py-5">$69.00</td>
-                      <td class="py-5">2</td>
-                      <td class="py-5">$138.00</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        <div class="d-flex align-items-center mt-2">
-                          <img
-                            src="img/vegetable-item-5.jpg"
-                            class="img-fluid rounded-circle"
-                            style="width: 90px; height: 90px"
-                            alt=""
-                          />
-                        </div>
-                      </th>
-                      <td class="py-5">Potatoes</td>
-                      <td class="py-5">$69.00</td>
-                      <td class="py-5">2</td>
-                      <td class="py-5">$138.00</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">
-                        <div class="d-flex align-items-center mt-2">
-                          <img
-                            src="img/vegetable-item-3.png"
-                            class="img-fluid rounded-circle"
-                            style="width: 90px; height: 90px"
-                            alt=""
-                          />
-                        </div>
-                      </th>
-                      <td class="py-5">Big Banana</td>
-                      <td class="py-5">$69.00</td>
-                      <td class="py-5">2</td>
-                      <td class="py-5">$138.00</td>
-                    </tr>
-                    <tr>
-                      <th scope="row"></th>
-                      <td class="py-5"></td>
-                      <td class="py-5"></td>
-                      <td class="py-5">
-                        <p class="mb-0 text-dark py-3">Subtotal</p>
-                      </td>
-                      <td class="py-5">
-                        <div class="py-3 border-bottom border-top">
-                          <p class="mb-0 text-dark">$414.00</p>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row"></th>
-                      <td class="py-5">
-                        <p class="mb-0 text-dark py-4">Shipping</p>
-                      </td>
-                      <td colspan="3" class="py-5">
-                        <div class="form-check text-start">
-                          <input
-                            type="checkbox"
-                            class="form-check-input bg-primary border-0"
-                            id="Shipping-1"
-                            name="Shipping-1"
-                            value="Shipping"
-                          />
-                          <label class="form-check-label" for="Shipping-1"
-                            >Free Shipping</label
-                          >
-                        </div>
-                        <div class="form-check text-start">
-                          <input
-                            type="checkbox"
-                            class="form-check-input bg-primary border-0"
-                            id="Shipping-2"
-                            name="Shipping-1"
-                            value="Shipping"
-                          />
-                          <label class="form-check-label" for="Shipping-2"
-                            >Flat rate: $15.00</label
-                          >
-                        </div>
-                        <div class="form-check text-start">
-                          <input
-                            type="checkbox"
-                            class="form-check-input bg-primary border-0"
-                            id="Shipping-3"
-                            name="Shipping-1"
-                            value="Shipping"
-                          />
-                          <label class="form-check-label" for="Shipping-3"
-                            >Local Pickup: $8.00</label
-                          >
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <th scope="row"></th>
-                      <td class="py-5">
-                        <p class="mb-0 text-dark text-uppercase py-3">TOTAL</p>
-                      </td>
-                      <td class="py-5"></td>
-                      <td class="py-5"></td>
-                      <td class="py-5">
-                        <div class="py-3 border-bottom border-top">
-                          <p class="mb-0 text-dark">$135.00</p>
-                        </div>
-                      </td>
-                    </tr>
+                  <tbody id="checkoutOrderTable">
+                    <!-- Dynamic cart items will be injected here via JS -->
                   </tbody>
                 </table>
               </div>
@@ -630,5 +533,148 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
+    <script>
+      $(document).ready(function () {
+        const cartStr = sessionStorage.getItem("cart");
+        let cart = [];
+        try {
+          if (cartStr) {
+            cart = JSON.parse(cartStr);
+          }
+        } catch (e) {
+          console.error("Error parsing cart data", e);
+        }
+
+        const $tableBody = $("#checkoutOrderTable");
+        let subtotal = 0;
+
+        if (cart.length === 0) {
+          $tableBody.html(`
+            <tr>
+              <td colspan="5" class="py-5 text-center">Your cart is currently empty.</td>
+            </tr>
+          `);
+          return;
+        }
+
+        // Generate Cart Item Rows
+        cart.forEach((item) => {
+          const price = parseFloat(item.price) || 0;
+          const quantity = parseInt(item.quantity) || 1;
+          const total = price * quantity;
+          subtotal += total;
+
+          // Placeholder image logic if missing
+          const imgSrc = item.imageUrl || "img/vegetable-item-3.png";
+
+          const tr = `
+            <tr>
+              <th scope="row">
+                <div class="d-flex align-items-center mt-2">
+                  <img
+                    src="${imgSrc}"
+                    class="img-fluid rounded-circle"
+                    style="width: 90px; height: 90px; object-fit: cover;"
+                    alt="${item.name || "Product"}"
+                  />
+                </div>
+              </th>
+              <td class="py-5">${item.name || "Product Name"}</td>
+              <td class="py-5">$${price.toFixed(2)}</td>
+              <td class="py-5">${quantity}</td>
+              <td class="py-5">$${total.toFixed(2)}</td>
+            </tr>
+          `;
+          $tableBody.append(tr);
+        });
+
+        // Add Subtotal Row
+        $tableBody.append(`
+          <tr>
+            <th scope="row"></th>
+            <td class="py-5"></td>
+            <td class="py-5"></td>
+            <td class="py-5">
+              <p class="mb-0 text-dark py-3">Subtotal</p>
+            </td>
+            <td class="py-5">
+              <div class="py-3 border-bottom border-top">
+                <p class="mb-0 text-dark">$${subtotal.toFixed(2)}</p>
+              </div>
+            </td>
+          </tr>
+        `);
+
+        // Add Shipping Options Row
+        $tableBody.append(`
+          <tr>
+            <th scope="row"></th>
+            <td class="py-5">
+              <p class="mb-0 text-dark py-4">Shipping</p>
+            </td>
+            <td colspan="3" class="py-5">
+              <div class="form-check text-start">
+                <input
+                  type="checkbox"
+                  class="form-check-input bg-primary border-0"
+                  id="Shipping-1"
+                  name="Shipping-1"
+                  value="Shipping"
+                  checked
+                />
+                <label class="form-check-label" for="Shipping-1">Free Shipping</label>
+              </div>
+              <div class="form-check text-start">
+                <input
+                  type="checkbox"
+                  class="form-check-input bg-primary border-0"
+                  id="Shipping-2"
+                  name="Shipping-1"
+                  value="15.00"
+                />
+                <label class="form-check-label" for="Shipping-2">Flat rate: $15.00</label>
+              </div>
+              <div class="form-check text-start">
+                <input
+                  type="checkbox"
+                  class="form-check-input bg-primary border-0"
+                  id="Shipping-3"
+                  name="Shipping-1"
+                  value="8.00"
+                />
+                <label class="form-check-label" for="Shipping-3">Local Pickup: $8.00</label>
+              </div>
+            </td>
+          </tr>
+        `);
+
+        // Add Final Total Row
+        $tableBody.append(`
+          <tr>
+            <th scope="row"></th>
+            <td class="py-5">
+              <p class="mb-0 text-dark text-uppercase py-3">TOTAL</p>
+            </td>
+            <td class="py-5"></td>
+            <td class="py-5"></td>
+            <td class="py-5">
+              <div class="py-3 border-bottom border-top">
+                <p class="mb-0 text-dark" id="finalTotal">$${subtotal.toFixed(2)}</p>
+              </div>
+            </td>
+          </tr>
+        `);
+
+        // Add Event Listener to Update Total Amount when Shipping changes
+        $('input[name="Shipping-1"]').on("change", function () {
+          let shippingCost = 0;
+          if (!$(this).attr("id").includes("Shipping-1")) {
+            shippingCost = parseFloat($(this).val());
+          }
+          const finalTotal = subtotal + shippingCost;
+          $("#finalTotal").text(`$${finalTotal.toFixed(2)}`);
+        });
+      });
+    </script>
   </body>
 </html>
