@@ -5,6 +5,36 @@ import {
   getFeaturedProducts,
   getProductsByFilter,
 } from "./products.js";
+import { addToCartAPI, getCartAPI } from "./api/cartService.js";
+
+// ✅ Custom Toast Function
+function showToast(message, type = "success") {
+  const toastContainer = $("#toast-container");
+  if (toastContainer.length === 0) {
+    $("body").append('<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999"></div>');
+  }
+  
+  const toastId = "toast-" + Date.now();
+  const toastHtml = `
+    <div id="${toastId}" class="toast align-items-center text-white bg-${type === "success" ? "primary" : "danger"} border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body">
+          ${message}
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  `;
+  
+  $("#toast-container").append(toastHtml);
+  
+  setTimeout(() => {
+    $(`#${toastId}`).fadeOut(300, function() {
+      $(this).remove();
+    });
+  }, 3000);
+}
+
 
 (function ($) {
   "use strict";
@@ -640,45 +670,70 @@ $(document).ready(function () {
     getFilterProducts();
     loadFeaturedProducts();
   }
-  updateCartBadge();
+  syncCartBadge();
 });
 
 /* ==========================
-   Add to Cart Logic
+   Add to Cart Logic (API Version)
 ========================== */
-$(document).on("click", ".add-to-cart-btn", function (e) {
+$(document).on("click", ".add-to-cart-btn", async function (e) {
   e.preventDefault();
 
-  const product = {
-    id: $(this).data("id"),
-    name: $(this).data("name"),
-    price: parseFloat($(this).data("price")),
-    imageUrl: $(this).data("img"),
-    quantity: 1,
-  };
+  const productId = $(this).data("id");
+  const token = sessionStorage.getItem("token");
 
-  let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
-
-  const existingProductIndex = cart.findIndex(
-    (item) => item.name === product.name,
-  ); // Using name as ID might differ or be missing
-
-  if (existingProductIndex > -1) {
-    cart[existingProductIndex].quantity += 1;
-  } else {
-    cart.push(product);
+  if (!token) {
+    showToast("Please login to add items to cart", "error");
+    $("#authModal").modal("show");
+    return;
   }
 
-  sessionStorage.setItem("cart", JSON.stringify(cart));
-  updateCartBadge();
-  alert(`${product.name} added to cart!`);
+  const $btn = $(this);
+  const originalHtml = $btn.html();
+  $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...');
+
+  try {
+    const res = await addToCartAPI(productId, 1, token);
+    console.log("Add to cart success:", res);
+
+    if (res.success) {
+      showToast(res.message || "Product added to cart");
+      syncCartBadge();
+    } else {
+      throw new Error(res.message || "Failed to add to cart");
+    }
+  } catch (err) {
+    console.error("Add to Cart Error:", err);
+    showToast(err.message || "Failed to add to cart", "error");
+  } finally {
+    $btn.prop("disabled", false).html(originalHtml);
+  }
 });
 
+async function syncCartBadge() {
+  const token = sessionStorage.getItem("token");
+  if (!token) {
+    $(".fa-shopping-bag").next("span").text("0");
+    return;
+  }
+
+  try {
+    const res = await getCartAPI(token);
+    const cartItems = res.result?.items || res.result || [];
+    const totalItems = Array.isArray(cartItems) 
+      ? cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0)
+      : 0;
+    
+    $(".fa-shopping-bag").next("span").text(totalItems);
+  } catch (err) {
+    console.error("Failed to sync cart badge", err);
+  }
+}
+
 function updateCartBadge() {
+  // Legacy function for session storage - kept for compatibility but syncCartBadge is preferred now
   const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-  // Assuming the badge is the span inside the navbar with the shopping bag icon
   $(".fa-shopping-bag").next("span").text(totalItems);
 }
 
