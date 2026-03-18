@@ -8,30 +8,50 @@ import {
 import { addToCartAPI, getCartAPI } from "./api/cartService.js";
 
 // ✅ Custom Toast Function
-function showToast(message, type = "success") {
+function showToast(message, type = "success", title = "") {
   const toastContainer = $("#toast-container");
   if (toastContainer.length === 0) {
-    $("body").append('<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999"></div>');
+    $("body").append('<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 10000"></div>');
   }
-  
+
+  const icons = {
+    success: '<i class="fas fa-check-circle text-success me-2"></i>',
+    error: '<i class="fas fa-exclamation-circle text-danger me-2"></i>',
+    info: '<i class="fas fa-info-circle text-info me-2"></i>'
+  };
+
   const toastId = "toast-" + Date.now();
   const toastHtml = `
-    <div id="${toastId}" class="toast align-items-center text-white bg-${type === "success" ? "primary" : "danger"} border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
-      <div class="d-flex">
-        <div class="toast-body">
-          ${message}
-        </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    <div id="${toastId}" class="toast custom-toast show" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        ${icons[type] || icons.info}
+        <strong class="me-auto text-dark">${title || (type === 'success' ? 'Success' : 'Notification')}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        ${message}
+      </div>
+      <div class="progress">
+          <div class="progress-bar bg-${type === 'success' ? 'primary' : (type === 'error' ? 'danger' : 'info')}" role="progressbar" style="width: 100%"></div>
       </div>
     </div>
   `;
-  
+
   $("#toast-container").append(toastHtml);
   
+  const $toast = $(`#${toastId}`);
+  
+  // Progress bar animation
   setTimeout(() => {
-    $(`#${toastId}`).fadeOut(300, function() {
-      $(this).remove();
-    });
+    $toast.find('.progress-bar').css('width', '0%');
+  }, 10);
+
+  // Auto-dismiss
+  setTimeout(() => {
+    $toast.addClass('hiding');
+    setTimeout(() => {
+      $toast.remove();
+    }, 400);
   }, 3000);
 }
 
@@ -161,7 +181,7 @@ function showToast(message, type = "success") {
         console.error("Failed to fetch user data", userErr);
       }
 
-      alert("Login successful ✅");
+      showToast("Login successful ✅", "success", "Welcome Back");
       $("#authModal").modal("hide");
 
       // Optional: Refresh if already on a secured page
@@ -169,7 +189,7 @@ function showToast(message, type = "success") {
         window.location.reload();
       }
     } catch (err) {
-      alert(err.message || "Login failed");
+      showToast(err.message || "Login failed", "error", "Login Error");
     }
   });
 
@@ -191,12 +211,12 @@ function showToast(message, type = "success") {
       const res = await registerUser(payload);
       console.log("Signup Success:", res);
 
-      alert("Signup successful 🎉");
+      showToast("Signup successful 🎉", "success", "Account Created");
       $("#authModal").modal("hide");
       this.reset();
     } catch (err) {
       console.log(err, "err");
-      alert(err.message || "Signup failed");
+      showToast(err.message || "Signup failed", "error", "Signup Error");
     }
   });
 
@@ -270,8 +290,8 @@ async function loadProducts(category = "") {
 
                   <a href="https://wa.me/?text=${encodeURIComponent(item.name)}"
                      target="_blank"
-                     class="border-success rounded-pill px-2 text-success">
-                    <i class="fab fa-whatsapp fs-4"></i>
+                     class="border-primary rounded-pill px-2 text-primary whatsapp-btn">
+                    <i class="fab fa-whatsapp fs-2"></i>
                   </a>
                 </div>
               </div>
@@ -295,9 +315,9 @@ $(document).on("click", "#categoryTabs a", function () {
   loadProducts(category);
 });
 
-$(document).ready(function () {
-  loadProducts(); // loads all products
-});
+// $(document).ready(function () {
+//   loadProducts(); // loads all products
+// });
 
 let allProducts = [];
 let currentPage = 1;
@@ -374,8 +394,8 @@ function renderPaginatedProducts() {
 
                 <a href="https://wa.me/?text=${whatsappMessage}"
                    target="_blank"
-                   class="border-success rounded-pill px-1 text-success">
-                  <i class="fab fa-whatsapp"></i>
+                   class="border-primary rounded-pill px-1 text-primary whatsapp-btn">
+                  <i class="fab fa-whatsapp fs-2"></i>
                 </a>
               </div>
             </div>
@@ -582,6 +602,13 @@ async function loadCategories() {
 }
 
 $(document).on("click", "#categoryTabs a", function (e) {
+  const isShopPage = $("body").hasClass("shop-page") || window.location.pathname.includes("shop.html");
+  
+  if (!isShopPage) {
+    // On home page, allow the browser to follow the href link
+    return;
+  }
+
   e.preventDefault();
 
   $("#categoryTabs a").removeClass("active");
@@ -665,17 +692,33 @@ $(document).on("click", "#viewMoreFeatured", function () {
 });
 
 $(document).ready(function () {
-  if ($("body").hasClass("shop-page")) {
-    loadCategories();
-    getFilterProducts();
+  const urlParams = new URLSearchParams(window.location.search);
+  const categoryParam = urlParams.get('category');
+
+  if ($("body").hasClass("shop-page") || window.location.pathname.includes("shop.html")) {
+    loadCategories().then(() => {
+      if (categoryParam) {
+        getFilterProducts({ category: categoryParam });
+        // Highlight active tab
+        setTimeout(() => {
+          $("#categoryTabs a").removeClass("active");
+          $(`#categoryTabs a[data-category="${categoryParam}"]`).addClass("active");
+        }, 100);
+      } else {
+        getFilterProducts();
+      }
+    });
     loadFeaturedProducts();
+  } else {
+    // On home page or other pages, just sync cart
+    // loadProducts(); // Removed as per user request to hide products on home page
   }
   syncCartBadge();
 });
 
 /* ==========================
    Add to Cart Logic (API Version)
-========================== */
+ ========================== */
 $(document).on("click", ".add-to-cart-btn", async function (e) {
   e.preventDefault();
 
@@ -683,7 +726,7 @@ $(document).on("click", ".add-to-cart-btn", async function (e) {
   const token = sessionStorage.getItem("token");
 
   if (!token) {
-    showToast("Please login to add items to cart", "error");
+    showToast("Please login to add items to cart", "error", "Authentication Required");
     $("#authModal").modal("show");
     return;
   }
@@ -697,14 +740,15 @@ $(document).on("click", ".add-to-cart-btn", async function (e) {
     console.log("Add to cart success:", res);
 
     if (res.success) {
-      showToast(res.message || "Product added to cart");
+      const productName = $btn.data("name") || "Product";
+      showToast(`<strong>${productName}</strong> has been added to your cart.`, "success", "Added to Cart");
       syncCartBadge();
     } else {
       throw new Error(res.message || "Failed to add to cart");
     }
   } catch (err) {
     console.error("Add to Cart Error:", err);
-    showToast(err.message || "Failed to add to cart", "error");
+    showToast(err.message || "Failed to add to cart", "error", "Cart Error");
   } finally {
     $btn.prop("disabled", false).html(originalHtml);
   }

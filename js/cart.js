@@ -49,16 +49,16 @@ async function loadCartItems(token) {
             <p class="mb-0 mt-4">₹${price}</p>
           </td>
           <td>
-            <div class="input-group quantity mt-4" style="width: 100px;">
+            <div class="input-group quantity mt-4 bg-light rounded-pill p-1" style="width: 120px; border: 1px solid #e9ecef;">
               <div class="input-group-btn">
-                <button class="btn btn-sm btn-minus rounded-circle bg-light border" disabled>
-                  <i class="fa fa-minus"></i>
+                <button class="btn btn-sm btn-minus rounded-circle bg-white border-0 shadow-sm" style="width: 30px; height: 30px; padding: 0;">
+                  <i class="fa fa-minus text-primary" style="font-size: 0.8rem;"></i>
                 </button>
               </div>
-              <input type="text" class="form-control form-control-sm text-center border-0" value="${quantity}" readonly>
+              <input type="text" class="form-control form-control-sm text-center border-0 bg-transparent fw-bold" value="${quantity}" readonly style="box-shadow: none;">
               <div class="input-group-btn">
-                <button class="btn btn-sm btn-plus rounded-circle bg-light border" disabled>
-                  <i class="fa fa-plus"></i>
+                <button class="btn btn-sm btn-plus rounded-circle bg-white border-0 shadow-sm" style="width: 30px; height: 30px; padding: 0;">
+                  <i class="fa fa-plus text-primary" style="font-size: 0.8rem;"></i>
                 </button>
               </div>
             </div>
@@ -113,6 +113,36 @@ $(document).on("click", ".btn-remove", async function () {
     syncCartBadge(token);
   } catch (err) {
     alert("Failed to remove item: " + err.message);
+  }
+});
+
+// Change Quantity
+$(document).on("click", ".btn-plus, .btn-minus", async function () {
+  const isPlus = $(this).hasClass("btn-plus");
+  const productId = $(this).closest("tr").data("id");
+  const token = sessionStorage.getItem("token");
+  
+  const quantityChange = isPlus ? 1 : -1;
+  const currentQty = parseInt($(this).closest(".quantity").find("input").val());
+  
+  if (!isPlus && currentQty <= 1) return; // Prevent decrementing below 1
+
+  const $btn = $(this);
+  const originalHtml = $btn.html();
+  $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
+  try {
+    const { addToCartAPI } = await import("./api/cartService.js");
+    const res = await addToCartAPI(productId, quantityChange, token);
+    
+    // Refresh cart
+    loadCartItems(token);
+    syncCartBadge(token);
+  } catch (err) {
+    console.error("Update Quantity Error:", err);
+    alert("Failed to update quantity. Please try again.");
+  } finally {
+    $btn.prop("disabled", false).html(originalHtml);
   }
 });
 
