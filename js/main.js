@@ -8,7 +8,7 @@ import {
 import { addToCartAPI, getCartAPI } from "./api/cartService.js";
 
 // ✅ Custom Toast Function
-function showToast(message, type = "success", title = "") {
+export function showToast(message, type = "success", title = "") {
   const toastContainer = $("#toast-container");
   if (toastContainer.length === 0) {
     $("body").append('<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 10000"></div>');
@@ -261,7 +261,9 @@ async function loadProducts(category = "") {
         <div class="${colClass}">
           <div class="rounded position-relative fruite-item h-100">
             <div class="fruite-img">
-              <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" />
+              <a href="product-detail.html?id=${item.id}">
+                <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" />
+              </a>
             </div>
 
             <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
@@ -270,7 +272,7 @@ async function loadProducts(category = "") {
             </div>
 
             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-              <h4>${item.name}</h4>
+              <h4><a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a></h4>
               <p class="text-muted small">${item.description}</p>
 
               <div class="d-flex justify-content-between align-items-center">
@@ -365,7 +367,9 @@ function renderPaginatedProducts() {
       <div class="${colClass}">
         <div class="rounded position-relative fruite-item h-100">
           <div class="fruite-img">
-            <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" />
+            <a href="product-detail.html?id=${item.id}">
+              <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" />
+            </a>
           </div>
 
           <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
@@ -374,7 +378,7 @@ function renderPaginatedProducts() {
           </div>
 
           <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-            <h4>${item.name}</h4>
+            <h4><a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a></h4>
             <p class="text-muted small">${item.description}</p>
 
             <div class="d-flex justify-content-between align-items-center">
@@ -754,7 +758,7 @@ $(document).on("click", ".add-to-cart-btn", async function (e) {
   }
 });
 
-async function syncCartBadge() {
+export async function syncCartBadge() {
   const token = sessionStorage.getItem("token");
   if (!token) {
     $(".fa-shopping-bag").next("span").text("0");
