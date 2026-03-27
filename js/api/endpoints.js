@@ -14,9 +14,9 @@ export const API = {
   },
 
   CART: {
-    ADD: "/cart/add",
-    LIST: "/cart",
-    REMOVE: (id) => `/cart/remove/${id}`,
+    ADD: "/api/Orders/cart/add",
+    LIST: "/api/Orders/cart",
+    REMOVE: (id) => `/api/Orders/cart/remove/${id}`,
   },
 
   CONTACT: {

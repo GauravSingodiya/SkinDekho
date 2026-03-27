@@ -1,130 +1,160 @@
+// js/cart.js - Now a module
+
+import { getCartAPI, removeFromCartAPI } from "./api/cartService.js";
 
 $(document).ready(function () {
-  loadCartItems();
-  updateCartBadge(); // Ensure badge is correct on load
-});
-
-function loadCartItems() {
-  const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
-  const $cartTableBody = $("#cart-items");
-  $cartTableBody.empty();
-
-  if (cart.length === 0) {
-    $cartTableBody.html('<tr><td colspan="6" class="text-center">Your cart is empty.</td></tr>');
-    updateCartTotals();
+  const token = sessionStorage.getItem("token");
+  if (!token) {
+    $("#cart-items").html('<tr><td colspan="6" class="text-center">Please login to view your cart.</td></tr>');
     return;
   }
+  loadCartItems(token);
+  syncCartBadge(token); 
+});
 
-  cart.forEach((item, index) => {
-    const total = (item.price * item.quantity).toFixed(2);
+async function loadCartItems(token) {
+  const $cartTableBody = $("#cart-items");
+  $cartTableBody.html('<tr><td colspan="6" class="text-center"><div class="spinner-border text-primary" role="status"></div> Loading cart...</td></tr>');
+
+  try {
+    const res = await getCartAPI(token);
+    const cartItems = res.result?.items || res.result || [];
+    $cartTableBody.empty();
+
+    if (!Array.isArray(cartItems) || cartItems.length === 0) {
+      $cartTableBody.html('<tr><td colspan="6" class="text-center">Your cart is empty.</td></tr>');
+      updateCartTotals([]);
+      return;
+    }
+
+    cartItems.forEach((item) => {
+      const price = item.productPrice || 0;
+      const quantity = item.quantity || 1;
+      const total = (price * quantity).toFixed(2);
+      const imageUrl = item.imageUrl || "img/product-default.jpg";
+      const name = item.productName || "Product";
+      const productId = item.productId;
+      
+      const row = `
+        <tr data-id="${productId}">
+          <th scope="row">
+            <div class="d-flex align-items-center">
+              <img src="${imageUrl}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="${name}">
+            </div>
+          </th>
+          <td>
+            <p class="mb-0 mt-4">${name}</p>
+          </td>
+          <td>
+            <p class="mb-0 mt-4">₹${price}</p>
+          </td>
+          <td>
+            <div class="input-group quantity mt-4 bg-light rounded-pill p-1" style="width: 120px; border: 1px solid #e9ecef;">
+              <div class="input-group-btn">
+                <button class="btn btn-sm btn-minus rounded-circle bg-white border-0 shadow-sm" style="width: 30px; height: 30px; padding: 0;">
+                  <i class="fa fa-minus text-primary" style="font-size: 0.8rem;"></i>
+                </button>
+              </div>
+              <input type="text" class="form-control form-control-sm text-center border-0 bg-transparent fw-bold" value="${quantity}" readonly style="box-shadow: none;">
+              <div class="input-group-btn">
+                <button class="btn btn-sm btn-plus rounded-circle bg-white border-0 shadow-sm" style="width: 30px; height: 30px; padding: 0;">
+                  <i class="fa fa-plus text-primary" style="font-size: 0.8rem;"></i>
+                </button>
+              </div>
+            </div>
+          </td>
+          <td>
+            <p class="mb-0 mt-4 item-total">₹${total}</p>
+          </td>
+          <td>
+            <button class="btn btn-md rounded-circle bg-light border mt-4 btn-remove">
+              <i class="fa fa-times text-danger"></i>
+            </button>
+          </td>
+        </tr>
+      `;
+      $cartTableBody.append(row);
+    });
     
-    const row = `
-      <tr data-index="${index}">
-        <th scope="row">
-          <div class="d-flex align-items-center">
-            <img src="${item.imageUrl}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="${item.name}">
-          </div>
-        </th>
-        <td>
-          <p class="mb-0 mt-4">${item.name}</p>
-        </td>
-        <td>
-          <p class="mb-0 mt-4">₹${item.price}</p>
-        </td>
-        <td>
-          <div class="input-group quantity mt-4" style="width: 100px;">
-            <div class="input-group-btn">
-              <button class="btn btn-sm btn-minus rounded-circle bg-light border" >
-                <i class="fa fa-minus"></i>
-              </button>
-            </div>
-            <input type="text" class="form-control form-control-sm text-center border-0" value="${item.quantity}" readonly>
-            <div class="input-group-btn">
-              <button class="btn btn-sm btn-plus rounded-circle bg-light border">
-                <i class="fa fa-plus"></i>
-              </button>
-            </div>
-          </div>
-        </td>
-        <td>
-          <p class="mb-0 mt-4 item-total">₹${total}</p>
-        </td>
-        <td>
-          <button class="btn btn-md rounded-circle bg-light border mt-4 btn-remove" >
-            <i class="fa fa-times text-danger"></i>
-          </button>
-        </td>
-      </tr>
-    `;
-    $cartTableBody.append(row);
-  });
-  
-  updateCartTotals();
+    updateCartTotals(cartItems);
+  } catch (err) {
+    console.error("Failed to load cart items:", err);
+    $cartTableBody.html('<tr><td colspan="6" class="text-center text-danger">Failed to load cart. Please try again.</td></tr>');
+  }
 }
 
-function updateCartTotals() {
-  const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+function updateCartTotals(cartItems) {
   let subtotal = 0;
   
-  cart.forEach(item => {
-    subtotal += item.price * item.quantity;
+  cartItems.forEach(item => {
+    const price = item.productPrice || 0;
+    const quantity = item.quantity || 1;
+    subtotal += price * quantity;
   });
   
-  const shipping = 3.00; // Flat rate from HTML 
-  // You might want to make shipping dynamic or 0 if empty
-  const finalShipping = cart.length > 0 ? shipping : 0;
+  const shipping = 0; // The API might handle shipping or it's free
+  const total = subtotal + shipping;
   
-  const total = subtotal + finalShipping;
-  
-  // Assuming these IDs exist in cart.html or need to be added
   $("#cart-subtotal").text(`₹${subtotal.toFixed(2)}`);
-  $("#cart-shipping").text(`₹${finalShipping.toFixed(2)}`);
+  $("#cart-shipping").text(`Free`);
   $("#cart-total").text(`₹${total.toFixed(2)}`);
 }
 
-// Increment Quantity
-$(document).on("click", ".btn-plus", function () {
-  const index = $(this).closest("tr").data("index");
-  let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
-  
-  cart[index].quantity += 1;
-  sessionStorage.setItem("cart", JSON.stringify(cart));
-  
-  loadCartItems();
-  updateCartBadge();
-});
-
-// Decrement Quantity
-$(document).on("click", ".btn-minus", function () {
-  const index = $(this).closest("tr").data("index");
-  let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
-  
-  if (cart[index].quantity > 1) {
-    cart[index].quantity -= 1;
-  } else {
-    // Optional: Remove if quantity goes to 0? Or just stay at 1?
-    // Let's stay at 1 for now, user has 'remove' button
-  }
-  
-  sessionStorage.setItem("cart", JSON.stringify(cart));
-  loadCartItems();
-  updateCartBadge();
-});
-
 // Remove Item
-$(document).on("click", ".btn-remove", function () {
-  const index = $(this).closest("tr").data("index");
-  let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
+$(document).on("click", ".btn-remove", async function () {
+  const itemId = $(this).closest("tr").data("id");
+  const token = sessionStorage.getItem("token");
   
-  cart.splice(index, 1);
-  
-  sessionStorage.setItem("cart", JSON.stringify(cart));
-  loadCartItems();
-  updateCartBadge();
+  if (!confirm("Are you sure you want to remove this item?")) return;
+
+  try {
+    await removeFromCartAPI(itemId, token);
+    loadCartItems(token);
+    syncCartBadge(token);
+  } catch (err) {
+    alert("Failed to remove item: " + err.message);
+  }
 });
 
-function updateCartBadge() {
-  const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  $(".fa-shopping-bag").next("span").text(totalItems);
+// Change Quantity
+$(document).on("click", ".btn-plus, .btn-minus", async function () {
+  const isPlus = $(this).hasClass("btn-plus");
+  const productId = $(this).closest("tr").data("id");
+  const token = sessionStorage.getItem("token");
+  
+  const quantityChange = isPlus ? 1 : -1;
+  const currentQty = parseInt($(this).closest(".quantity").find("input").val());
+  
+  if (!isPlus && currentQty <= 1) return; // Prevent decrementing below 1
+
+  const $btn = $(this);
+  const originalHtml = $btn.html();
+  $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
+  try {
+    const { addToCartAPI } = await import("./api/cartService.js");
+    const res = await addToCartAPI(productId, quantityChange, token);
+    
+    // Refresh cart
+    loadCartItems(token);
+    syncCartBadge(token);
+  } catch (err) {
+    console.error("Update Quantity Error:", err);
+    alert("Failed to update quantity. Please try again.");
+  } finally {
+    $btn.prop("disabled", false).html(originalHtml);
+  }
+});
+
+async function syncCartBadge(token) {
+  try {
+    const res = await getCartAPI(token);
+    const cartItems = res.result?.items || res.result || [];
+    const totalItems = Array.isArray(cartItems) 
+      ? cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0)
+      : 0;
+    $(".fa-shopping-bag").next("span").text(totalItems);
+  } catch (err) {
+    console.error("Failed to sync badge:", err);
+  }
 }

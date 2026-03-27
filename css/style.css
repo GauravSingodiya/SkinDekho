@@ -1,3 +1,60 @@
+#toast-container {
+  z-index: 10000;
+}
+
+.custom-toast {
+  min-width: 300px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+  margin-bottom: 15px;
+  border: none;
+  animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.custom-toast .toast-header {
+  border-bottom: none;
+  padding: 15px 15px 10px;
+  background: white;
+}
+
+.custom-toast .toast-body {
+  padding: 0 15px 15px;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.custom-toast .progress {
+  height: 4px !important;
+  border-radius: 0;
+  background: #eee;
+}
+
+.custom-toast .progress-bar {
+  transition: width 3s linear;
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(20px); }
+}
+
+.custom-toast.hiding {
+  animation: fadeOut 0.4s ease-in forwards;
+}
+
 /*** Spinner Start ***/
 #spinner {
   opacity: 0;
@@ -347,11 +404,13 @@
 /*** service End ***/
 
 /*** Fruits Start ***/
-.fruite .tab-class .nav-item a.active {
+.fruite .tab-class .nav-item a.active,
+.fruite .tab-class .nav-item a:hover {
   background: var(--bs-secondary) !important;
 }
 
-.fruite .tab-class .nav-item a.active span {
+.fruite .tab-class .nav-item a.active span,
+.fruite .tab-class .nav-item a:hover span {
   color: var(--bs-white) !important;
 }
 
@@ -402,8 +461,13 @@
 }
 
 .whatsapp-btn i {
-  font-size: 25px;
-  /* increase icon size */
+  font-size: 32px;
+  transition: 0.3s;
+}
+
+.whatsapp-btn:hover i {
+  transform: scale(1.2);
+  color: var(--bs-primary);
 }
 
 /*** Fruits End ***/
@@ -430,6 +494,56 @@
 
 .vesitable .vesitable-item .vesitable-img img:hover {
   transform: scale(1.2);
+}
+
+.vesitable .vesitable-item {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.vesitable .vesitable-item .vesitable-img {
+  height: 214px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.vesitable .vesitable-item .vesitable-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vesitable .vesitable-item .p-4 {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.vesitable .vesitable-item .p-4 h4 {
+  min-height: 3rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.vesitable .vesitable-item .p-4 p {
+  flex-grow: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.vesitable .vesitable-item .p-4 .d-flex.justify-content-between {
+  margin-top: auto;
 }
 
 .vesitable .owl-stage {
@@ -566,6 +680,7 @@
   min-height: 3rem; /* Approximate height for 2 lines */
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -574,6 +689,7 @@
   flex-grow: 1;
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
   margin-bottom: 1rem;

@@ -5,6 +5,56 @@ import {
   getFeaturedProducts,
   getProductsByFilter,
 } from "./products.js";
+import { addToCartAPI, getCartAPI } from "./api/cartService.js";
+
+// ✅ Custom Toast Function
+export function showToast(message, type = "success", title = "") {
+  const toastContainer = $("#toast-container");
+  if (toastContainer.length === 0) {
+    $("body").append('<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 10000"></div>');
+  }
+
+  const icons = {
+    success: '<i class="fas fa-check-circle text-success me-2"></i>',
+    error: '<i class="fas fa-exclamation-circle text-danger me-2"></i>',
+    info: '<i class="fas fa-info-circle text-info me-2"></i>'
+  };
+
+  const toastId = "toast-" + Date.now();
+  const toastHtml = `
+    <div id="${toastId}" class="toast custom-toast show" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="toast-header">
+        ${icons[type] || icons.info}
+        <strong class="me-auto text-dark">${title || (type === 'success' ? 'Success' : 'Notification')}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+      <div class="toast-body">
+        ${message}
+      </div>
+      <div class="progress">
+          <div class="progress-bar bg-${type === 'success' ? 'primary' : (type === 'error' ? 'danger' : 'info')}" role="progressbar" style="width: 100%"></div>
+      </div>
+    </div>
+  `;
+
+  $("#toast-container").append(toastHtml);
+  
+  const $toast = $(`#${toastId}`);
+  
+  // Progress bar animation
+  setTimeout(() => {
+    $toast.find('.progress-bar').css('width', '0%');
+  }, 10);
+
+  // Auto-dismiss
+  setTimeout(() => {
+    $toast.addClass('hiding');
+    setTimeout(() => {
+      $toast.remove();
+    }, 400);
+  }, 3000);
+}
+
 
 (function ($) {
   "use strict";
@@ -131,7 +181,7 @@ import {
         console.error("Failed to fetch user data", userErr);
       }
 
-      alert("Login successful ✅");
+      showToast("Login successful ✅", "success", "Welcome Back");
       $("#authModal").modal("hide");
 
       // Optional: Refresh if already on a secured page
@@ -139,7 +189,7 @@ import {
         window.location.reload();
       }
     } catch (err) {
-      alert(err.message || "Login failed");
+      showToast(err.message || "Login failed", "error", "Login Error");
     }
   });
 
@@ -161,12 +211,12 @@ import {
       const res = await registerUser(payload);
       console.log("Signup Success:", res);
 
-      alert("Signup successful 🎉");
+      showToast("Signup successful 🎉", "success", "Account Created");
       $("#authModal").modal("hide");
       this.reset();
     } catch (err) {
       console.log(err, "err");
-      alert(err.message || "Signup failed");
+      showToast(err.message || "Signup failed", "error", "Signup Error");
     }
   });
 
@@ -211,7 +261,9 @@ async function loadProducts(category = "") {
         <div class="${colClass}">
           <div class="rounded position-relative fruite-item h-100">
             <div class="fruite-img">
-              <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" />
+              <a href="product-detail.html?id=${item.id}">
+                <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" />
+              </a>
             </div>
 
             <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
@@ -220,7 +272,7 @@ async function loadProducts(category = "") {
             </div>
 
             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-              <h4>${item.name}</h4>
+              <h4><a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a></h4>
               <p class="text-muted small">${item.description}</p>
 
               <div class="d-flex justify-content-between align-items-center">
@@ -240,8 +292,8 @@ async function loadProducts(category = "") {
 
                   <a href="https://wa.me/?text=${encodeURIComponent(item.name)}"
                      target="_blank"
-                     class="border-success rounded-pill px-2 text-success">
-                    <i class="fab fa-whatsapp fs-4"></i>
+                     class="border-primary rounded-pill px-2 text-primary whatsapp-btn">
+                    <i class="fab fa-whatsapp fs-2"></i>
                   </a>
                 </div>
               </div>
@@ -265,9 +317,9 @@ $(document).on("click", "#categoryTabs a", function () {
   loadProducts(category);
 });
 
-$(document).ready(function () {
-  loadProducts(); // loads all products
-});
+// $(document).ready(function () {
+//   loadProducts(); // loads all products
+// });
 
 let allProducts = [];
 let currentPage = 1;
@@ -315,7 +367,9 @@ function renderPaginatedProducts() {
       <div class="${colClass}">
         <div class="rounded position-relative fruite-item h-100">
           <div class="fruite-img">
-            <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" />
+            <a href="product-detail.html?id=${item.id}">
+              <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" />
+            </a>
           </div>
 
           <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
@@ -324,7 +378,7 @@ function renderPaginatedProducts() {
           </div>
 
           <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-            <h4>${item.name}</h4>
+            <h4><a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a></h4>
             <p class="text-muted small">${item.description}</p>
 
             <div class="d-flex justify-content-between align-items-center">
@@ -344,8 +398,8 @@ function renderPaginatedProducts() {
 
                 <a href="https://wa.me/?text=${whatsappMessage}"
                    target="_blank"
-                   class="border-success rounded-pill px-1 text-success">
-                  <i class="fab fa-whatsapp"></i>
+                   class="border-primary rounded-pill px-1 text-primary whatsapp-btn">
+                  <i class="fab fa-whatsapp fs-2"></i>
                 </a>
               </div>
             </div>
@@ -552,6 +606,13 @@ async function loadCategories() {
 }
 
 $(document).on("click", "#categoryTabs a", function (e) {
+  const isShopPage = $("body").hasClass("shop-page") || window.location.pathname.includes("shop.html");
+  
+  if (!isShopPage) {
+    // On home page, allow the browser to follow the href link
+    return;
+  }
+
   e.preventDefault();
 
   $("#categoryTabs a").removeClass("active");
@@ -635,50 +696,92 @@ $(document).on("click", "#viewMoreFeatured", function () {
 });
 
 $(document).ready(function () {
-  if ($("body").hasClass("shop-page")) {
-    loadCategories();
-    getFilterProducts();
+  const urlParams = new URLSearchParams(window.location.search);
+  const categoryParam = urlParams.get('category');
+
+  if ($("body").hasClass("shop-page") || window.location.pathname.includes("shop.html")) {
+    loadCategories().then(() => {
+      if (categoryParam) {
+        getFilterProducts({ category: categoryParam });
+        // Highlight active tab
+        setTimeout(() => {
+          $("#categoryTabs a").removeClass("active");
+          $(`#categoryTabs a[data-category="${categoryParam}"]`).addClass("active");
+        }, 100);
+      } else {
+        getFilterProducts();
+      }
+    });
     loadFeaturedProducts();
+  } else {
+    // On home page or other pages, just sync cart
+    // loadProducts(); // Removed as per user request to hide products on home page
   }
-  updateCartBadge();
+  syncCartBadge();
 });
 
 /* ==========================
-   Add to Cart Logic
-========================== */
-$(document).on("click", ".add-to-cart-btn", function (e) {
+   Add to Cart Logic (API Version)
+ ========================== */
+$(document).on("click", ".add-to-cart-btn", async function (e) {
   e.preventDefault();
 
-  const product = {
-    id: $(this).data("id"),
-    name: $(this).data("name"),
-    price: parseFloat($(this).data("price")),
-    imageUrl: $(this).data("img"),
-    quantity: 1,
-  };
+  const productId = $(this).data("id");
+  const token = sessionStorage.getItem("token");
 
-  let cart = JSON.parse(sessionStorage.getItem("cart")) || [];
-
-  const existingProductIndex = cart.findIndex(
-    (item) => item.name === product.name,
-  ); // Using name as ID might differ or be missing
-
-  if (existingProductIndex > -1) {
-    cart[existingProductIndex].quantity += 1;
-  } else {
-    cart.push(product);
+  if (!token) {
+    showToast("Please login to add items to cart", "error", "Authentication Required");
+    $("#authModal").modal("show");
+    return;
   }
 
-  sessionStorage.setItem("cart", JSON.stringify(cart));
-  updateCartBadge();
-  alert(`${product.name} added to cart!`);
+  const $btn = $(this);
+  const originalHtml = $btn.html();
+  $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...');
+
+  try {
+    const res = await addToCartAPI(productId, 1, token);
+    console.log("Add to cart success:", res);
+
+    if (res.success) {
+      const productName = $btn.data("name") || "Product";
+      showToast(`<strong>${productName}</strong> has been added to your cart.`, "success", "Added to Cart");
+      syncCartBadge();
+    } else {
+      throw new Error(res.message || "Failed to add to cart");
+    }
+  } catch (err) {
+    console.error("Add to Cart Error:", err);
+    showToast(err.message || "Failed to add to cart", "error", "Cart Error");
+  } finally {
+    $btn.prop("disabled", false).html(originalHtml);
+  }
 });
 
+export async function syncCartBadge() {
+  const token = sessionStorage.getItem("token");
+  if (!token) {
+    $(".fa-shopping-bag").next("span").text("0");
+    return;
+  }
+
+  try {
+    const res = await getCartAPI(token);
+    const cartItems = res.result?.items || res.result || [];
+    const totalItems = Array.isArray(cartItems) 
+      ? cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0)
+      : 0;
+    
+    $(".fa-shopping-bag").next("span").text(totalItems);
+  } catch (err) {
+    console.error("Failed to sync cart badge", err);
+  }
+}
+
 function updateCartBadge() {
+  // Legacy function for session storage - kept for compatibility but syncCartBadge is preferred now
   const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-
-  // Assuming the badge is the span inside the navbar with the shopping bag icon
   $(".fa-shopping-bag").next("span").text(totalItems);
 }
 
