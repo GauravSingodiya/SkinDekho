@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>User Profile | E-commerce</title>
+    <title>User Profile | SkinDekho</title>
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -233,33 +233,14 @@
             </div>
           </div>
         </div>
-
-        <!-- ================= MY ORDERS ================= -->
+               <!-- ================= MY ORDERS ================= -->
         <div id="orders" class="profile-section d-none">
           <section class="content-header">
             <h2>My Orders</h2>
           </section>
-
-          <div class="order-card">
-            <div>
-              <h5>Order #SD1025</h5>
-              <p>Placed on 21 Feb 2026</p>
-            </div>
-            <div>
-              <span class="badge bg-success">Delivered</span>
-              <p class="price">₹1,299</p>
-            </div>
-          </div>
-
-          <div class="order-card">
-            <div>
-              <h5>Order #SD1024</h5>
-              <p>Placed on 15 Feb 2026</p>
-            </div>
-            <div>
-              <span class="badge bg-warning text-dark">Shipped</span>
-              <p class="price">₹799</p>
-            </div>
+          <div id="ordersList">
+            <!-- Dynamic orders will be injected here -->
+            <div class="text-center py-4 text-muted">Loading your orders...</div>
           </div>
         </div>
 
@@ -267,19 +248,13 @@
         <div id="address" class="profile-section d-none">
           <section class="content-header">
             <h2>Shipping Addresses</h2>
-            <button class="edit-btn">+ Add New</button>
+            <button class="edit-btn" id="addNewAddressBtn">+ Add New</button>
           </section>
-
-          <div class="address-card">
-            <h6>Home</h6>
-            <p>
-              <span id="addressName">User Name</span><br />
-              302016 Jaipur, Rajasthan<br />
-              India<br />
-              <span id="addressPhone">Phone</span>
-            </p>
+          <div id="addressesList" class="row g-3">
+            <!-- Dynamic addresses will be injected here -->
+            <div class="col-12 text-center py-4 text-muted">Loading your addresses...</div>
           </div>
-        </div>
+        </div>       </div>
 
         <!-- ================= PAYMENT METHODS ================= -->
         <div id="payment" class="profile-section d-none">
@@ -307,6 +282,7 @@
     <script type="module" src="js/main.js"></script>
     <script type="module">
       import { getCurrentUser, updateUser } from "./js/auth.js";
+      import { getAddressesAPI, getMyOrdersAPI } from "./js/api/orderService.js";
 
       $(document).ready(async function () {
         const token = sessionStorage.getItem("token");
@@ -422,6 +398,81 @@
             $spinner.addClass("d-none");
           }
         });
+
+        async function loadOrders() {
+          const $ordersList = $("#ordersList");
+          try {
+            const res = await getMyOrdersAPI(token);
+            const orders = res.result || [];
+            $ordersList.empty();
+
+            if (orders.length === 0) {
+              $ordersList.html('<div class="text-center py-5 text-muted">You haven\'t placed any orders yet.</div>');
+              return;
+            }
+
+            orders.reverse().forEach(order => {
+              const date = new Date(order.orderDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+              const statusClass = order.status === 'Delivered' ? 'bg-success' : (order.status === 'Pending' ? 'bg-warning text-dark' : 'bg-info text-dark');
+              
+              const orderCard = `
+                <div class="order-card">
+                  <div>
+                    <h5>Order #${order.orderNumber}</h5>
+                    <p>Placed on ${date}</p>
+                    <small class="text-muted">${order.items?.length || 0} items</small>
+                  </div>
+                  <div class="text-end">
+                    <span class="badge ${statusClass}">${order.status}</span>
+                    <p class="price">₹${order.finalTotal?.toFixed(2)}</p>
+                  </div>
+                </div>
+              `;
+              $ordersList.append(orderCard);
+            });
+          } catch (e) {
+            console.error("Error loading orders", e);
+            $ordersList.html('<div class="text-center py-5 text-danger">Failed to load order history.</div>');
+          }
+        }
+
+        async function loadAddresses() {
+          const $addressesList = $("#addressesList");
+          try {
+            const res = await getAddressesAPI(token);
+            const addresses = res.result || [];
+            $addressesList.empty();
+
+            if (addresses.length === 0) {
+              $addressesList.html('<div class="col-12 text-center py-5 text-muted">No saved addresses found.</div>');
+              return;
+            }
+
+            addresses.forEach(addr => {
+              const addressCard = `
+                <div class="col-md-6">
+                  <div class="address-card p-3 border rounded h-100">
+                    <div class="d-flex justify-content-between">
+                      <h6 class="fw-bold">${addr.addressType || 'Address'} ${addr.isDefault ? '<span class="badge bg-light text-primary border border-primary ms-2">Default</span>' : ''}</h6>
+                    </div>
+                    <p class="mb-1"><strong>${addr.firstName} ${addr.lastName}</strong></p>
+                    <p class="small mb-1 text-dark">${addr.addressLine1}${addr.addressLine2 ? ', ' + addr.addressLine2 : ''}</p>
+                    <p class="small mb-1 text-dark">${addr.city}, ${addr.state} - ${addr.postalCode}</p>
+                    <p class="small mb-0 text-muted"><i class="fas fa-phone-alt me-1"></i>${addr.phoneNumber}</p>
+                  </div>
+                </div>
+              `;
+              $addressesList.append(addressCard);
+            });
+          } catch (e) {
+            console.error("Error loading addresses", e);
+            $addressesList.html('<div class="col-12 text-center py-5 text-danger">Failed to load addresses.</div>');
+          }
+        }
+
+        // Initialize dynamic content
+        loadOrders();
+        loadAddresses();
 
         try {
           // Run API to get current user data

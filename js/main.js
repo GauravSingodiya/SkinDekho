@@ -823,3 +823,18 @@ $(document).on("submit", "#contactForm", async function (e) {
     $spinner.addClass("d-none");
   }
 });
+
+/* ==========================
+   Active Navbar Link Logic
+========================== */
+$(document).ready(function () {
+  const currentLocation = window.location.pathname.split("/").pop() || "index.html";
+  $(".navbar-nav .nav-link").each(function () {
+    const $this = $(this);
+    const href = $this.attr("href");
+    if (href === currentLocation) {
+      $(".navbar-nav .nav-link").removeClass("active");
+      $this.addClass("active");
+    }
+  });
+});

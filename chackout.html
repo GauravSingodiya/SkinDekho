@@ -34,6 +34,32 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet" />
+    <style>
+      .address-card {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+      }
+      .address-card:hover {
+        border-color: #81c408;
+        background-color: #f8f9fa;
+      }
+      .address-card.selected {
+        border-color: #81c408;
+        background-color: #f0fdf4;
+      }
+      .address-card.selected .fa-check-circle {
+        display: block !important;
+      }
+      .invalid-feedback {
+        display: none;
+        color: #dc3545;
+        font-size: 0.875em;
+      }
+      .is-invalid + .invalid-feedback {
+        display: block;
+      }
+    </style>
   </head>
 
   <body>
@@ -107,7 +133,7 @@
           <!-- 🔹 Navbar Content -->
           <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
             <div class="navbar-nav mx-auto">
-              <a href="index.html" class="nav-item nav-link active">Home</a>
+              <a href="index.html" class="nav-item nav-link">Home</a>
               <a href="shop.html" class="nav-item nav-link">Shop</a>
               <a href="cart.html" class="nav-item nav-link">Shop Cart</a>
               <a href="chackout.html" class="nav-item nav-link">Checkout</a>
@@ -188,88 +214,81 @@
         <form action="#">
           <div class="row g-5">
             <div class="col-md-12 col-lg-6 col-xl-7">
-              <div class="row">
-                <div class="col-md-12 col-lg-6">
-                  <div class="form-item w-100">
-                    <label class="form-label my-3"
-                      >First Name<sup>*</sup></label
-                    >
-                    <input type="text" class="form-control" />
+              <div id="address-selection-section" class="mb-4">
+                <h4 class="mb-3">Select Delivery Address</h4>
+                <div id="address-list" class="row g-4 mb-4">
+                  <!-- Existing addresses will be injected here -->
+                  <div class="col-12 text-center py-4 text-muted">Loading your addresses...</div>
+                </div>
+                <button type="button" id="show-new-address-btn" class="btn btn-outline-primary rounded-pill px-4">
+                  <i class="fas fa-plus me-2"></i>Add New Address
+                </button>
+              </div>
+
+              <div id="new-address-form" style="display: none;" class="border p-4 rounded bg-light mb-4">
+                <h4 class="mb-4">New Shipping Address</h4>
+                <div class="row">
+                  <div class="col-md-12 col-lg-6">
+                    <div class="form-item w-100">
+                      <label class="form-label my-3">First Name<sup>*</sup></label>
+                      <input type="text" id="firstName" class="form-control" />
+                      <div class="invalid-feedback">First name is required</div>
+                    </div>
+                  </div>
+                  <div class="col-md-12 col-lg-6">
+                    <div class="form-item w-100">
+                      <label class="form-label my-3">Last Name<sup>*</sup></label>
+                      <input type="text" id="lastName" class="form-control" />
+                      <div class="invalid-feedback">Last name is required</div>
+                    </div>
                   </div>
                 </div>
-                <div class="col-md-12 col-lg-6">
-                  <div class="form-item w-100">
-                    <label class="form-label my-3">Last Name<sup>*</sup></label>
-                    <input type="text" class="form-control" />
+                <div class="form-item">
+                  <label class="form-label my-3">Phone Number<sup>*</sup></label>
+                  <input type="tel" id="phoneNumber" class="form-control" />
+                  <div class="invalid-feedback">Valid phone number is required</div>
+                </div>
+                <div class="form-item">
+                  <label class="form-label my-3">Address Line 1 (House No, Street)<sup>*</sup></label>
+                  <input type="text" id="addressLine1" class="form-control" placeholder="House Number Street Name" />
+                  <div class="invalid-feedback">Address is required</div>
+                </div>
+                <div class="form-item">
+                  <label class="form-label my-3">Address Line 2 (Landmark, Area)<sup>*</sup></label>
+                  <input type="text" id="addressLine2" class="form-control" placeholder="Apartment, suite, unit etc." />
+                </div>
+                <div class="row">
+                  <div class="col-md-12 col-lg-6">
+                    <div class="form-item w-100">
+                      <label class="form-label my-3">Town/City<sup>*</sup></label>
+                      <input type="text" id="city" class="form-control" />
+                      <div class="invalid-feedback">City is required</div>
+                    </div>
+                  </div>
+                  <div class="col-md-12 col-lg-6">
+                    <div class="form-item w-100">
+                      <label class="form-label my-3">State<sup>*</sup></label>
+                      <input type="text" id="state" class="form-control" />
+                      <div class="invalid-feedback">State is required</div>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="form-item">
-                <label class="form-label my-3">Company Name<sup>*</sup></label>
-                <input type="text" class="form-control" />
-              </div>
-              <div class="form-item">
-                <label class="form-label my-3">Address <sup>*</sup></label>
-                <input
-                  type="text"
-                  class="form-control"
-                  placeholder="House Number Street Name"
-                />
-              </div>
-              <div class="form-item">
-                <label class="form-label my-3">Town/City<sup>*</sup></label>
-                <input type="text" class="form-control" />
-              </div>
-              <div class="form-item">
-                <label class="form-label my-3">Country<sup>*</sup></label>
-                <input type="text" class="form-control" />
-              </div>
-              <div class="form-item">
-                <label class="form-label my-3">Postcode/Zip<sup>*</sup></label>
-                <input type="text" class="form-control" />
-              </div>
-              <div class="form-item">
-                <label class="form-label my-3">Mobile<sup>*</sup></label>
-                <input type="tel" class="form-control" />
-              </div>
-              <div class="form-item">
-                <label class="form-label my-3">Email Address<sup>*</sup></label>
-                <input type="email" class="form-control" />
-              </div>
-              <div class="form-check my-3">
-                <input
-                  type="checkbox"
-                  class="form-check-input"
-                  id="Account-1"
-                  name="Accounts"
-                  value="Accounts"
-                />
-                <label class="form-check-label" for="Account-1"
-                  >Create an account?</label
-                >
-              </div>
-              <hr />
-              <div class="form-check my-3">
-                <input
-                  class="form-check-input"
-                  type="checkbox"
-                  id="Address-1"
-                  name="Address"
-                  value="Address"
-                />
-                <label class="form-check-label" for="Address-1"
-                  >Ship to a different address?</label
-                >
-              </div>
-              <div class="form-item">
-                <textarea
-                  name="text"
-                  class="form-control"
-                  spellcheck="false"
-                  cols="30"
-                  rows="11"
-                  placeholder="Oreder Notes (Optional)"
-                ></textarea>
+                <div class="row">
+                  <div class="col-md-12 col-lg-6">
+                    <div class="form-item w-100">
+                      <label class="form-label my-3">Postcode/Zip<sup>*</sup></label>
+                      <input type="text" id="postalCode" class="form-control" />
+                      <div class="invalid-feedback">Zip code is required</div>
+                    </div>
+                  </div>
+                  <div class="col-md-12 col-lg-6">
+                    <div class="form-item w-100">
+                      <label class="form-label my-3">Country<sup>*</sup></label>
+                      <input type="text" id="country" class="form-control" value="India" />
+                      <div class="invalid-feedback">Country is required</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="col-md-12 col-lg-6 col-xl-5">
@@ -371,6 +390,7 @@
               >
                 <button
                   type="button"
+                  id="placeOrderBtn"
                   class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary"
                 >
                   Place Order
@@ -393,8 +413,8 @@
           <div class="row g-4">
             <div class="col-lg-3">
               <a href="#">
-                <h1 class="text-primary mb-0">Fruitables</h1>
-                <p class="text-secondary mb-0">Fresh products</p>
+                <h1 class="text-primary mb-0">SkinDekho</h1>
+                <p class="text-secondary mb-0">Premium healthcare</p>
               </a>
             </div>
             <div class="col-lg-6">
@@ -480,7 +500,7 @@
           <div class="col-lg-3 col-md-6">
             <div class="footer-item">
               <h4 class="text-light mb-3">Contact</h4>
-              <p>Address: 1429 Netus Rd, NY 48247</p>
+              <p>Address: 302016 jaipur, India</p>
               <p>Email: skindekho@gmail.com</p>
               <p>Phone: +91 94619727590</p>
               <p>Payment Accepted</p>
@@ -532,149 +552,7 @@
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
-    <script>
-      $(document).ready(function () {
-        const cartStr = sessionStorage.getItem("cart");
-        let cart = [];
-        try {
-          if (cartStr) {
-            cart = JSON.parse(cartStr);
-          }
-        } catch (e) {
-          console.error("Error parsing cart data", e);
-        }
-
-        const $tableBody = $("#checkoutOrderTable");
-        let subtotal = 0;
-
-        if (cart.length === 0) {
-          $tableBody.html(`
-            <tr>
-              <td colspan="5" class="py-5 text-center">Your cart is currently empty.</td>
-            </tr>
-          `);
-          return;
-        }
-
-        // Generate Cart Item Rows
-        cart.forEach((item) => {
-          const price = parseFloat(item.price) || 0;
-          const quantity = parseInt(item.quantity) || 1;
-          const total = price * quantity;
-          subtotal += total;
-
-          // Placeholder image logic if missing
-          const imgSrc = item.imageUrl || "img/vegetable-item-3.png";
-
-          const tr = `
-            <tr>
-              <th scope="row">
-                <div class="d-flex align-items-center mt-2">
-                  <img
-                    src="${imgSrc}"
-                    class="img-fluid rounded-circle"
-                    style="width: 90px; height: 90px; object-fit: cover;"
-                    alt="${item.name || "Product"}"
-                  />
-                </div>
-              </th>
-              <td class="py-5">${item.name || "Product Name"}</td>
-              <td class="py-5">$${price.toFixed(2)}</td>
-              <td class="py-5">${quantity}</td>
-              <td class="py-5">$${total.toFixed(2)}</td>
-            </tr>
-          `;
-          $tableBody.append(tr);
-        });
-
-        // Add Subtotal Row
-        $tableBody.append(`
-          <tr>
-            <th scope="row"></th>
-            <td class="py-5"></td>
-            <td class="py-5"></td>
-            <td class="py-5">
-              <p class="mb-0 text-dark py-3">Subtotal</p>
-            </td>
-            <td class="py-5">
-              <div class="py-3 border-bottom border-top">
-                <p class="mb-0 text-dark">$${subtotal.toFixed(2)}</p>
-              </div>
-            </td>
-          </tr>
-        `);
-
-        // Add Shipping Options Row
-        $tableBody.append(`
-          <tr>
-            <th scope="row"></th>
-            <td class="py-5">
-              <p class="mb-0 text-dark py-4">Shipping</p>
-            </td>
-            <td colspan="3" class="py-5">
-              <div class="form-check text-start">
-                <input
-                  type="checkbox"
-                  class="form-check-input bg-primary border-0"
-                  id="Shipping-1"
-                  name="Shipping-1"
-                  value="Shipping"
-                  checked
-                />
-                <label class="form-check-label" for="Shipping-1">Free Shipping</label>
-              </div>
-              <div class="form-check text-start">
-                <input
-                  type="checkbox"
-                  class="form-check-input bg-primary border-0"
-                  id="Shipping-2"
-                  name="Shipping-1"
-                  value="15.00"
-                />
-                <label class="form-check-label" for="Shipping-2">Flat rate: $15.00</label>
-              </div>
-              <div class="form-check text-start">
-                <input
-                  type="checkbox"
-                  class="form-check-input bg-primary border-0"
-                  id="Shipping-3"
-                  name="Shipping-1"
-                  value="8.00"
-                />
-                <label class="form-check-label" for="Shipping-3">Local Pickup: $8.00</label>
-              </div>
-            </td>
-          </tr>
-        `);
-
-        // Add Final Total Row
-        $tableBody.append(`
-          <tr>
-            <th scope="row"></th>
-            <td class="py-5">
-              <p class="mb-0 text-dark text-uppercase py-3">TOTAL</p>
-            </td>
-            <td class="py-5"></td>
-            <td class="py-5"></td>
-            <td class="py-5">
-              <div class="py-3 border-bottom border-top">
-                <p class="mb-0 text-dark" id="finalTotal">$${subtotal.toFixed(2)}</p>
-              </div>
-            </td>
-          </tr>
-        `);
-
-        // Add Event Listener to Update Total Amount when Shipping changes
-        $('input[name="Shipping-1"]').on("change", function () {
-          let shippingCost = 0;
-          if (!$(this).attr("id").includes("Shipping-1")) {
-            shippingCost = parseFloat($(this).val());
-          }
-          const finalTotal = subtotal + shippingCost;
-          $("#finalTotal").text(`$${finalTotal.toFixed(2)}`);
-        });
-      });
-    </script>
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/checkout.js"></script>
   </body>
 </html>
