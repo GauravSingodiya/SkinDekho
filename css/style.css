@@ -254,7 +254,7 @@
 .navbar .navbar-nav .nav-link.active,
 .fixed-top.bg-white .navbar .navbar-nav .nav-link:hover,
 .fixed-top.bg-white .navbar .navbar-nav .nav-link.active {
-  color: var(--bs-primary);
+  color: #81c408;
 }
 
 .navbar .dropdown-toggle::after {
