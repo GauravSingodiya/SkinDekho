@@ -86,7 +86,6 @@ $(document).ready(async function () {
 
 function renderProductDetails(product) {
   $("#product-name").text(product.name);
-  $("#breadcrumb-product-name").text(product.name);
   $("#product-img").attr("src", product.imageUrl);
   $("#product-description").text(product.description || "No description available.");
   $("#product-category span").text(product.category);
