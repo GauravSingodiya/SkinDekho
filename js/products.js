@@ -38,8 +38,6 @@ export function getFeaturedProducts() {
 }
 
 export async function getProductById(id) {
-  // Try to find in all products since there's no specific detail endpoint in endpoints.js
-  const res = await getAllProducts();
-  const products = res.result || res || [];
-  return products.find((p) => p.id == id);
+  const res = await apiRequest(API.PRODUCTS.GET_BY_ID(id), "GET");
+  return res.result;
 }

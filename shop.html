@@ -205,15 +205,35 @@
               </div>
               <div class="col-6"></div>
               <div class="col-xl-3">
-                <div
-                  class="bg-light ps-3 py-3 rounded d-flex justify-content-between mb-4"
-                >
-                  <label for="fruits">Default Sorting:</label>
-                  <select id="fruits">
-                    <option value="">Nothing</option>
-                    <option value="low">Price: Low to High</option>
-                    <option value="high">Price: High to Low</option>
-                  </select>
+                <div class="d-flex align-items-center justify-content-end mb-4">
+                  <div class="premium-sort-container">
+                    <button
+                      class="btn btn-light rounded-pill px-4 py-2 border d-flex align-items-center"
+                      id="sortDropdownBtn"
+                      type="button"
+                    >
+                      <i class="fas fa-sort-amount-down-alt text-primary me-2"></i>
+                      <span id="currentSortText">Default Sorting</span>
+                      <i class="fas fa-chevron-down ms-3 small text-muted"></i>
+                    </button>
+                    <div class="sort-menu shadow-sm border rounded-3 p-2 d-none">
+                      <div class="sort-option active" data-value="">
+                        Default Sorting
+                      </div>
+                      <div class="sort-option" data-value="low">
+                        Price: Low to High
+                      </div>
+                      <div class="sort-option" data-value="high">
+                        Price: High to Low
+                      </div>
+                    </div>
+                    <!-- Hidden native select for existing JS compatibility -->
+                    <select id="fruits" class="d-none">
+                      <option value="">Default Sorting</option>
+                      <option value="low">Price: Low to High</option>
+                      <option value="high">Price: High to Low</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>
@@ -380,7 +400,9 @@
             <div class="col-lg-3">
               <a href="#">
                 <h1 class="text-primary mb-0">SkinDekho</h1>
-                <p class="text-secondary mb-0">Advanced Medical Skin & Hair Care</p>
+                <p class="text-secondary mb-0">
+                  Advanced Medical Skin & Hair Care
+                </p>
               </a>
             </div>
             <div class="col-lg-6">

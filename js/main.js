@@ -70,6 +70,79 @@ export function showToast(message, type = "success", title = "") {
     }, 1);
   };
   spinner();
+  
+  /* ==========================
+     Inject Auth Modal if Missing
+  ========================== */
+  function ensureAuthModal() {
+    if ($("#authModal").length === 0) {
+      console.log("Injecting Auth Modal...");
+      const modalHtml = `
+        <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-3">
+              <div class="modal-header">
+                <h5 class="modal-title">Login / Sign Up</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <ul class="nav nav-pills mb-3 justify-content-center" id="authTab">
+                  <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#loginTab">Login</button>
+                  </li>
+                  <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#signupTab">Sign Up</button>
+                  </li>
+                </ul>
+                <div class="tab-content">
+                  <div class="tab-pane fade show active" id="loginTab">
+                    <form id="loginForm">
+                      <div class="mb-3">
+                        <label>Email</label>
+                        <input type="email" class="form-control" name="email" placeholder="Enter email" required />
+                      </div>
+                      <div class="mb-3">
+                        <label>Password</label>
+                        <input type="password" class="form-control" name="password" placeholder="Enter password" required />
+                      </div>
+                      <button class="btn btn-primary w-100 py-2" style="color: #fff">Login</button>
+                    </form>
+                  </div>
+                  <div class="tab-pane fade" id="signupTab">
+                    <form id="signupForm">
+                      <div class="mb-3">
+                        <label>First Name</label>
+                        <input type="text" class="form-control" name="firstName" placeholder="First Name" required />
+                      </div>
+                      <div class="mb-3">
+                        <label>Last Name</label>
+                        <input type="text" class="form-control" name="lastName" placeholder="Last Name" required />
+                      </div>
+                      <div class="mb-3">
+                        <label>Email</label>
+                        <input type="email" class="form-control" name="email" placeholder="Email" required />
+                      </div>
+                      <div class="mb-3">
+                        <label>Phone Number</label>
+                        <input type="tel" class="form-control" name="phoneNumber" placeholder="Phone Number" pattern="[0-9]{10}" required />
+                      </div>
+                      <div class="mb-3">
+                        <label>Password</label>
+                        <input type="password" class="form-control" name="password" placeholder="Password" required />
+                      </div>
+                      <button class="btn btn-primary w-100 py-2" style="color: #fff">Sign Up</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      $("body").append(modalHtml);
+    }
+  }
+  ensureAuthModal();
 
   /* ==========================
      Fixed Navbar
@@ -555,17 +628,64 @@ $("#rangeInput").on("input", function () {
   });
 });
 
-$("#fruits").on("change", function () {
-  const value = $(this).val();
-
-  getFilterProducts({
-    priceSort: value === "low" ? 1 : value === "high" ? 2 : "",
+  /* ==========================
+     Custom Premium Sorting Dropdown
+  ========================== */
+  $(document).on("click", "#sortDropdownBtn", function (e) {
+    e.stopPropagation();
+    $(".premium-sort-container").toggleClass("active");
   });
-});
+
+  $(document).on("click", ".sort-option", function () {
+    const value = $(this).data("value");
+    const text = $(this).text().trim();
+
+    // UI Updates
+    $("#currentSortText").text(text);
+    $(".sort-option").removeClass("active");
+    $(this).addClass("active");
+    $(".premium-sort-container").removeClass("active");
+
+    // Sync Hidden Native Select & Trigger Logic
+    $("#fruits").val(value).trigger("change");
+  });
+
+  $(document).on("click", function (e) {
+    if (!$(e.target).closest(".premium-sort-container").length) {
+      $(".premium-sort-container").removeClass("active");
+    }
+  });
+
+  $("#fruits").on("change", function () {
+    const value = $(this).val();
+
+    getFilterProducts({
+      priceSort: value === "low" ? 1 : value === "high" ? 2 : "",
+    });
+  });
 
 $(document).ready(function () {
   getFilterProducts(); // no filters
 });
+
+/**
+ * 🧴 Custom Icon Mapping for SkinDekho Categories
+ */
+function getCategoryIcon(category) {
+  const name = category ? category.trim() : "";
+  const iconMap = {
+    "Face Wash": "fa-pump-soap",
+    "Moisturing Lotion": "fa-magic",
+    "Moisturing Cream": "fa-magic",
+    "Face Serum": "fa-tint",
+    "Sunscreen Lotion": "fa-sun",
+    "Hair Care": "fa-hand-holding-heart",
+    "Acne": "fa-notes-medical",
+    "Tablets": "fa-pills",
+  };
+
+  return iconMap[name] || "fa-tag";
+}
 
 async function loadCategories() {
   try {
@@ -589,11 +709,13 @@ async function loadCategories() {
     categories.forEach((item) => {
       if (!item.category || item.category === "string") return;
 
+      const iconClass = getCategoryIcon(item.category);
+
       $categoryTabs.append(`
         <li>
           <div class="d-flex justify-content-between fruite-name">
             <a href="#" data-category="${item.category}">
-              <i class="fas ${item.categoryIcon} me-2"></i>
+              <i class="fas ${iconClass} me-2"></i>
               ${item.category}
             </a>
           </div>

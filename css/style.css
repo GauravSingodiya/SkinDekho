@@ -131,17 +131,27 @@
   animation: fadeIn 0.3s ease-in-out;
 }
 
-.order-card,
+.order-card {
+  background: #fff;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .address-card,
 .payment-card {
   background: #fff;
   padding: 20px;
   margin-bottom: 15px;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .order-card .price {
@@ -149,10 +159,11 @@
   color: #81c408;
 }
 
-.address-card,
 .payment-card {
   display: flex;
-  gap: 15px;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
 }
 
 @keyframes fadeIn {
@@ -697,4 +708,81 @@
 
 .fruite .fruite-item .p-4 .d-flex.justify-content-between {
   margin-top: auto;
+}
+
+/* 🌿 Premium Custom Sorting Dropdown UI */
+.premium-sort-container {
+  position: relative;
+  z-index: 1000;
+}
+
+#sortDropdownBtn {
+  background-color: #fff !important;
+  border: 1px solid #e0e0e0 !important;
+  font-weight: 600;
+  color: #333;
+  transition: all 0.3s ease;
+  min-width: 220px;
+  justify-content: space-between;
+}
+
+#sortDropdownBtn:hover {
+  border-color: var(--bs-primary) !important;
+  background-color: var(--bs-light) !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+#sortDropdownBtn .fa-chevron-down {
+  transition: transform 0.3s ease;
+}
+
+.premium-sort-container.active #sortDropdownBtn .fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+.sort-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  margin-top: 8px;
+  background: white;
+  min-width: 200px;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+}
+
+.premium-sort-container.active .sort-menu {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  display: block !important;
+}
+
+.sort-option {
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: #555;
+  transition: all 0.25s ease;
+  border-radius: 6px;
+  margin-bottom: 2px;
+}
+
+.sort-option:last-child {
+  margin-bottom: 0;
+}
+
+.sort-option:hover {
+  background-color: rgba(129, 196, 8, 0.1);
+  color: var(--bs-primary);
+  padding-left: 20px;
+}
+
+.sort-option.active {
+  background-color: var(--bs-primary);
+  color: white;
+  font-weight: bold;
 }

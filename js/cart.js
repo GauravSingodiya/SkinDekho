@@ -96,7 +96,7 @@ function updateCartTotals(cartItems) {
   const total = subtotal + shipping;
   
   $("#cart-subtotal").text(`₹${subtotal.toFixed(2)}`);
-  $("#cart-shipping").text(`Free`);
+  $("#cart-shipping").text(subtotal > 0 ? "Free" : "₹0.00");
   $("#cart-total").text(`₹${total.toFixed(2)}`);
 }
 

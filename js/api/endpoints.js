@@ -12,6 +12,7 @@ export const API = {
     FILTER: "/api/Products/GetProductsbyFilter",
     CATEGORIES: "/api/Products/GetAllCategories",
     FEATURED: "/api/Products/GetFeaturedProducts",
+    GET_BY_ID: (id) => `/api/Products/GetProductById/${id}`,
   },
 
   CART: {

@@ -99,13 +99,6 @@
             </div>
 
             <div class="d-flex m-3 me-0">
-              <button
-                class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
-                data-bs-toggle="modal"
-                data-bs-target="#searchModal"
-              >
-                <i class="fas fa-search text-primary"></i>
-              </button>
 
               <a href="cart.html" class="position-relative me-4 my-auto">
                 <i class="fa fa-shopping-bag fa-2x"></i>
@@ -451,7 +444,7 @@
             addresses.forEach(addr => {
               const addressCard = `
                 <div class="col-md-6">
-                  <div class="address-card p-3 border rounded h-100">
+                  <div class="address-card p-3 border rounded">
                     <div class="d-flex justify-content-between">
                       <h6 class="fw-bold">${addr.addressType || 'Address'} ${addr.isDefault ? '<span class="badge bg-light text-primary border border-primary ms-2">Default</span>' : ''}</h6>
                     </div>
@@ -531,19 +524,20 @@
       });
 
       // Dashboard section switching
-      $(".nav-link").click(function (e) {
+      $(".side-nav .nav-link").click(function (e) {
         e.preventDefault();
 
-        $(".nav-link").removeClass("active");
+        $(".side-nav .nav-link").removeClass("active");
         $(this).addClass("active");
 
         $(".profile-section").addClass("d-none");
 
         const sectionId = $(this).data("section");
-        $("#" + sectionId).removeClass("d-none");
-        
-        // Update URL hash without jumping
-        history.pushState(null, null, "#" + sectionId);
+        if (sectionId) {
+          $("#" + sectionId).removeClass("d-none");
+          // Update URL hash without jumping
+          history.pushState(null, null, "#" + sectionId);
+        }
       });
     </script>
 
