@@ -149,3 +149,41 @@ body {
         margin-top: 97px !important;
     }
 }
+
+/* Address Card Enhancements */
+.address-card {
+    transition: all 0.3s ease;
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+}
+
+.address-card:hover {
+    border-color: #81c408 !important;
+    box-shadow: 0 4px 15px rgba(129, 196, 8, 0.1);
+}
+
+.address-actions {
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.address-card:hover .address-actions {
+    opacity: 1;
+}
+
+.bg-soft-primary {
+    background-color: #eef7e8 !important;
+    color: #81c408 !important;
+}
+
+.btn-outline-primary {
+    color: #81c408;
+    border-color: #81c408;
+}
+
+.btn-outline-primary:hover {
+    background-color: #81c408;
+    border-color: #81c408;
+    color: #fff;
+}
