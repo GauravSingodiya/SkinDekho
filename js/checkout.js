@@ -1,11 +1,16 @@
-import { getAddressesAPI, checkoutAPI } from "./api/orderService.js";
+import {
+  getAddressesAPI,
+  checkoutAPI,
+  updateAddressAPI,
+  deleteAddressAPI,
+  addAddressAPI,
+} from "./api/orderService.js";
 import { getCartAPI } from "./api/cartService.js";
 import { showToast } from "./main.js";
 
 $(document).ready(function () {
   const token = sessionStorage.getItem("token");
   let selectedAddressId = null;
-  let isNewAddress = false;
 
   if (!token) {
     showToast("Please login to proceed with checkout", "error");
@@ -16,85 +21,152 @@ $(document).ready(function () {
   // Load addresses on start
   loadAddresses();
 
-  // Toggle New Address Form
+  // Handle Add New Button
   $("#show-new-address-btn").on("click", function () {
-    isNewAddress = !isNewAddress;
-    if (isNewAddress) {
-      $("#new-address-form").slideDown();
-      $(this).html('<i class="fas fa-times me-2"></i>Cancel New Address');
-      $(".address-card").removeClass("selected");
-      selectedAddressId = null;
-    } else {
-      $("#new-address-form").slideUp();
-      $(this).html('<i class="fas fa-plus me-2"></i>Add New Address');
-      // Clear inputs
-      $("#new-address-form input").val("").removeClass("is-invalid");
+    $("#addressForm")[0].reset();
+    $("#addressId").val("");
+    $("#addressModalLabel").text("Add New Address");
+    $("#addressModal").modal("show");
+  });
+
+  // Handle Edit Address Click
+  $(document).on("click", ".edit-address-btn", function (e) {
+    e.stopPropagation();
+    const addr = $(this).data("address");
+    $("#addressId").val(addr.id);
+    $("#addrFirstName").val(addr.firstName);
+    $("#addrLastName").val(addr.lastName);
+    $("#addrPhone").val(addr.phoneNumber);
+    $("#addrType").val(addr.addressType || "Home");
+    $("#addrLine1").val(addr.addressLine1);
+    $("#addrLine2").val(addr.addressLine2 || "");
+    $("#addrCity").val(addr.city);
+    $("#addrState").val(addr.state);
+    $("#addrZip").val(addr.postalCode);
+    $("#addrDefault").prop("checked", addr.isDefault);
+
+    $("#addressModalLabel").text("Edit Shipping Address");
+    $("#addressModal").modal("show");
+  });
+
+  // Handle Delete Address Click
+  $(document).on("click", ".delete-address-btn", async function (e) {
+    e.stopPropagation();
+    const id = $(this).data("id");
+    if (confirm("Are you sure you want to delete this address?")) {
+      try {
+        await deleteAddressAPI(id, token);
+        showToast("Address deleted successfully", "success");
+        loadAddresses();
+      } catch (err) {
+        showToast(err.message || "Delete failed", "error");
+      }
+    }
+  });
+
+  // Handle Save Address Button in Modal
+  $("#saveAddressBtn").on("click", async function () {
+    const id = $("#addressId").val();
+    const payload = {
+      firstName: $("#addrFirstName").val().trim(),
+      lastName: $("#addrLastName").val().trim(),
+      phoneNumber: $("#addrPhone").val().trim(),
+      addressType: $("#addrType").val(),
+      addressLine1: $("#addrLine1").val().trim(),
+      addressLine2: $("#addrLine2").val().trim(),
+      city: $("#addrCity").val().trim(),
+      state: $("#addrState").val().trim(),
+      postalCode: $("#addrZip").val().trim(),
+      isDefault: $("#addrDefault").is(":checked"),
+      country: "India",
+    };
+
+    if (id) payload.id = parseInt(id);
+
+    if (
+      !payload.firstName ||
+      !payload.lastName ||
+      !payload.phoneNumber ||
+      !payload.addressLine1 ||
+      !payload.city ||
+      !payload.state ||
+      !payload.postalCode
+    ) {
+      showToast("Please fill all required fields", "warning");
+      return;
+    }
+
+    const $btn = $(this);
+    const $spinner = $("#addressSpinner");
+    $btn.prop("disabled", true);
+    $spinner.removeClass("d-none");
+
+    try {
+      if (id) {
+        await updateAddressAPI(id, payload, token);
+        showToast("Address updated successfully!", "success");
+      } else {
+        await addAddressAPI(payload, token);
+        showToast("Address added successfully!", "success");
+      }
+      $("#addressModal").modal("hide");
+      loadAddresses();
+    } catch (err) {
+      showToast(err.message || "Save failed", "error");
+    } finally {
+      $btn.prop("disabled", false);
+      $spinner.addClass("d-none");
     }
   });
 
   // Handle Address Selection
   $("#address-list").on("click", ".address-card", function () {
-    if (isNewAddress) {
-      // If adding new, close it
-      $("#show-new-address-btn").click();
-    }
     $(".address-card").removeClass("selected");
     $(this).addClass("selected");
     selectedAddressId = $(this).data("id");
+    // When an address is selected, we can hide/disable the new address form
+    $("#new-address-section").css("opacity", "0.5");
   });
 
   // Place Order
   $("#placeOrderBtn").on("click", async function () {
     const $btn = $(this);
-
-    // Check selection
-    if (!selectedAddressId && !isNewAddress) {
-      showToast("Please select an address or add a new one", "warning");
-      return;
-    }
-
     let payload = {
-      addressId: selectedAddressId,
+      addressId: selectedAddressId || 0,
       newAddress: null,
     };
 
-    if (isNewAddress) {
-      if (!validateForm()) {
-        showToast("Please fix the errors in the address form", "error");
-        return;
-      }
-      payload.addressId = null;
-      payload.newAddress = {
-        firstName: $("#firstName").val().trim(),
-        lastName: $("#lastName").val().trim(),
-        phoneNumber: $("#phoneNumber").val().trim(),
-        addressLine1: $("#addressLine1").val().trim(),
-        addressLine2: $("#addressLine2").val().trim(),
-        city: $("#city").val().trim(),
-        state: $("#state").val().trim(),
-        postalCode: $("#postalCode").val().trim(),
-        country: $("#country").val().trim(),
-        addressType: "home",
+    // If no existing address selected, validate new address form
+    if (!selectedAddressId) {
+      const newAddr = {
+        firstName: $("#checkout-firstName").val().trim(),
+        lastName: $("#checkout-lastName").val().trim(),
+        phoneNumber: $("#checkout-phone").val().trim(),
+        addressLine1: $("#checkout-addr1").val().trim(),
+        addressLine2: $("#checkout-addr2").val().trim(),
+        city: $("#checkout-city").val().trim(),
+        state: $("#checkout-state").val().trim(),
+        postalCode: $("#checkout-zip").val().trim(),
+        country: $("#checkout-country").val().trim(),
+        addressType: "Home",
         isDefault: true,
       };
+
+      if (!newAddr.firstName || !newAddr.lastName || !newAddr.phoneNumber || !newAddr.addressLine1 || !newAddr.city || !newAddr.state || !newAddr.postalCode) {
+        showToast("Please select an existing address or fill the required fields for a new one.", "warning");
+        return;
+      }
+      payload.newAddress = newAddr;
     }
 
-    console.log("Checkout Body:", payload);
-
-    $btn
-      .prop("disabled", true)
-      .html(
-        '<span class="spinner-border spinner-border-sm me-2"></span>Placing Order...',
-      );
+    $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm me-2"></span>Placing Order...');
 
     try {
       const response = await checkoutAPI(payload, token);
       if (response.success) {
         showToast("Order placed successfully!", "success");
-        sessionStorage.removeItem("cart"); // Clear cart
-        setTimeout(() => {
-          window.location.href = "index.html"; // Or a success page if exists
-        }, 2000);
+        sessionStorage.removeItem("cart");
+        setTimeout(() => (window.location.href = "index.html"), 2000);
       } else {
         throw new Error(response.message || "Failed to place order");
       }
@@ -112,65 +184,38 @@ $(document).ready(function () {
       $list.empty();
 
       if (addresses.length === 0) {
-        $list.append(
-          '<div class="col-12 text-center py-4 text-muted">No saved addresses found. Please add a new one.</div>',
-        );
-        return;
-      }
-
-      addresses.forEach((addr) => {
-        const addressCard = `
-          <div class="col-md-6">
-            <div class="address-card p-3 rounded border" data-id="${addr.id}">
-              <i class="fas fa-check-circle text-primary position-absolute" style="top: 10px; right: 10px; display: none; font-size: 1.2rem;"></i>
-              <h6 class="fw-bold mb-1">${addr.firstName} ${addr.lastName}</h6>
-              <p class="small mb-1 text-dark">${addr.addressLine1}, ${addr.addressLine2 || ""}</p>
-              <p class="small mb-1 text-dark">${addr.city}, ${addr.state} - ${addr.postalCode}</p>
-              <p class="small mb-0 text-muted"><i class="fas fa-phone-alt me-1"></i>${addr.phoneNumber}</p>
+        $list.append('<div class="col-12 text-center py-4 text-muted">No saved addresses found.</div>');
+        $("#new-address-section").removeClass("d-none").css("opacity", "1");
+      } else {
+        $("#new-address-section").addClass("d-none"); // Hide form if addresses exist
+        addresses.forEach((addr) => {
+          const addressCard = `
+            <div class="col-md-6">
+              <div class="address-card p-3 rounded border position-relative" data-id="${addr.id}">
+                <i class="fas fa-check-circle text-primary position-absolute" style="top: 10px; right: 10px; display: none; font-size: 1.2rem;"></i>
+                <h6 class="fw-bold mb-1">${addr.firstName} ${addr.lastName}</h6>
+                <p class="small mb-1 text-dark">${addr.addressLine1}, ${addr.addressLine2 || ""}</p>
+                <p class="small mb-1 text-dark">${addr.city}, ${addr.state} - ${addr.postalCode}</p>
+                <p class="small mb-2 text-muted"><i class="fas fa-phone-alt me-1"></i>${addr.phoneNumber}</p>
+                <div class="d-flex gap-2">
+                  <button class="btn btn-sm btn-outline-primary edit-address-btn" 
+                    data-address='${JSON.stringify(addr).replace(/'/g, "&apos;")}'>
+                    <i class="fas fa-edit"></i> Edit
+                  </button>
+                  <button class="btn btn-sm btn-outline-danger delete-address-btn" data-id="${addr.id}">
+                    <i class="fas fa-trash-alt"></i> Delete
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        `;
-        $list.append(addressCard);
-      });
+          `;
+          $list.append(addressCard);
+        });
+      }
     } catch (error) {
       console.error("Failed to load addresses", error);
-      $("#address-list").html(
-        '<div class="col-12 text-center py-4 text-danger">Failed to load addresses</div>',
-      );
+      $("#address-list").html('<div class="col-12 text-center py-4 text-danger">Failed to load addresses</div>');
     }
-  }
-
-  function validateForm() {
-    let isValid = true;
-    const requiredFields = [
-      "firstName",
-      "lastName",
-      "phoneNumber",
-      "addressLine1",
-      "city",
-      "state",
-      "postalCode",
-      "country",
-    ];
-
-    requiredFields.forEach((id) => {
-      const $input = $(`#${id}`);
-      if (!$input.val().trim()) {
-        $input.addClass("is-invalid");
-        isValid = false;
-      } else {
-        $input.removeClass("is-invalid");
-      }
-    });
-
-    // Basic phone validation
-    const phone = $("#phoneNumber").val().trim();
-    if (phone && !/^\d{10,15}$/.test(phone)) {
-      $("#phoneNumber").addClass("is-invalid");
-      isValid = false;
-    }
-
-    return isValid;
   }
 
   // --- Cart Table Rendering (Fetched from API) ---
@@ -209,7 +254,7 @@ $(document).ready(function () {
                   <i class="fas fa-shopping-bag me-2"></i>Go to Shop
                 </a>
               </div>
-            </td>on shipping
+            </td>
           </tr>
         `);
       } else {

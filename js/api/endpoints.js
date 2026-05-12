@@ -5,6 +5,8 @@ export const API = {
     SIGNUP: "/api/auth/signup",
     GET_CURRENT_USER: "/api/auth/CurrentUser",
     GET_MY_ADDRESSES: "/api/auth/GetMyAddresses",
+    UPDATE_ADDRESS: (id) => `/api/auth/UpdateAddress/${id}`,
+    DELETE_ADDRESS: (id) => `/api/auth/DeleteAddress/${id}`,
   },
 
   PRODUCTS: {
@@ -13,6 +15,9 @@ export const API = {
     CATEGORIES: "/api/Products/GetAllCategories",
     FEATURED: "/api/Products/GetFeaturedProducts",
     GET_BY_ID: (id) => `/api/Products/GetProductById/${id}`,
+    ADD: "/api/Products/AddProduct",
+    UPDATE: (id) => `/api/Products/UpdateProduct/${id}`,
+    DELETE: (id) => `/api/Products/DeleteProduct/${id}`,
   },
 
   CART: {

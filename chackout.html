@@ -175,73 +175,50 @@
                   <!-- Existing addresses will be injected here -->
                   <div class="col-12 text-center py-4 text-muted">Loading your addresses...</div>
                 </div>
-                <button type="button" id="show-new-address-btn" class="btn btn-outline-primary rounded-pill px-4">
-                  <i class="fas fa-plus me-2"></i>Add New Address
-                </button>
               </div>
 
-              <div id="new-address-form" style="display: none;" class="border p-4 rounded bg-light mb-4">
-                <h4 class="mb-4">New Shipping Address</h4>
-                <div class="row">
-                  <div class="col-md-12 col-lg-6">
-                    <div class="form-item w-100">
-                      <label class="form-label my-3">First Name<sup>*</sup></label>
-                      <input type="text" id="firstName" class="form-control" />
-                      <div class="invalid-feedback">First name is required</div>
-                    </div>
-                  </div>
-                  <div class="col-md-12 col-lg-6">
-                    <div class="form-item w-100">
-                      <label class="form-label my-3">Last Name<sup>*</sup></label>
-                      <input type="text" id="lastName" class="form-control" />
-                      <div class="invalid-feedback">Last name is required</div>
-                    </div>
-                  </div>
+              <!-- New Address Form Section -->
+              <div id="new-address-section" class="border p-4 rounded bg-light mb-4 shadow-sm d-none">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0">New Shipping Address</h4>
+                    <span class="badge bg-soft-info text-info border border-info" style="font-weight: 500;">Optional if address selected above</span>
                 </div>
-                <div class="form-item">
-                  <label class="form-label my-3">Phone Number<sup>*</sup></label>
-                  <input type="tel" id="phoneNumber" class="form-control" />
-                  <div class="invalid-feedback">Valid phone number is required</div>
-                </div>
-                <div class="form-item">
-                  <label class="form-label my-3">Address Line 1 (House No, Street)<sup>*</sup></label>
-                  <input type="text" id="addressLine1" class="form-control" placeholder="House Number Street Name" />
-                  <div class="invalid-feedback">Address is required</div>
-                </div>
-                <div class="form-item">
-                  <label class="form-label my-3">Address Line 2 (Landmark, Area)<sup>*</sup></label>
-                  <input type="text" id="addressLine2" class="form-control" placeholder="Apartment, suite, unit etc." />
-                </div>
-                <div class="row">
-                  <div class="col-md-12 col-lg-6">
-                    <div class="form-item w-100">
-                      <label class="form-label my-3">Town/City<sup>*</sup></label>
-                      <input type="text" id="city" class="form-control" />
-                      <div class="invalid-feedback">City is required</div>
-                    </div>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">First Name<sup>*</sup></label>
+                    <input type="text" id="checkout-firstName" class="form-control" placeholder="John" />
                   </div>
-                  <div class="col-md-12 col-lg-6">
-                    <div class="form-item w-100">
-                      <label class="form-label my-3">State<sup>*</sup></label>
-                      <input type="text" id="state" class="form-control" />
-                      <div class="invalid-feedback">State is required</div>
-                    </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Last Name<sup>*</sup></label>
+                    <input type="text" id="checkout-lastName" class="form-control" placeholder="Doe" />
                   </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-12 col-lg-6">
-                    <div class="form-item w-100">
-                      <label class="form-label my-3">Postcode/Zip<sup>*</sup></label>
-                      <input type="text" id="postalCode" class="form-control" />
-                      <div class="invalid-feedback">Zip code is required</div>
-                    </div>
+                  <div class="col-md-12">
+                    <label class="form-label">Phone Number<sup>*</sup></label>
+                    <input type="tel" id="checkout-phone" class="form-control" placeholder="1234567890" />
                   </div>
-                  <div class="col-md-12 col-lg-6">
-                    <div class="form-item w-100">
-                      <label class="form-label my-3">Country<sup>*</sup></label>
-                      <input type="text" id="country" class="form-control" value="India" />
-                      <div class="invalid-feedback">Country is required</div>
-                    </div>
+                  <div class="col-12">
+                    <label class="form-label">Address Line 1<sup>*</sup></label>
+                    <input type="text" id="checkout-addr1" class="form-control" placeholder="House No, Street Name" />
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Address Line 2 (Optional)</label>
+                    <input type="text" id="checkout-addr2" class="form-control" placeholder="Landmark, Area" />
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">City<sup>*</sup></label>
+                    <input type="text" id="checkout-city" class="form-control" placeholder="City" />
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">State<sup>*</sup></label>
+                    <input type="text" id="checkout-state" class="form-control" placeholder="State" />
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Zip Code<sup>*</sup></label>
+                    <input type="text" id="checkout-zip" class="form-control" placeholder="302001" />
+                  </div>
+                  <div class="col-md-12">
+                    <label class="form-label">Country<sup>*</sup></label>
+                    <input type="text" id="checkout-country" class="form-control" value="India" readonly />
                   </div>
                 </div>
               </div>
@@ -497,6 +474,78 @@
     <script src="lib/waypoints/waypoints.min.js"></script>
     <script src="lib/lightbox/js/lightbox.min.js"></script>
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+    <!-- Address Modal -->
+    <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="addressModalLabel">Add New Address</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="addressForm">
+              <input type="hidden" id="addressId" />
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">First Name</label>
+                  <input type="text" class="form-control" id="addrFirstName" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Last Name</label>
+                  <input type="text" class="form-control" id="addrLastName" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Phone Number</label>
+                  <input type="tel" class="form-control" id="addrPhone" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Address Type</label>
+                  <select class="form-select" id="addrType">
+                    <option value="Home">Home</option>
+                    <option value="Work">Work</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Address Line 1</label>
+                  <input type="text" class="form-control" id="addrLine1" required />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Address Line 2 (Optional)</label>
+                  <input type="text" class="form-control" id="addrLine2" />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">City</label>
+                  <input type="text" class="form-control" id="addrCity" required />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">State</label>
+                  <input type="text" class="form-control" id="addrState" required />
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Postal Code</label>
+                  <input type="text" class="form-control" id="addrZip" required />
+                </div>
+                <div class="col-12">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="addrDefault" />
+                    <label class="form-check-label" for="addrDefault">Set as default address</label>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" id="saveAddressBtn">
+              <span class="spinner-border spinner-border-sm d-none me-1" id="addressSpinner"></span>
+              Save Address
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Template Javascript -->
     <script type="module" src="js/main.js"></script>

@@ -3,9 +3,11 @@
 import { BASE_URL, DEFAULT_HEADERS } from "./config.js";
 
 async function apiRequest(endpoint, method = "GET", body = null, token = null) {
-  const headers = {
-    "Content-Type": "application/json",
-  };
+  const headers = { ...DEFAULT_HEADERS };
+
+  if (body instanceof FormData) {
+    delete headers["Content-Type"];
+  }
 
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
@@ -17,7 +19,7 @@ async function apiRequest(endpoint, method = "GET", body = null, token = null) {
   };
 
   if (body) {
-    options.body = JSON.stringify(body);
+    options.body = body instanceof FormData ? body : JSON.stringify(body);
   }
 
   try {
