@@ -6,18 +6,21 @@ import {
   getProductsByFilter,
 } from "./products.js";
 import { addToCartAPI, getCartAPI } from "./api/cartService.js";
+import { getDashboardStats } from "./api/dashboardService.js";
 
 // ✅ Custom Toast Function
 export function showToast(message, type = "success", title = "") {
   const toastContainer = $("#toast-container");
   if (toastContainer.length === 0) {
-    $("body").append('<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 10000"></div>');
+    $("body").append(
+      '<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 10000"></div>',
+    );
   }
 
   const icons = {
     success: '<i class="fas fa-check-circle text-success me-2"></i>',
     error: '<i class="fas fa-exclamation-circle text-danger me-2"></i>',
-    info: '<i class="fas fa-info-circle text-info me-2"></i>'
+    info: '<i class="fas fa-info-circle text-info me-2"></i>',
   };
 
   const toastId = "toast-" + Date.now();
@@ -25,36 +28,35 @@ export function showToast(message, type = "success", title = "") {
     <div id="${toastId}" class="toast custom-toast show" role="alert" aria-live="assertive" aria-atomic="true">
       <div class="toast-header">
         ${icons[type] || icons.info}
-        <strong class="me-auto text-dark">${title || (type === 'success' ? 'Success' : 'Notification')}</strong>
+        <strong class="me-auto text-dark">${title || (type === "success" ? "Success" : "Notification")}</strong>
         <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
       </div>
       <div class="toast-body">
         ${message}
       </div>
       <div class="progress">
-          <div class="progress-bar bg-${type === 'success' ? 'primary' : (type === 'error' ? 'danger' : 'info')}" role="progressbar" style="width: 100%"></div>
+          <div class="progress-bar bg-${type === "success" ? "primary" : type === "error" ? "danger" : "info"}" role="progressbar" style="width: 100%"></div>
       </div>
     </div>
   `;
 
   $("#toast-container").append(toastHtml);
-  
+
   const $toast = $(`#${toastId}`);
-  
+
   // Progress bar animation
   setTimeout(() => {
-    $toast.find('.progress-bar').css('width', '0%');
+    $toast.find(".progress-bar").css("width", "0%");
   }, 10);
 
   // Auto-dismiss
   setTimeout(() => {
-    $toast.addClass('hiding');
+    $toast.addClass("hiding");
     setTimeout(() => {
       $toast.remove();
     }, 400);
   }, 3000);
 }
-
 
 (function ($) {
   "use strict";
@@ -70,7 +72,7 @@ export function showToast(message, type = "success", title = "") {
     }, 1);
   };
   spinner();
-  
+
   /* ==========================
      Inject Auth Modal if Missing
   ========================== */
@@ -628,41 +630,41 @@ $("#rangeInput").on("input", function () {
   });
 });
 
-  /* ==========================
+/* ==========================
      Custom Premium Sorting Dropdown
   ========================== */
-  $(document).on("click", "#sortDropdownBtn", function (e) {
-    e.stopPropagation();
-    $(".premium-sort-container").toggleClass("active");
-  });
+$(document).on("click", "#sortDropdownBtn", function (e) {
+  e.stopPropagation();
+  $(".premium-sort-container").toggleClass("active");
+});
 
-  $(document).on("click", ".sort-option", function () {
-    const value = $(this).data("value");
-    const text = $(this).text().trim();
+$(document).on("click", ".sort-option", function () {
+  const value = $(this).data("value");
+  const text = $(this).text().trim();
 
-    // UI Updates
-    $("#currentSortText").text(text);
-    $(".sort-option").removeClass("active");
-    $(this).addClass("active");
+  // UI Updates
+  $("#currentSortText").text(text);
+  $(".sort-option").removeClass("active");
+  $(this).addClass("active");
+  $(".premium-sort-container").removeClass("active");
+
+  // Sync Hidden Native Select & Trigger Logic
+  $("#fruits").val(value).trigger("change");
+});
+
+$(document).on("click", function (e) {
+  if (!$(e.target).closest(".premium-sort-container").length) {
     $(".premium-sort-container").removeClass("active");
+  }
+});
 
-    // Sync Hidden Native Select & Trigger Logic
-    $("#fruits").val(value).trigger("change");
+$("#fruits").on("change", function () {
+  const value = $(this).val();
+
+  getFilterProducts({
+    priceSort: value === "low" ? 1 : value === "high" ? 2 : "",
   });
-
-  $(document).on("click", function (e) {
-    if (!$(e.target).closest(".premium-sort-container").length) {
-      $(".premium-sort-container").removeClass("active");
-    }
-  });
-
-  $("#fruits").on("change", function () {
-    const value = $(this).val();
-
-    getFilterProducts({
-      priceSort: value === "low" ? 1 : value === "high" ? 2 : "",
-    });
-  });
+});
 
 $(document).ready(function () {
   getFilterProducts(); // no filters
@@ -680,8 +682,8 @@ function getCategoryIcon(category) {
     "Face Serum": "fa-tint",
     "Sunscreen Lotion": "fa-sun",
     "Hair Care": "fa-hand-holding-heart",
-    "Acne": "fa-notes-medical",
-    "Tablets": "fa-pills",
+    Acne: "fa-notes-medical",
+    Tablets: "fa-pills",
   };
 
   return iconMap[name] || "fa-tag";
@@ -728,8 +730,10 @@ async function loadCategories() {
 }
 
 $(document).on("click", "#categoryTabs a", function (e) {
-  const isShopPage = $("body").hasClass("shop-page") || window.location.pathname.includes("shop.html");
-  
+  const isShopPage =
+    $("body").hasClass("shop-page") ||
+    window.location.pathname.includes("shop.html");
+
   if (!isShopPage) {
     // On home page, allow the browser to follow the href link
     return;
@@ -817,28 +821,51 @@ $(document).on("click", "#viewMoreFeatured", function () {
   renderFeaturedProducts();
 });
 
+async function loadDashboardStats() {
+  console.log("Attempting to load dashboard stats...");
+  try {
+    const res = await getDashboardStats();
+    console.log("Raw dashboard response:", res);
+    const stats = res.result || res;
+    if (stats) {
+      $("#satisfiedCustomers").text(stats.satisfiedCustomers ?? "0");
+      $("#qualityOfService").text(stats.qualityOfService ?? "0%");
+      $("#qualityCertificates").text(stats.qualityCertificates ?? "0");
+      $("#availableProducts").text(stats.availableProducts ?? "0");
+      console.log("Dashboard stats updated in UI:", stats);
+    }
+  } catch (error) {
+    console.error("Failed to load dashboard stats:", error);
+  }
+}
+
 $(document).ready(function () {
   const urlParams = new URLSearchParams(window.location.search);
-  const categoryParam = urlParams.get('category');
+  const categoryParam = urlParams.get("category");
 
-  if ($("body").hasClass("shop-page") || window.location.pathname.includes("shop.html")) {
+  if (
+    $("body").hasClass("shop-page") ||
+    window.location.pathname.includes("shop.html")
+  ) {
     loadCategories().then(() => {
       if (categoryParam) {
         getFilterProducts({ category: categoryParam });
         // Highlight active tab
         setTimeout(() => {
           $("#categoryTabs a").removeClass("active");
-          $(`#categoryTabs a[data-category="${categoryParam}"]`).addClass("active");
+          $(`#categoryTabs a[data-category="${categoryParam}"]`).addClass(
+            "active",
+          );
         }, 100);
       } else {
         getFilterProducts();
       }
     });
     loadFeaturedProducts();
-  } else {
     // On home page or other pages, just sync cart
     // loadProducts(); // Removed as per user request to hide products on home page
   }
+  loadDashboardStats();
   syncCartBadge();
 });
 
@@ -852,14 +879,22 @@ $(document).on("click", ".add-to-cart-btn", async function (e) {
   const token = sessionStorage.getItem("token");
 
   if (!token) {
-    showToast("Please login to add items to cart", "error", "Authentication Required");
+    showToast(
+      "Please login to add items to cart",
+      "error",
+      "Authentication Required",
+    );
     $("#authModal").modal("show");
     return;
   }
 
   const $btn = $(this);
   const originalHtml = $btn.html();
-  $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...');
+  $btn
+    .prop("disabled", true)
+    .html(
+      '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...',
+    );
 
   try {
     const res = await addToCartAPI(productId, 1, token);
@@ -867,7 +902,11 @@ $(document).on("click", ".add-to-cart-btn", async function (e) {
 
     if (res.success) {
       const productName = $btn.data("name") || "Product";
-      showToast(`<strong>${productName}</strong> has been added to your cart.`, "success", "Added to Cart");
+      showToast(
+        `<strong>${productName}</strong> has been added to your cart.`,
+        "success",
+        "Added to Cart",
+      );
       syncCartBadge();
     } else {
       throw new Error(res.message || "Failed to add to cart");
@@ -890,10 +929,10 @@ export async function syncCartBadge() {
   try {
     const res = await getCartAPI(token);
     const cartItems = res.result?.items || res.result || [];
-    const totalItems = Array.isArray(cartItems) 
+    const totalItems = Array.isArray(cartItems)
       ? cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0)
       : 0;
-    
+
     $(".fa-shopping-bag").next("span").text(totalItems);
   } catch (err) {
     console.error("Failed to sync cart badge", err);
@@ -950,7 +989,8 @@ $(document).on("submit", "#contactForm", async function (e) {
    Active Navbar Link Logic
 ========================== */
 $(document).ready(function () {
-  const currentLocation = window.location.pathname.split("/").pop() || "index.html";
+  const currentLocation =
+    window.location.pathname.split("/").pop() || "index.html";
   $(".navbar-nav .nav-link").each(function () {
     const $this = $(this);
     const href = $this.attr("href");

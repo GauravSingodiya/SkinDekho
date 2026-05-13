@@ -34,4 +34,7 @@ export const API = {
     CHECKOUT: "/api/Orders/checkout",
     GET_MY_ORDERS: "/api/Orders/my-orders",
   },
+  DASHBOARD: {
+    STATS: "/api/dashboard/stats",
+  },
 };
