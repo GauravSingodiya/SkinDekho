@@ -91,10 +91,18 @@
           <!-- 🔹 Navbar Content -->
           <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
             <div class="navbar-nav mx-auto">
-              <a href="index.html" class="nav-item nav-link active">Home</a>
-              <a href="shop.html" class="nav-item nav-link">Shop</a>
-              <a href="cart.html" class="nav-item nav-link">Shop Cart</a>
-              <a href="chackout.html" class="nav-item nav-link">Checkout</a>
+              <a href="index.html" class="nav-item nav-link">Home</a>
+              <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Products</a>
+                <div class="dropdown-menu navbar-categories-dropdown m-0 bg-light border-0 rounded-3 shadow-sm">
+                  <a href="shop.html" class="dropdown-item">All Products</a>
+                  <a href="shop.html?category=Moisturing Lotion" class="dropdown-item">Moisturing Lotion</a>
+                  <a href="shop.html?category=Moisturing Cream" class="dropdown-item">Moisturing Cream</a>
+                  <a href="shop.html?category=Face Serum" class="dropdown-item">Face Serum</a>
+                  <a href="shop.html?category=Sunscreen Lotion" class="dropdown-item">Sunscreen Lotion</a>
+                  <a href="shop.html?category=Face Wash" class="dropdown-item">Face Wash</a>
+                </div>
+              </div>
               <a href="contact.html" class="nav-item nav-link">Contact</a>
             </div>
 
@@ -139,6 +147,9 @@
           >
           <a href="#" class="nav-link d-none" data-section="admin-products" id="adminProductsTab"
             >Manage Products</a
+          >
+          <a href="#" class="nav-link d-none" data-section="admin-categories" id="adminCategoriesTab"
+            >Manage Categories</a
           >
           <a href="#" class="logout">Logout</a>
         </nav>
@@ -295,6 +306,24 @@
           <!-- Pagination -->
           <div id="adminPagination" class="mt-4"></div>
         </div>
+
+        <!-- ================= ADMIN: MANAGE CATEGORIES ================= -->
+        <div id="admin-categories" class="profile-section d-none">
+          <section class="content-header d-flex justify-content-between align-items-center mb-4">
+            <h2>Category Management</h2>
+            <button class="btn btn-primary rounded-pill px-4" id="addNewCategoryBtn">
+              <i class="fas fa-plus me-2"></i>Add Category
+            </button>
+          </section>
+
+          <div id="adminCategoriesList" class="row g-4 mt-3">
+            <!-- Dynamic categories will be injected here -->
+            <div class="col-12 text-center py-5">
+              <div class="spinner-border text-primary" role="status"></div>
+              <p class="mt-2 text-muted">Loading categories...</p>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
 
@@ -324,7 +353,9 @@
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Category<sup>*</sup></label>
-                  <input type="text" class="form-control" id="prodCategory" name="Category" required />
+                  <select class="form-select" id="prodCategory" name="Category" required>
+                    <option value="" disabled selected>Select Category</option>
+                  </select>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Category Icon (URL/Class)<sup>*</sup></label>
@@ -369,6 +400,57 @@
       </div>
     </div>
 
+    <!-- Category Modal -->
+    <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-md">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="categoryModalLabel">Add New Category</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="categoryForm" enctype="multipart/form-data">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Category Name<sup>*</sup></label>
+                  <input type="text" class="form-control" id="catName" name="Name" placeholder="Enter category name (e.g., Jackets, Bags)" required />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Description<sup>*</sup></label>
+                  <textarea class="form-control" id="catDesc" name="Description" rows="3" placeholder="Enter category description" required></textarea>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Category Image<sup>*</sup></label>
+                  <input type="file" class="form-control" id="catImage" name="Image" accept="image/*" required />
+                  <div id="categoryImagePreview" class="mt-2 d-none">
+                    <img src="" class="img-thumbnail" style="max-height: 100px;" />
+                  </div>
+                  <small class="text-muted">Upload a category image (PNG, JPG, etc.)</small>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">Icon (FontAwesome Class or Class Name)</label>
+                  <input type="text" class="form-control" id="catIcon" name="Icon" placeholder="e.g. fa-tag" />
+                </div>
+                <div class="col-12">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="catActive" name="IsActive" checked />
+                    <label class="form-check-label" for="catActive">Active - Make this category visible to customers</label>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer border-0">
+            <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary rounded-pill px-4" id="saveCategoryBtn">
+              <span class="spinner-border spinner-border-sm d-none me-1" id="categorySpinner"></span>
+              Save Category
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -378,6 +460,7 @@
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
     <!-- Template Javascript -->
+    <script type="module" src="js/main.js"></script>
     <script type="module">
       import { getCurrentUser, updateUser } from "./js/auth.js";
       import {
@@ -390,8 +473,10 @@
         getAllProductsAPI, 
         addProductAPI, 
         updateProductAPI, 
-        deleteProductAPI 
+        deleteProductAPI,
+        addCategoryAPI
       } from "./js/api/productService.js";
+      import { getAllCategories } from "./js/products.js";
       import { showToast } from "./js/main.js";
 
       $(document).ready(async function () {
@@ -440,10 +525,10 @@
 
           // Check if user is Admin
           if (user.role === "Admin") {
-            $("#adminProductsTab").removeClass("d-none");
+            $("#adminProductsTab, #adminCategoriesTab").removeClass("d-none");
             $(".user-info p").text("Administrator");
           } else {
-            $("#adminProductsTab").addClass("d-none");
+            $("#adminProductsTab, #adminCategoriesTab").addClass("d-none");
             $(".user-info p").text("Member");
           }
         }
@@ -591,18 +676,41 @@
         let adminCurrentPage = 1;
         const ADMIN_ITEMS_PER_PAGE = 10;
 
-        // Render Admin Categories
-        function renderAdminCategories(products) {
-           const $filters = $("#adminCategoryFilters");
-           $filters.empty();
+        let allCategories = [];
 
-           const categories = ["All", ...new Set(products.map(p => p.category).filter(c => c))];
+        // Fetch and Render Dynamic Categories in Admin Filter Buttons & Select Dropdown
+        async function fetchAndPopulateCategories() {
+           try {
+             const res = await getAllCategories();
+             allCategories = res.result || res || [];
+             
+             // Populate filter buttons
+             const $filters = $("#adminCategoryFilters");
+             $filters.empty();
+             $filters.append(`<button class="btn rounded-pill px-4 admin-cat-btn active btn-primary text-white" data-category="All">All</button>`);
+             
+             allCategories.forEach(item => {
+               if (!item.category || item.category === "string") return;
+               const btn = `<button class="btn rounded-pill px-4 admin-cat-btn btn-outline-primary" data-category="${item.category}">${item.category}</button>`;
+               $filters.append(btn);
+             });
 
-           categories.forEach(cat => {
-             const isActive = cat === "All" ? "active btn-primary text-white" : "btn-outline-primary";
-             const btn = `<button class="btn rounded-pill px-4 admin-cat-btn ${isActive}" data-category="${cat}">${cat}</button>`;
-             $filters.append(btn);
-           });
+             // Populate select dropdown
+             const $select = $("#prodCategory");
+             // Save current selected value if any
+             const currentVal = $select.val();
+             $select.empty();
+             $select.append('<option value="" disabled selected>Select Category</option>');
+             allCategories.forEach(item => {
+               if (!item.category || item.category === "string") return;
+               $select.append(`<option value="${item.category}">${item.category}</option>`);
+             });
+             if (currentVal) {
+               $select.val(currentVal);
+             }
+           } catch (err) {
+             console.error("Failed to load categories in admin panel", err);
+           }
         }
 
         // Render Admin Pagination
@@ -721,7 +829,6 @@
              currentFilteredProducts = [...allAdminProducts];
              adminCurrentPage = 1;
              
-             renderAdminCategories(allAdminProducts);
              renderAdminProducts(currentFilteredProducts, adminCurrentPage);
            } catch (err) {
              console.error("Failed to load admin products", err);
@@ -763,10 +870,11 @@
            }
         });
 
-        // Trigger load when Admin Products tab is clicked
-        $('a[data-section="admin-products"]').on('click', function() {
-           loadAdminProducts();
-        });
+         // Trigger load when Admin Products tab is clicked
+         $('a[data-section="admin-products"]').on('click', function() {
+            fetchAndPopulateCategories();
+            loadAdminProducts();
+         });
 
         // Add Product Button
         $("#addNewProductBtn").on("click", function() {
@@ -865,6 +973,188 @@
                showToast(err.message || "Delete failed", "error");
              }
            }
+        });
+
+        // ================= ADMIN: CATEGORY MANAGEMENT =================
+        const categoryModal = new bootstrap.Modal(document.getElementById("categoryModal"));
+
+        function getCategoryIcon(name) {
+          const iconMap = {
+            "Face Wash": "fa-pump-soap",
+            "Moisturing Lotion": "fa-magic",
+            "Moisturing Cream": "fa-magic",
+            "Face Serum": "fa-tint",
+            "Sunscreen Lotion": "fa-sun",
+            "Hair Care": "fa-hand-holding-heart",
+            "Acne": "fa-notes-medical",
+            "Tablets": "fa-pills",
+          };
+          return iconMap[name] || "fa-tag";
+        }
+
+        // Render & Load Categories
+        async function loadAdminCategories() {
+          const $list = $("#adminCategoriesList");
+          $list.html(`
+            <div class="col-12 text-center py-5">
+              <div class="spinner-border text-primary" role="status"></div>
+              <p class="mt-2 text-muted">Loading categories...</p>
+            </div>
+          `);
+          
+          try {
+            const res = await getAllCategories();
+            const categories = res.result || res || [];
+            $list.empty();
+
+            if (categories.length === 0) {
+              $list.append('<div class="col-12 text-center py-4 text-muted">No categories found.</div>');
+              return;
+            }
+
+            categories.forEach(item => {
+              if (!item.category || item.category === "string") return;
+
+              const iconClass = getCategoryIcon(item.category);
+              const relativeImgUrl = item.imageUrl || "";
+              const fullImgUrl = relativeImgUrl.startsWith("http")
+                ? relativeImgUrl
+                : relativeImgUrl
+                ? ("http://skindekho.runasp.net" + relativeImgUrl)
+                : "img/product-default.jpg";
+
+              const isActive = item.isActive !== false;
+              const statusText = isActive ? "ACTIVE" : "INACTIVE";
+              const statusClass = isActive ? "active" : "inactive";
+
+              let dateStr = "N/A";
+              if (item.createdAt) {
+                try {
+                  const d = new Date(item.createdAt);
+                  dateStr = d.toLocaleDateString("en-IN", { day: 'numeric', month: 'short', year: 'numeric' });
+                } catch(e) {}
+              }
+
+              const cardHtml = `
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                  <div class="admin-cat-card">
+                    <div class="admin-cat-card-header">
+                      <div class="admin-cat-icon-wrapper">
+                        <i class="fas ${iconClass}"></i>
+                      </div>
+                      <span class="admin-cat-status-badge ${statusClass}">${statusText}</span>
+                    </div>
+                    <div class="admin-cat-image-wrapper">
+                      <img src="${fullImgUrl}" alt="${item.category}" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
+                    </div>
+                    <div class="admin-cat-info">
+                      <h4 class="admin-cat-name">${item.category}</h4>
+                      <p class="admin-cat-desc" title="${item.description || ''}">${item.description || 'No description available.'}</p>
+                      <div class="admin-cat-date">
+                        <i class="far fa-calendar-alt"></i> Created: ${dateStr}
+                      </div>
+                    </div>
+                    <div class="admin-cat-actions">
+                      <button class="edit-category-btn" data-category='${JSON.stringify(item).replace(/'/g, "&apos;")}'>
+                        <i class="far fa-edit"></i> Edit
+                      </button>
+                      <button class="delete-category-btn" data-id="${item.id}">
+                        <i class="far fa-trash-alt"></i> Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `;
+              $list.append(cardHtml);
+            });
+          } catch (err) {
+            console.error("Failed to load admin categories", err);
+            $list.html('<div class="col-12 text-center py-4 text-danger">Failed to load categories list.</div>');
+          }
+        }
+
+        // Trigger load when Admin Categories tab is clicked
+        $('a[data-section="admin-categories"]').on('click', function() {
+           loadAdminCategories();
+        });
+
+        // Add Category Button Click -> Open Modal
+        $("#addNewCategoryBtn").on("click", function() {
+           $("#categoryForm")[0].reset();
+           $("#categoryImagePreview").addClass("d-none").find("img").attr("src", "");
+           categoryModal.show();
+        });
+
+        // Category Image Preview Handler
+        $("#catImage").on("change", function() {
+           const file = this.files[0];
+           if (file) {
+             const reader = new FileReader();
+             reader.onload = function(e) {
+               $("#categoryImagePreview").removeClass("d-none").find("img").attr("src", e.target.result);
+             }
+             reader.readAsDataURL(file);
+           }
+        });
+
+        // Save Category Button Click
+        $("#saveCategoryBtn").on("click", async function() {
+           const form = document.getElementById("categoryForm");
+           if (!form.checkValidity()) {
+             form.reportValidity();
+             return;
+           }
+
+           const name = $("#catName").val().trim();
+           const desc = $("#catDesc").val().trim();
+           const imageFile = document.getElementById("catImage").files[0];
+           const icon = $("#catIcon").val().trim() || "fa-tag";
+           const isActive = $("#catActive").is(":checked") ? "true" : "false";
+
+           // Auto-generate Slug (kebab-case)
+           const slug = name.toLowerCase()
+                            .replace(/[^a-z0-9]+/g, "-")
+                            .replace(/(^-|-$)/g, "");
+
+           if (!imageFile) {
+             showToast("Please choose a category image", "warning");
+             return;
+           }
+
+           const formData = new FormData();
+           formData.append("Name", name);
+           formData.append("Slug", slug);
+           formData.append("Description", desc);
+           formData.append("Image", imageFile);
+           formData.append("Icon", icon);
+           formData.append("IsActive", isActive);
+
+           const $btn = $(this);
+           const $spinner = $("#categorySpinner");
+           
+           $btn.prop("disabled", true);
+           $spinner.removeClass("d-none");
+
+           try {
+             await addCategoryAPI(formData, token);
+             showToast("Category added successfully!", "success");
+             categoryModal.hide();
+             loadAdminCategories();
+           } catch (err) {
+             showToast(err.message || "Failed to add category.", "error");
+           } finally {
+             $btn.prop("disabled", false);
+             $spinner.addClass("d-none");
+           }
+        });
+
+        // Edit/Delete Category Click Handlers (Not supported by endpoint)
+        $(document).on("click", ".edit-category-btn", function() {
+           showToast("Updating categories is not supported by the backend API.", "warning");
+        });
+
+        $(document).on("click", ".delete-category-btn", function() {
+           showToast("Deleting categories is not supported by the backend API.", "warning");
         });
 
         async function loadAddresses() {

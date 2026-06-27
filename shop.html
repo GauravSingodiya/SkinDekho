@@ -108,9 +108,17 @@
           <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
             <div class="navbar-nav mx-auto">
               <a href="index.html" class="nav-item nav-link">Home</a>
-              <a href="shop.html" class="nav-item nav-link">Shop</a>
-              <a href="cart.html" class="nav-item nav-link">Shop Cart</a>
-              <a href="chackout.html" class="nav-item nav-link">Checkout</a>
+              <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Products</a>
+                <div class="dropdown-menu navbar-categories-dropdown m-0 bg-light border-0 rounded-3 shadow-sm">
+                  <a href="shop.html" class="dropdown-item">All Products</a>
+                  <a href="shop.html?category=Moisturing Lotion" class="dropdown-item">Moisturing Lotion</a>
+                  <a href="shop.html?category=Moisturing Cream" class="dropdown-item">Moisturing Cream</a>
+                  <a href="shop.html?category=Face Serum" class="dropdown-item">Face Serum</a>
+                  <a href="shop.html?category=Sunscreen Lotion" class="dropdown-item">Sunscreen Lotion</a>
+                  <a href="shop.html?category=Face Wash" class="dropdown-item">Face Wash</a>
+                </div>
+              </div>
               <a href="contact.html" class="nav-item nav-link">Contact</a>
             </div>
 
@@ -185,7 +193,7 @@
     <!-- Fruits Shop Start-->
     <div class="container-fluid fruite py-5 content-header-margin">
       <div class="container py-5">
-        <h1 class="mb-4">Fresh fruits shop</h1>
+        <h1 class="mb-4">Our Skincare Products</h1>
         <div class="row g-4">
           <div class="col-lg-12">
             <div class="row g-4">
@@ -212,11 +220,15 @@
                       id="sortDropdownBtn"
                       type="button"
                     >
-                      <i class="fas fa-sort-amount-down-alt text-primary me-2"></i>
+                      <i
+                        class="fas fa-sort-amount-down-alt text-primary me-2"
+                      ></i>
                       <span id="currentSortText">Default Sorting</span>
                       <i class="fas fa-chevron-down ms-3 small text-muted"></i>
                     </button>
-                    <div class="sort-menu shadow-sm border rounded-3 p-2 d-none">
+                    <div
+                      class="sort-menu shadow-sm border rounded-3 p-2 d-none"
+                    >
                       <div class="sort-option active" data-value="">
                         Default Sorting
                       </div>
@@ -272,7 +284,7 @@
                       >
                     </div>
                   </div>
-                  <div class="col-lg-12">
+                  <!-- <div class="col-lg-12">
                     <div class="mb-3">
                       <h4>Additional</h4>
                       <div class="mb-2">
@@ -326,7 +338,7 @@
                         <label for="Categories-5"> Expired</label>
                       </div>
                     </div>
-                  </div>
+                  </div> -->
                   <div class="col-lg-12">
                     <h4 class="mb-3">Featured products</h4>
 
