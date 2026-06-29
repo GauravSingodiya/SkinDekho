@@ -32,7 +32,6 @@ export const API = {
   },
   ORDERS: {
     CHECKOUT: "/api/Orders/checkout",
-    VERIFY_PAYMENT: "/api/Orders/verify-payment",
     GET_MY_ORDERS: "/api/Orders/my-orders",
   },
   DASHBOARD: {

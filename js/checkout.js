@@ -4,7 +4,6 @@ import {
   updateAddressAPI,
   deleteAddressAPI,
   addAddressAPI,
-  verifyPaymentAPI,
 } from "./api/orderService.js";
 import { getCartAPI } from "./api/cartService.js";
 import { showToast } from "./main.js";
@@ -15,7 +14,7 @@ $(document).ready(function () {
 
   if (!token) {
     showToast("Please login to proceed with checkout", "error");
-    window.location.href = "home.html";
+    window.location.href = "index.html";
     return;
   }
 
@@ -164,64 +163,12 @@ $(document).ready(function () {
 
     try {
       const response = await checkoutAPI(payload, token);
-      if (response.success && response.result) {
-        const rzpData = response.result;
-        
-        // Setup Razorpay Checkout options
-        const options = {
-          key: rzpData.keyId,
-          amount: Math.round(rzpData.amount * 100), // in paise
-          currency: rzpData.currency || "INR",
-          name: "SkinDekho",
-          description: "Dermatologist-Approved Skincare Products",
-          image: "img/logo.png",
-          order_id: rzpData.razorpayOrderId,
-          handler: async function (paymentRes) {
-            // This is called when the payment modal completes successfully
-            $btn.html('<span class="spinner-border spinner-border-sm me-2"></span>Verifying Payment...');
-            
-            const verifyPayload = {
-              orderId: rzpData.orderId,
-              razorpayPaymentId: paymentRes.razorpay_payment_id,
-              razorpayOrderId: paymentRes.razorpay_order_id,
-              razorpaySignature: paymentRes.razorpay_signature
-            };
-            
-            try {
-              const verifyResponse = await verifyPaymentAPI(verifyPayload, token);
-              if (verifyResponse.success) {
-                showToast("Payment verified and order placed successfully!", "success");
-                sessionStorage.removeItem("cart");
-                setTimeout(() => (window.location.href = "home.html"), 2000);
-              } else {
-                showToast("Payment verification failed. Please contact support.", "error");
-                $btn.prop("disabled", false).html("Place Order");
-              }
-            } catch (verifyError) {
-              showToast(verifyError.message || "Payment verification failed", "error");
-              $btn.prop("disabled", false).html("Place Order");
-            }
-          },
-          prefill: {
-            name: payload.newAddress ? `${payload.newAddress.firstName} ${payload.newAddress.lastName}` : "",
-            contact: payload.newAddress ? payload.newAddress.phoneNumber : ""
-          },
-          theme: {
-            color: "#81c408" // SkinDekho signature green theme color
-          },
-          modal: {
-            ondismiss: function () {
-              // Triggered when user closes the payment window
-              showToast("Payment cancelled. You can try again.", "warning");
-              $btn.prop("disabled", false).html("Place Order");
-            }
-          }
-        };
-        
-        const rzp = new Razorpay(options);
-        rzp.open();
+      if (response.success) {
+        showToast("Order placed successfully!", "success");
+        sessionStorage.removeItem("cart");
+        setTimeout(() => (window.location.href = "index.html"), 2000);
       } else {
-        throw new Error(response.message || "Failed to create checkout order");
+        throw new Error(response.message || "Failed to place order");
       }
     } catch (error) {
       showToast(error.message, "error");

@@ -112,7 +112,7 @@
       </div>
       <div class="container px-0">
         <nav class="navbar navbar-light bg-white navbar-expand-xl">
-          <a href="home.html" class="navbar-brand d-flex align-items-center">
+          <a href="index.html" class="navbar-brand d-flex align-items-center">
             <img src="img/logo.png" alt="Logo" class="img-fluid" style="height: 65px" />
           </a>
           <button
@@ -125,10 +125,18 @@
           </button>
           <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
             <div class="navbar-nav mx-auto">
-              <a href="home.html" class="nav-item nav-link">Home</a>
-              <a href="shop.html" class="nav-item nav-link">Shop</a>
-              <a href="cart.html" class="nav-item nav-link">Shop Cart</a>
-              <a href="chackout.html" class="nav-item nav-link">Checkout</a>
+              <a href="index.html" class="nav-item nav-link">Home</a>
+              <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Products</a>
+                <div class="dropdown-menu navbar-categories-dropdown m-0 bg-light border-0 rounded-3 shadow-sm">
+                  <a href="shop.html" class="dropdown-item">All Products</a>
+                  <a href="shop.html?category=Moisturing Lotion" class="dropdown-item">Moisturing Lotion</a>
+                  <a href="shop.html?category=Moisturing Cream" class="dropdown-item">Moisturing Cream</a>
+                  <a href="shop.html?category=Face Serum" class="dropdown-item">Face Serum</a>
+                  <a href="shop.html?category=Sunscreen Lotion" class="dropdown-item">Sunscreen Lotion</a>
+                  <a href="shop.html?category=Face Wash" class="dropdown-item">Face Wash</a>
+                </div>
+              </div>
               <a href="contact.html" class="nav-item nav-link">Contact</a>
             </div>
             <div class="d-flex m-3 me-0">

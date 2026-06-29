@@ -17,3 +17,7 @@ export async function deleteProductAPI(id, token) {
 export async function getAllProductsAPI() {
   return await apiRequest(API.PRODUCTS.GET_ALL, "GET");
 }
+
+export async function addCategoryAPI(formData, token) {
+  return await apiRequest("/api/Products/AddCategory", "POST", formData, token);
+}
