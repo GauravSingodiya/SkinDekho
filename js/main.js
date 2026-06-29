@@ -795,11 +795,10 @@ function renderFeaturedProducts() {
 
           <div class="d-flex mb-2">
             <h5 class="fw-bold me-2">₹${item.discountPrice ?? item.price}</h5>
-            ${
-              item.discountPrice
-                ? `<h5 class="text-danger text-decoration-line-through">₹${item.price}</h5>`
-                : ""
-            }
+            ${item.discountPrice
+        ? `<h5 class="text-danger text-decoration-line-through">₹${item.price}</h5>`
+        : ""
+      }
           </div>
         </div>
       </div>
@@ -989,8 +988,10 @@ $(document).on("submit", "#contactForm", async function (e) {
    Active Navbar Link Logic
 ========================== */
 $(document).ready(function () {
-  const currentLocation =
-    window.location.pathname.split("/").pop() || "index.html";
+  let currentLocation = window.location.pathname.split("/").pop() || "home.html";
+  if (currentLocation === "home" || currentLocation === "index.html" || currentLocation === "") {
+    currentLocation = "home.html";
+  }
   $(".navbar-nav .nav-link").each(function () {
     const $this = $(this);
     const href = $this.attr("href");
