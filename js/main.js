@@ -7,7 +7,6 @@ import {
 } from "./products.js";
 import { addToCartAPI, getCartAPI } from "./api/cartService.js";
 import { getDashboardStats } from "./api/dashboardService.js";
-import { BASE_URL } from "./api/config.js";
 
 // ✅ Custom Toast Function
 export function showToast(message, type = "success", title = "") {
@@ -696,7 +695,6 @@ async function loadCategories() {
     const categories = res.result || res || [];
     console.log("categories---", categories);
     const $categoryTabs = $("#categoryTabs");
-    if ($categoryTabs.length === 0) return;
     $categoryTabs.empty();
 
     // ✅ All category
@@ -728,97 +726,6 @@ async function loadCategories() {
     });
   } catch (err) {
     console.error("Failed to load categories", err);
-  }
-}
-
-// ✅ Cycles through pastel colors matching the user reference
-const pastelBackgrounds = [
-  "#ffe8d6", // Peach
-  "#e8e8ff", // Lavender
-  "#d8f3dc", // Mint Green
-  "#ffe5ec", // Soft Pink
-  "#d8f3f3", // Light Aqua
-  "#ffebd6", // Light Orange
-  "#f0e6ff", // Light Purple
-  "#ffe5d9"  // Soft Coral
-];
-
-async function loadNavbarCategories() {
-  try {
-    const res = await getAllCategories();
-    const categories = res.result || res || [];
-    const $dropdowns = $(".navbar-categories-dropdown");
-    if ($dropdowns.length === 0) return;
-
-    $dropdowns.each(function () {
-      const $dropdown = $(this);
-      // Keep "All Products" link, remove other static dropdown links
-      $dropdown.find(".dropdown-item:not([href='shop.html'])").remove();
-
-      categories.forEach((item) => {
-        if (!item.category || item.category === "string") return;
-        $dropdown.append(`
-          <a href="shop.html?category=${encodeURIComponent(item.category)}" class="dropdown-item">${item.category}</a>
-        `);
-      });
-    });
-  } catch (err) {
-    console.error("Failed to load navbar categories", err);
-  }
-}
-
-async function loadHomeCategories() {
-  const $container = $("#homeCategoriesList");
-  if ($container.length === 0) return;
-
-  try {
-    const res = await getAllCategories();
-    const categories = res.result || res || [];
-    $container.empty();
-
-    if (categories.length === 0) {
-      $container.html('<div class="col-12 text-center py-4 text-muted">No categories found.</div>');
-      return;
-    }
-
-    categories.forEach((item, index) => {
-      if (!item.category || item.category === "string") return;
-
-      const bgColor = pastelBackgrounds[index % pastelBackgrounds.length];
-      const relativeImgUrl = item.imageUrl || "";
-      const fullImgUrl = relativeImgUrl.startsWith("http")
-        ? relativeImgUrl
-        : relativeImgUrl
-        ? (BASE_URL + relativeImgUrl)
-        : "img/product-default.jpg"; // fallback
-
-      const cardHtml = `
-        <div class="category-card" onclick="window.location.href='shop.html?category=${encodeURIComponent(item.category)}'">
-          <div class="category-card-img-wrapper" style="background-color: ${bgColor}">
-            <img src="${fullImgUrl}" alt="${item.category}" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
-          </div>
-          <a href="shop.html?category=${encodeURIComponent(item.category)}" class="category-card-title">${item.category}</a>
-        </div>
-      `;
-      $container.append(cardHtml);
-    });
-
-    // Attach horizontal scroll controls
-    $(document).off("click", ".category-next-btn").on("click", ".category-next-btn", function () {
-      const $wrapper = $(".category-carousel-wrapper");
-      const scrollAmount = $wrapper.width() * 0.75;
-      $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() + scrollAmount }, 400);
-    });
-
-    $(document).off("click", ".category-prev-btn").on("click", ".category-prev-btn", function () {
-      const $wrapper = $(".category-carousel-wrapper");
-      const scrollAmount = $wrapper.width() * 0.75;
-      $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() - scrollAmount }, 400);
-    });
-
-  } catch (err) {
-    console.error("Failed to load home page categories", err);
-    $container.html('<div class="col-12 text-center py-4 text-danger">Failed to load categories.</div>');
   }
 }
 
@@ -957,8 +864,6 @@ $(document).ready(function () {
     // On home page or other pages, just sync cart
     // loadProducts(); // Removed as per user request to hide products on home page
   }
-  loadNavbarCategories();
-  loadHomeCategories();
   loadDashboardStats();
   syncCartBadge();
 });
@@ -1090,13 +995,7 @@ $(document).ready(function () {
   $(".navbar-nav .nav-link").each(function () {
     const $this = $(this);
     const href = $this.attr("href");
-    const isProductsPage =
-      currentLocation === "shop.html" ||
-      currentLocation === "product-detail.html";
-    if (
-      href === currentLocation ||
-      (isProductsPage && $this.text().trim() === "Products")
-    ) {
+    if (href === currentLocation) {
       $(".navbar-nav .nav-link").removeClass("active");
       $this.addClass("active");
     }
