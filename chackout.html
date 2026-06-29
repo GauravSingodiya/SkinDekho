@@ -1,556 +1,471 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>SkinDekho - Best HealthCare Products</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <meta content="" name="keywords" />
-    <meta content="" name="description" />
 
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="utf-8" />
+  <title>SkinDekho - Best HealthCare Products</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta content="" name="keywords" />
+  <meta content="" name="description" />
 
-    <!-- Icon Font Stylesheet -->
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
-      rel="stylesheet"
-    />
+  <!-- Google Web Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+    rel="stylesheet" />
 
-    <!-- Libraries Stylesheet -->
-    <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+  <!-- Icon Font Stylesheet -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
 
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Libraries Stylesheet -->
+  <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+  <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 
-    <!-- Template Stylesheet -->
-    <link href="css/style.css" rel="stylesheet" />
-    <!-- Razorpay Checkout SDK -->
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <style>
-      .address-card {
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-      }
-      .address-card:hover {
-        border-color: #81c408;
-        background-color: #f8f9fa;
-      }
-      .address-card.selected {
-        border-color: #81c408;
-        background-color: #f0fdf4;
-      }
-      .address-card.selected .fa-check-circle {
-        display: block !important;
-      }
-      .invalid-feedback {
-        display: none;
-        color: #dc3545;
-        font-size: 0.875em;
-      }
-      .is-invalid + .invalid-feedback {
-        display: block;
-      }
-    </style>
-  </head>
+  <!-- Customized Bootstrap Stylesheet -->
+  <link href="css/bootstrap.min.css" rel="stylesheet" />
 
-  <body>
-    <!-- Spinner Start -->
-    <div
-      id="spinner"
-      class="w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center"
-    >
-      <div class="spinner-grow text-primary" role="status"></div>
-    </div>
-    <!-- Spinner End -->
+  <!-- Template Stylesheet -->
+  <link href="css/style.css" rel="stylesheet" />
+  <!-- Razorpay Checkout SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    .address-card {
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
 
-    <!-- Navbar start -->
-    <div class="container-fluid fixed-top">
-      <div class="container topbar bg-primary d-none d-lg-block">
-        <div class="d-flex justify-content-between">
-          <div class="top-info ps-2">
-            <small class="me-3"
-              ><i class="fas fa-map-marker-alt me-2 text-secondary"></i>
-              <a href="#" class="text-white">302016 jaipur, India</a></small
-            >
-            <small class="me-3"
-              ><i class="fas fa-envelope me-2 text-secondary"></i
-              ><a href="#" class="text-white">skindekho@gmail.com</a></small
-            >
-          </div>
-          <div class="top-link pe-2">
-            <a href="#" class="text-white"
-              ><small class="text-white mx-2">Privacy Policy</small>/</a
-            >
-            <a href="#" class="text-white"
-              ><small class="text-white mx-2">Terms of Use</small>/</a
-            >
-            <a href="#" class="text-white"
-              ><small class="text-white ms-2">Sales and Refunds</small></a
-            >
-          </div>
+    .address-card:hover {
+      border-color: #81c408;
+      background-color: #f8f9fa;
+    }
+
+    .address-card.selected {
+      border-color: #81c408;
+      background-color: #f0fdf4;
+    }
+
+    .address-card.selected .fa-check-circle {
+      display: block !important;
+    }
+
+    .invalid-feedback {
+      display: none;
+      color: #dc3545;
+      font-size: 0.875em;
+    }
+
+    .is-invalid+.invalid-feedback {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Spinner Start -->
+  <div id="spinner"
+    class="w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-grow text-primary" role="status"></div>
+  </div>
+  <!-- Spinner End -->
+
+  <!-- Navbar start -->
+  <div class="container-fluid fixed-top">
+    <div class="container topbar bg-primary d-none d-lg-block">
+      <div class="d-flex justify-content-between">
+        <div class="top-info ps-2">
+          <small class="me-3"><i class="fas fa-map-marker-alt me-2 text-secondary"></i>
+            <a href="#" class="text-white">302016 jaipur, India</a></small>
+          <small class="me-3"><i class="fas fa-envelope me-2 text-secondary"></i><a href="#"
+              class="text-white">skindekho@gmail.com</a></small>
+        </div>
+        <div class="top-link pe-2">
+          <a href="#" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
+          <a href="#" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
+          <a href="#" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
         </div>
       </div>
-      <div class="container px-0">
-        <nav class="navbar navbar-light bg-white navbar-expand-xl">
-          <!-- 🔹 Logo -->
-          <a href="home.html" class="navbar-brand d-flex align-items-center">
-            <!-- Desktop Logo -->
-            <img
-              src="img/logo.png"
-              alt="Logo"
-              class="img-fluid d-none d-xl-block"
-              style="height: 65px"
-            />
-
-            <!-- Mobile Logo -->
-            <img
-              src="img/logo.png"
-              alt="Logo"
-              class="img-fluid d-xl-none"
-              style="height: 40px"
-            />
-          </a>
-
-          <!-- 🔹 Toggle Button -->
-          <button
-            class="navbar-toggler py-2 px-3"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarCollapse"
-          >
-            <span class="fa fa-bars text-primary"></span>
-          </button>
-
-          <!-- 🔹 Navbar Content -->
-          <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
-            <div class="navbar-nav mx-auto">
-              <a href="home.html" class="nav-item nav-link">Home</a>
-              <a href="shop.html" class="nav-item nav-link">Shop</a>
-              <a href="cart.html" class="nav-item nav-link">Shop Cart</a>
-              <a href="chackout.html" class="nav-item nav-link">Checkout</a>
-              <a href="contact.html" class="nav-item nav-link">Contact</a>
-            </div>
-
-            <div class="d-flex m-3 me-0">
-
-              <a href="cart.html" class="position-relative me-4 my-auto">
-                <i class="fa fa-shopping-bag fa-2x"></i>
-                <span
-                  class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
-                  style="top: -5px; left: 15px; height: 20px; min-width: 20px"
-                  >0</span
-                >
-              </a>
-
-              <a href="#" class="my-auto user-icon-link">
-                <i class="fas fa-user fa-2x"></i>
-              </a>
-            </div>
-          </div>
-        </nav>
-      </div>
     </div>
-    <!-- Navbar End -->
+    <div class="container px-0">
+      <nav class="navbar navbar-light bg-white navbar-expand-xl">
+        <!-- 🔹 Logo -->
+        <a href="home.html" class="navbar-brand d-flex align-items-center">
+          <!-- Desktop Logo -->
+          <img src="img/logo.png" alt="Logo" class="img-fluid d-none d-xl-block" style="height: 65px" />
 
+          <!-- Mobile Logo -->
+          <img src="img/logo.png" alt="Logo" class="img-fluid d-xl-none" style="height: 40px" />
+        </a>
 
-    <!-- Checkout Page Start -->
-    <div class="container-fluid py-5 content-header-margin">
-      <div class="container py-5">
-        <h1 class="mb-4">Billing details</h1>
-        <form action="#">
-          <div class="row g-5">
-            <div class="col-md-12 col-lg-6 col-xl-7">
-              <div id="address-selection-section" class="mb-4">
-                <h4 class="mb-3">Select Delivery Address</h4>
-                <div id="address-list" class="row g-4 mb-4">
-                  <!-- Existing addresses will be injected here -->
-                  <div class="col-12 text-center py-4 text-muted">Loading your addresses...</div>
-                </div>
-              </div>
+        <!-- 🔹 Toggle Button -->
+        <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarCollapse">
+          <span class="fa fa-bars text-primary"></span>
+        </button>
 
-              <!-- New Address Form Section -->
-              <div id="new-address-section" class="border p-4 rounded bg-light mb-4 shadow-sm d-none">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="mb-0">New Shipping Address</h4>
-                    <span class="badge bg-soft-info text-info border border-info" style="font-weight: 500;">Optional if address selected above</span>
-                </div>
-                <div class="row g-3">
-                  <div class="col-md-6">
-                    <label class="form-label">First Name<sup>*</sup></label>
-                    <input type="text" id="checkout-firstName" class="form-control" placeholder="John" />
-                  </div>
-                  <div class="col-md-6">
-                    <label class="form-label">Last Name<sup>*</sup></label>
-                    <input type="text" id="checkout-lastName" class="form-control" placeholder="Doe" />
-                  </div>
-                  <div class="col-md-12">
-                    <label class="form-label">Phone Number<sup>*</sup></label>
-                    <input type="tel" id="checkout-phone" class="form-control" placeholder="1234567890" />
-                  </div>
-                  <div class="col-12">
-                    <label class="form-label">Address Line 1<sup>*</sup></label>
-                    <input type="text" id="checkout-addr1" class="form-control" placeholder="House No, Street Name" />
-                  </div>
-                  <div class="col-12">
-                    <label class="form-label">Address Line 2 (Optional)</label>
-                    <input type="text" id="checkout-addr2" class="form-control" placeholder="Landmark, Area" />
-                  </div>
-                  <div class="col-md-4">
-                    <label class="form-label">City<sup>*</sup></label>
-                    <input type="text" id="checkout-city" class="form-control" placeholder="City" />
-                  </div>
-                  <div class="col-md-4">
-                    <label class="form-label">State<sup>*</sup></label>
-                    <input type="text" id="checkout-state" class="form-control" placeholder="State" />
-                  </div>
-                  <div class="col-md-4">
-                    <label class="form-label">Zip Code<sup>*</sup></label>
-                    <input type="text" id="checkout-zip" class="form-control" placeholder="302001" />
-                  </div>
-                  <div class="col-md-12">
-                    <label class="form-label">Country<sup>*</sup></label>
-                    <input type="text" id="checkout-country" class="form-control" value="India" readonly />
-                  </div>
-                </div>
+        <!-- 🔹 Navbar Content -->
+        <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
+          <div class="navbar-nav mx-auto">
+            <a href="index.html" class="nav-item nav-link">Home</a>
+            <div class="nav-item dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Products</a>
+              <div class="dropdown-menu navbar-categories-dropdown m-0 bg-light border-0 rounded-3 shadow-sm">
+                <a href="shop.html" class="dropdown-item">All Products</a>
+                <a href="shop.html?category=Moisturing Lotion" class="dropdown-item">Moisturing Lotion</a>
+                <a href="shop.html?category=Moisturing Cream" class="dropdown-item">Moisturing Cream</a>
+                <a href="shop.html?category=Face Serum" class="dropdown-item">Face Serum</a>
+                <a href="shop.html?category=Sunscreen Lotion" class="dropdown-item">Sunscreen Lotion</a>
+                <a href="shop.html?category=Face Wash" class="dropdown-item">Face Wash</a>
               </div>
             </div>
-            <div class="col-md-12 col-lg-6 col-xl-5">
-              <div class="table-responsive">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th scope="col">Products</th>
-                      <th scope="col">Name</th>
-                      <th scope="col">Price</th>
-                      <th scope="col">Quantity</th>
-                      <th scope="col">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody id="checkoutOrderTable">
-                    <!-- Dynamic cart items will be injected here via JS -->
-                  </tbody>
-                </table>
-              </div>
-              <div
-                class="row g-4 text-center align-items-center justify-content-center border-bottom py-3"
-              >
-                <div class="col-12">
-                  <div class="form-check text-start my-3">
-                    <input
-                      type="checkbox"
-                      class="form-check-input bg-primary border-0"
-                      id="Transfer-1"
-                      name="Transfer"
-                      value="Transfer"
-                    />
-                    <label class="form-check-label" for="Transfer-1"
-                      >Direct Bank Transfer</label
-                    >
-                  </div>
-                  <p class="text-start text-dark">
-                    Make your payment directly into our bank account. Please use
-                    your Order ID as the payment reference. Your order will not
-                    be shipped until the funds have cleared in our account.
-                  </p>
-                </div>
-              </div>
-              <div
-                class="row g-4 text-center align-items-center justify-content-center border-bottom py-3"
-              >
-                <div class="col-12">
-                  <div class="form-check text-start my-3">
-                    <input
-                      type="checkbox"
-                      class="form-check-input bg-primary border-0"
-                      id="Payments-1"
-                      name="Payments"
-                      value="Payments"
-                    />
-                    <label class="form-check-label" for="Payments-1"
-                      >Check Payments</label
-                    >
-                  </div>
-                </div>
-              </div>
-              <div
-                class="row g-4 text-center align-items-center justify-content-center border-bottom py-3"
-              >
-                <div class="col-12">
-                  <div class="form-check text-start my-3">
-                    <input
-                      type="checkbox"
-                      class="form-check-input bg-primary border-0"
-                      id="Delivery-1"
-                      name="Delivery"
-                      value="Delivery"
-                    />
-                    <label class="form-check-label" for="Delivery-1"
-                      >Cash On Delivery</label
-                    >
-                  </div>
-                </div>
-              </div>
-              <div
-                class="row g-4 text-center align-items-center justify-content-center border-bottom py-3"
-              >
-                <div class="col-12">
-                  <div class="form-check text-start my-3">
-                    <input
-                      type="checkbox"
-                      class="form-check-input bg-primary border-0"
-                      id="Paypal-1"
-                      name="Paypal"
-                      value="Paypal"
-                    />
-                    <label class="form-check-label" for="Paypal-1"
-                      >Paypal</label
-                    >
-                  </div>
-                </div>
-              </div>
-              <div
-                class="row g-4 text-center align-items-center justify-content-center pt-4"
-              >
-                <button
-                  type="button"
-                  id="placeOrderBtn"
-                  class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary"
-                >
-                  Place Order
-                </button>
-              </div>
-            </div>
+            <a href="home.html" class="nav-item nav-link">Home</a>
+            <a href="shop.html" class="nav-item nav-link">Shop</a>
+            <a href="cart.html" class="nav-item nav-link">Shop Cart</a>
+            <a href="chackout.html" class="nav-item nav-link">Checkout</a>
+            <a href="contact.html" class="nav-item nav-link">Contact</a>
           </div>
-        </form>
-      </div>
-    </div>
-    <!-- Checkout Page End -->
 
-    <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
-      <div class="container py-5">
-        <div
-          class="pb-4 mb-4"
-          style="border-bottom: 1px solid rgba(226, 175, 24, 0.5)"
-        >
-          <div class="row g-4">
-            <div class="col-lg-3">
-              <a href="#">
-                <h1 class="text-primary mb-0">SkinDekho</h1>
-                <p class="text-secondary mb-0">Advanced Medical Skin & Hair Care</p>
-              </a>
-            </div>
-            <div class="col-lg-6">
-              <div class="position-relative mx-auto">
-                <input
-                  class="form-control border-0 w-100 py-3 px-4 rounded-pill"
-                  type="number"
-                  placeholder="Your Email"
-                />
-                <button
-                  type="submit"
-                  class="btn btn-primary border-0 border-secondary py-3 px-4 position-absolute rounded-pill text-white"
-                  style="top: 0; right: 0"
-                >
-                  Subscribe Now
-                </button>
-              </div>
-            </div>
-            <div class="col-lg-3">
-              <div class="d-flex justify-content-end pt-3">
-                <a
-                  class="btn btn-outline-secondary me-2 btn-md-square rounded-circle"
-                  href="#"
-                  ><i class="fab fa-twitter"></i
-                ></a>
-                <a
-                  class="btn btn-outline-secondary me-2 btn-md-square rounded-circle"
-                  href="#"
-                  ><i class="fab fa-facebook-f"></i
-                ></a>
-                <a
-                  class="btn btn-outline-secondary me-2 btn-md-square rounded-circle"
-                  href="#"
-                  ><i class="fab fa-youtube"></i
-                ></a>
-                <a
-                  class="btn btn-outline-secondary btn-md-square rounded-circle"
-                  href="#"
-                  ><i class="fab fa-linkedin-in"></i
-                ></a>
-              </div>
-            </div>
+          <div class="d-flex m-3 me-0">
+
+            <a href="cart.html" class="position-relative me-4 my-auto">
+              <i class="fa fa-shopping-bag fa-2x"></i>
+              <span
+                class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
+                style="top: -5px; left: 15px; height: 20px; min-width: 20px">0</span>
+            </a>
+
+            <a href="#" class="my-auto user-icon-link">
+              <i class="fas fa-user fa-2x"></i>
+            </a>
           </div>
         </div>
+      </nav>
+    </div>
+  </div>
+  <!-- Navbar End -->
+
+
+  <!-- Checkout Page Start -->
+  <div class="container-fluid py-5 content-header-margin">
+    <div class="container py-5">
+      <h1 class="mb-4">Billing details</h1>
+      <form action="#">
         <div class="row g-5">
-          <div class="col-lg-3 col-md-6">
-            <div class="footer-item">
-              <h4 class="text-light mb-3">Why People Like us!</h4>
-              <p class="mb-4">
-                typesetting, remaining essentially unchanged. It was popularised
-                in the 1960s with the like Aldus PageMaker including of Lorem
-                Ipsum.
-              </p>
+          <div class="col-md-12 col-lg-6 col-xl-7">
+            <div id="address-selection-section" class="mb-4">
+              <h4 class="mb-3">Select Delivery Address</h4>
+              <div id="address-list" class="row g-4 mb-4">
+                <!-- Existing addresses will be injected here -->
+                <div class="col-12 text-center py-4 text-muted">Loading your addresses...</div>
+              </div>
             </div>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <div class="d-flex flex-column text-start footer-item">
-              <h4 class="text-light mb-3">Shop Info</h4>
-              <a class="btn-link" href="#">About Us</a>
-              <a class="btn-link" href="contact.html">Contact Us</a>
-              <a class="btn-link" href="#">Privacy Policy</a>
-              <a class="btn-link" href="#">Terms & Condition</a>
-              <a class="btn-link" href="#">Return Policy</a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <div class="d-flex flex-column text-start footer-item">
-              <h4 class="text-light mb-3">Account</h4>
-              <a class="btn-link" href="User.html">My Account</a>
-              <a class="btn-link" href="shop.html">Shop details</a>
-              <a class="btn-link" href="cart.html">Shopping Cart</a>
-              <a class="btn-link" href="User.html">Order History</a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <div class="footer-item">
-              <h4 class="text-light mb-3">Contact</h4>
-              <p>Address: 302016 jaipur, India</p>
-              <p>Email: skindekho@gmail.com</p>
-              <p>Phone: +91 94619727590</p>
-              <p>Payment Accepted</p>
-              <img src="img/payment.png" class="img-fluid" alt="" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Footer End -->
 
-    <!-- Copyright Start -->
-    <div class="container-fluid copyright bg-dark py-4">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-            <span class="text-light"
-              ><a href="#"
-                ><i class="fas fa-copyright text-light me-2"></i>SkinDekho</a
-              >, All right reserved.</span
-            >
-          </div>
-          <div class="col-md-6 my-auto text-center text-md-end text-white">
-            <!--/*** The author’s attribution link must remain intact in the template. ***/-->
-            <!--/*** If you wish to remove this credit link, please purchase the Pro Version . ***/-->
-            Designed By
-            <a class="border-bottom" href="https://htmlcodex.com"
-              >Gaurav Saini</a
-            >
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Copyright End -->
-
-    <!-- Back to Top -->
-    <a
-      href="#"
-      class="btn btn-primary border-3 border-primary rounded-circle back-to-top"
-      ><i class="fa fa-arrow-up"></i
-    ></a>
-
-    <!-- JavaScript Libraries -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/lightbox/js/lightbox.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-
-    <!-- Address Modal -->
-    <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title" id="addressModalLabel">Add New Address</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form id="addressForm">
-              <input type="hidden" id="addressId" />
+            <!-- New Address Form Section -->
+            <div id="new-address-section" class="border p-4 rounded bg-light mb-4 shadow-sm d-none">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="mb-0">New Shipping Address</h4>
+                <span class="badge bg-soft-info text-info border border-info" style="font-weight: 500;">Optional if
+                  address selected above</span>
+              </div>
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label">First Name</label>
-                  <input type="text" class="form-control" id="addrFirstName" required />
+                  <label class="form-label">First Name<sup>*</sup></label>
+                  <input type="text" id="checkout-firstName" class="form-control" placeholder="John" />
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Last Name</label>
-                  <input type="text" class="form-control" id="addrLastName" required />
+                  <label class="form-label">Last Name<sup>*</sup></label>
+                  <input type="text" id="checkout-lastName" class="form-control" placeholder="Doe" />
                 </div>
-                <div class="col-md-6">
-                  <label class="form-label">Phone Number</label>
-                  <input type="tel" class="form-control" id="addrPhone" required />
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Address Type</label>
-                  <select class="form-select" id="addrType">
-                    <option value="Home">Home</option>
-                    <option value="Work">Work</option>
-                    <option value="Other">Other</option>
-                  </select>
+                <div class="col-md-12">
+                  <label class="form-label">Phone Number<sup>*</sup></label>
+                  <input type="tel" id="checkout-phone" class="form-control" placeholder="1234567890" />
                 </div>
                 <div class="col-12">
-                  <label class="form-label">Address Line 1</label>
-                  <input type="text" class="form-control" id="addrLine1" required />
+                  <label class="form-label">Address Line 1<sup>*</sup></label>
+                  <input type="text" id="checkout-addr1" class="form-control" placeholder="House No, Street Name" />
                 </div>
                 <div class="col-12">
                   <label class="form-label">Address Line 2 (Optional)</label>
-                  <input type="text" class="form-control" id="addrLine2" />
+                  <input type="text" id="checkout-addr2" class="form-control" placeholder="Landmark, Area" />
                 </div>
                 <div class="col-md-4">
-                  <label class="form-label">City</label>
-                  <input type="text" class="form-control" id="addrCity" required />
+                  <label class="form-label">City<sup>*</sup></label>
+                  <input type="text" id="checkout-city" class="form-control" placeholder="City" />
                 </div>
                 <div class="col-md-4">
-                  <label class="form-label">State</label>
-                  <input type="text" class="form-control" id="addrState" required />
+                  <label class="form-label">State<sup>*</sup></label>
+                  <input type="text" id="checkout-state" class="form-control" placeholder="State" />
                 </div>
                 <div class="col-md-4">
-                  <label class="form-label">Postal Code</label>
-                  <input type="text" class="form-control" id="addrZip" required />
+                  <label class="form-label">Zip Code<sup>*</sup></label>
+                  <input type="text" id="checkout-zip" class="form-control" placeholder="302001" />
                 </div>
-                <div class="col-12">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="addrDefault" />
-                    <label class="form-check-label" for="addrDefault">Set as default address</label>
-                  </div>
+                <div class="col-md-12">
+                  <label class="form-label">Country<sup>*</sup></label>
+                  <input type="text" id="checkout-country" class="form-control" value="India" readonly />
                 </div>
               </div>
-            </form>
+            </div>
           </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" id="saveAddressBtn">
-              <span class="spinner-border spinner-border-sm d-none me-1" id="addressSpinner"></span>
-              Save Address
-            </button>
+          <div class="col-md-12 col-lg-6 col-xl-5">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Products</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+                  </tr>
+                </thead>
+                <tbody id="checkoutOrderTable">
+                  <!-- Dynamic cart items will be injected here via JS -->
+                </tbody>
+              </table>
+            </div>
+            <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+              <div class="col-12">
+                <div class="form-check text-start my-3">
+                  <input type="checkbox" class="form-check-input bg-primary border-0" id="Transfer-1" name="Transfer"
+                    value="Transfer" />
+                  <label class="form-check-label" for="Transfer-1">Direct Bank Transfer</label>
+                </div>
+                <p class="text-start text-dark">
+                  Make your payment directly into our bank account. Please use
+                  your Order ID as the payment reference. Your order will not
+                  be shipped until the funds have cleared in our account.
+                </p>
+              </div>
+            </div>
+            <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+              <div class="col-12">
+                <div class="form-check text-start my-3">
+                  <input type="checkbox" class="form-check-input bg-primary border-0" id="Payments-1" name="Payments"
+                    value="Payments" />
+                  <label class="form-check-label" for="Payments-1">Check Payments</label>
+                </div>
+              </div>
+            </div>
+            <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+              <div class="col-12">
+                <div class="form-check text-start my-3">
+                  <input type="checkbox" class="form-check-input bg-primary border-0" id="Delivery-1" name="Delivery"
+                    value="Delivery" />
+                  <label class="form-check-label" for="Delivery-1">Cash On Delivery</label>
+                </div>
+              </div>
+            </div>
+            <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+              <div class="col-12">
+                <div class="form-check text-start my-3">
+                  <input type="checkbox" class="form-check-input bg-primary border-0" id="Paypal-1" name="Paypal"
+                    value="Paypal" />
+                  <label class="form-check-label" for="Paypal-1">Paypal</label>
+                </div>
+              </div>
+            </div>
+            <div class="row g-4 text-center align-items-center justify-content-center pt-4">
+              <button type="button" id="placeOrderBtn"
+                class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">
+                Place Order
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Checkout Page End -->
+
+  <!-- Footer Start -->
+  <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
+    <div class="container py-5">
+      <div class="pb-4 mb-4" style="border-bottom: 1px solid rgba(226, 175, 24, 0.5)">
+        <div class="row g-4">
+          <div class="col-lg-3">
+            <a href="#">
+              <h1 class="text-primary mb-0">SkinDekho</h1>
+              <p class="text-secondary mb-0">Advanced Medical Skin & Hair Care</p>
+            </a>
+          </div>
+          <div class="col-lg-6">
+            <div class="position-relative mx-auto">
+              <input class="form-control border-0 w-100 py-3 px-4 rounded-pill" type="number"
+                placeholder="Your Email" />
+              <button type="submit"
+                class="btn btn-primary border-0 border-secondary py-3 px-4 position-absolute rounded-pill text-white"
+                style="top: 0; right: 0">
+                Subscribe Now
+              </button>
+            </div>
+          </div>
+          <div class="col-lg-3">
+            <div class="d-flex justify-content-end pt-3">
+              <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href="#"><i
+                  class="fab fa-twitter"></i></a>
+              <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href="#"><i
+                  class="fab fa-facebook-f"></i></a>
+              <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href="#"><i
+                  class="fab fa-youtube"></i></a>
+              <a class="btn btn-outline-secondary btn-md-square rounded-circle" href="#"><i
+                  class="fab fa-linkedin-in"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-5">
+        <div class="col-lg-3 col-md-6">
+          <div class="footer-item">
+            <h4 class="text-light mb-3">Why People Like us!</h4>
+            <p class="mb-4">
+              typesetting, remaining essentially unchanged. It was popularised
+              in the 1960s with the like Aldus PageMaker including of Lorem
+              Ipsum.
+            </p>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="d-flex flex-column text-start footer-item">
+            <h4 class="text-light mb-3">Shop Info</h4>
+            <a class="btn-link" href="#">About Us</a>
+            <a class="btn-link" href="contact.html">Contact Us</a>
+            <a class="btn-link" href="#">Privacy Policy</a>
+            <a class="btn-link" href="#">Terms & Condition</a>
+            <a class="btn-link" href="#">Return Policy</a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="d-flex flex-column text-start footer-item">
+            <h4 class="text-light mb-3">Account</h4>
+            <a class="btn-link" href="User.html">My Account</a>
+            <a class="btn-link" href="shop.html">Shop details</a>
+            <a class="btn-link" href="cart.html">Shopping Cart</a>
+            <a class="btn-link" href="User.html">Order History</a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="footer-item">
+            <h4 class="text-light mb-3">Contact</h4>
+            <p>Address: 302016 jaipur, India</p>
+            <p>Email: skindekho@gmail.com</p>
+            <p>Phone: +91 94619727590</p>
+            <p>Payment Accepted</p>
+            <img src="img/payment.png" class="img-fluid" alt="" />
           </div>
         </div>
       </div>
     </div>
+  </div>
+  <!-- Footer End -->
 
-    <!-- Template Javascript -->
-    <script type="module" src="js/main.js"></script>
-    <script type="module" src="js/checkout.js"></script>
-  </body>
+  <!-- Copyright Start -->
+  <div class="container-fluid copyright bg-dark py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+          <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>SkinDekho</a>, All right
+            reserved.</span>
+        </div>
+        <div class="col-md-6 my-auto text-center text-md-end text-white">
+          <!--/*** The author’s attribution link must remain intact in the template. ***/-->
+          <!--/*** If you wish to remove this credit link, please purchase the Pro Version . ***/-->
+          Designed By
+          <a class="border-bottom" href="https://htmlcodex.com">Gaurav Saini</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Copyright End -->
+
+  <!-- Back to Top -->
+  <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i
+      class="fa fa-arrow-up"></i></a>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="lib/easing/easing.min.js"></script>
+  <script src="lib/waypoints/waypoints.min.js"></script>
+  <script src="lib/lightbox/js/lightbox.min.js"></script>
+  <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+  <!-- Address Modal -->
+  <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="addressModalLabel">Add New Address</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addressForm">
+            <input type="hidden" id="addressId" />
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">First Name</label>
+                <input type="text" class="form-control" id="addrFirstName" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-control" id="addrLastName" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" id="addrPhone" required />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Address Type</label>
+                <select class="form-select" id="addrType">
+                  <option value="Home">Home</option>
+                  <option value="Work">Work</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Address Line 1</label>
+                <input type="text" class="form-control" id="addrLine1" required />
+              </div>
+              <div class="col-12">
+                <label class="form-label">Address Line 2 (Optional)</label>
+                <input type="text" class="form-control" id="addrLine2" />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">City</label>
+                <input type="text" class="form-control" id="addrCity" required />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">State</label>
+                <input type="text" class="form-control" id="addrState" required />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Postal Code</label>
+                <input type="text" class="form-control" id="addrZip" required />
+              </div>
+              <div class="col-12">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="addrDefault" />
+                  <label class="form-check-label" for="addrDefault">Set as default address</label>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn btn-primary" id="saveAddressBtn">
+            <span class="spinner-border spinner-border-sm d-none me-1" id="addressSpinner"></span>
+            Save Address
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Template Javascript -->
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/checkout.js"></script>
+</body>
+
 </html>
