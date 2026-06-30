@@ -1085,7 +1085,7 @@ $(document).on("submit", "#contactForm", async function (e) {
 ========================== */
 $(document).ready(function () {
   const currentLocation =
-    window.location.pathname.split("/").pop() || "index.html";
+    window.location.pathname.split("/").pop() || "home.html";
   $(".navbar-nav .nav-link").each(function () {
     const $this = $(this);
     const href = $this.attr("href");
