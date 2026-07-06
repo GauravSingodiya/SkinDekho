@@ -14,6 +14,7 @@ export const API = {
     FILTER: "/api/Products/GetProductsbyFilter",
     CATEGORIES: "/api/Products/GetAllCategories",
     FEATURED: "/api/Products/GetFeaturedProducts",
+    LATEST: "/api/Products/LatestProducts",
     GET_BY_ID: (id) => `/api/Products/GetProductById/${id}`,
     ADD: "/api/Products/AddProduct",
     UPDATE: (id) => `/api/Products/UpdateProduct/${id}`,

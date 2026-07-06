@@ -1009,41 +1009,57 @@
   justify-content: center;
   overflow: hidden;
   margin-bottom: 12px;
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   border: 1px solid rgba(0, 0, 0, 0.03);
   position: relative;
-  background-color: #f8f9fa;
-  /* fallback */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+}
+
+.category-card-img-inner {
+  background-color: #ffffff;
+  width: 80%;
+  height: 80%;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .category-card:hover .category-card-img-wrapper {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.08);
+}
+
+.category-card:hover .category-card-img-inner {
+  transform: scale(1.04);
 }
 
 .category-card img {
-  width: 80%;
-  height: 80%;
+  width: 75%;
+  height: 75%;
   object-fit: contain;
-  transition: transform 0.5s ease;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .category-card:hover img {
-  transform: scale(1.08);
+  transform: scale(1.08) rotate(1deg);
 }
 
 .category-card-title {
   font-size: 0.95rem;
   font-weight: 600;
   color: #333;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
   text-decoration: none;
   margin-top: 4px;
 }
 
 .category-card:hover .category-card-title {
   color: var(--bs-primary);
+  transform: scale(1.02);
 }
 
 .category-nav-buttons button {
@@ -1068,6 +1084,77 @@
 }
 
 .category-nav-buttons button i {
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+/* ==========================================================================
+   🧴 Horizontal Latest Products Carousel UI
+   ========================================================================== */
+.latest-carousel-wrapper {
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+  padding: 15px 5px;
+}
+
+.latest-carousel-wrapper::-webkit-scrollbar {
+  display: none; /* Hide scrollbar for Chrome, Safari and Opera */
+}
+
+.latest-product-card {
+  flex: 0 0 calc(100% - 10px); /* 1 card on very small mobile */
+  max-width: calc(100% - 10px);
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 576px) {
+  .latest-product-card {
+    flex: 0 0 calc(100% / 2 - 16px); /* 2 cards */
+    max-width: calc(100% / 2 - 16px);
+  }
+}
+
+@media (min-width: 992px) {
+  .latest-product-card {
+    flex: 0 0 calc(100% / 3 - 20px); /* 3 cards */
+    max-width: calc(100% / 3 - 20px);
+  }
+}
+
+@media (min-width: 1200px) {
+  .latest-product-card {
+    flex: 0 0 calc(100% / 4 - 24px); /* 4 cards */
+    max-width: calc(100% / 4 - 24px);
+  }
+}
+
+.latest-nav-buttons button {
+  background: white !important;
+  border: 1px solid #eaeaea !important;
+  transition: all 0.3s ease;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.latest-nav-buttons button:hover {
+  background: var(--bs-primary) !important;
+  border-color: var(--bs-primary) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.latest-nav-buttons button:hover i {
+  color: white !important;
+}
+
+.latest-nav-buttons button i {
   font-size: 14px;
   transition: color 0.3s ease;
 }

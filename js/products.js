@@ -41,3 +41,7 @@ export async function getProductById(id) {
   const res = await apiRequest(API.PRODUCTS.GET_BY_ID(id), "GET");
   return res.result;
 }
+
+export function getLatestProducts() {
+  return apiRequest(API.PRODUCTS.LATEST, "GET");
+}
