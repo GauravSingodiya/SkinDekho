@@ -14,7 +14,7 @@ $(document).ready(function () {
 
   if (!token) {
     showToast("Please login to proceed with checkout", "error");
-    window.location.href = "index.html";
+    window.location.href = "home.html";
     return;
   }
 
@@ -166,7 +166,7 @@ $(document).ready(function () {
       if (response.success) {
         showToast("Order placed successfully!", "success");
         sessionStorage.removeItem("cart");
-        setTimeout(() => (window.location.href = "index.html"), 2000);
+        setTimeout(() => (window.location.href = "home.html"), 2000);
       } else {
         throw new Error(response.message || "Failed to place order");
       }

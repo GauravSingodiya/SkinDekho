@@ -4,9 +4,11 @@ import {
   getAllProducts,
   getFeaturedProducts,
   getProductsByFilter,
+  getLatestProducts,
 } from "./products.js";
 import { addToCartAPI, getCartAPI } from "./api/cartService.js";
 import { getDashboardStats } from "./api/dashboardService.js";
+import { BASE_URL } from "./api/config.js";
 
 // ✅ Custom Toast Function
 export function showToast(message, type = "success", title = "") {
@@ -695,6 +697,7 @@ async function loadCategories() {
     const categories = res.result || res || [];
     console.log("categories---", categories);
     const $categoryTabs = $("#categoryTabs");
+    if ($categoryTabs.length === 0) return;
     $categoryTabs.empty();
 
     // ✅ All category
@@ -726,6 +729,189 @@ async function loadCategories() {
     });
   } catch (err) {
     console.error("Failed to load categories", err);
+  }
+}
+
+// ✅ Cycles through pastel colors matching the user reference
+const pastelBackgrounds = [
+  "#ffe8d6", // Peach
+  "#e8e8ff", // Lavender
+  "#d8f3dc", // Mint Green
+  "#ffe5ec", // Soft Pink
+  "#d8f3f3", // Light Aqua
+  "#ffebd6", // Light Orange
+  "#f0e6ff", // Light Purple
+  "#ffe5d9"  // Soft Coral
+];
+
+async function loadNavbarCategories() {
+  try {
+    const res = await getAllCategories();
+    const categories = res.result || res || [];
+    const $dropdowns = $(".navbar-categories-dropdown");
+    if ($dropdowns.length === 0) return;
+
+    $dropdowns.each(function () {
+      const $dropdown = $(this);
+      // Keep "All Products" link, remove other static dropdown links
+      $dropdown.find(".dropdown-item:not([href='shop.html'])").remove();
+
+      categories.forEach((item) => {
+        if (!item.category || item.category === "string") return;
+        $dropdown.append(`
+          <a href="shop.html?category=${encodeURIComponent(item.category)}" class="dropdown-item">${item.category}</a>
+        `);
+      });
+    });
+  } catch (err) {
+    console.error("Failed to load navbar categories", err);
+  }
+}
+
+async function loadHomeCategories() {
+  const $container = $("#homeCategoriesList");
+  if ($container.length === 0) return;
+
+  try {
+    const res = await getAllCategories();
+    const categories = res.result || res || [];
+    $container.empty();
+
+    if (categories.length === 0) {
+      $container.html('<div class="col-12 text-center py-4 text-muted">No categories found.</div>');
+      return;
+    }
+
+    categories.forEach((item, index) => {
+      if (!item.category || item.category === "string") return;
+
+      const bgColor = pastelBackgrounds[index % pastelBackgrounds.length];
+      const relativeImgUrl = item.imageUrl || "";
+      const fullImgUrl = relativeImgUrl.startsWith("http")
+        ? relativeImgUrl
+        : relativeImgUrl
+        ? (BASE_URL + relativeImgUrl)
+        : "img/product-default.jpg"; // fallback
+
+      const cardHtml = `
+        <div class="category-card" onclick="window.location.href='shop.html?category=${encodeURIComponent(item.category)}'">
+          <div class="category-card-img-wrapper" style="background-color: ${bgColor}">
+            <div class="category-card-img-inner">
+              <img src="${fullImgUrl}" alt="${item.category}" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
+            </div>
+          </div>
+          <a href="shop.html?category=${encodeURIComponent(item.category)}" class="category-card-title">${item.category}</a>
+        </div>
+      `;
+      $container.append(cardHtml);
+    });
+
+    // Attach horizontal scroll controls
+    $(document).off("click", ".category-next-btn").on("click", ".category-next-btn", function () {
+      const $wrapper = $(".category-carousel-wrapper");
+      const scrollAmount = $wrapper.width() * 0.75;
+      $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() + scrollAmount }, 400);
+    });
+
+    $(document).off("click", ".category-prev-btn").on("click", ".category-prev-btn", function () {
+      const $wrapper = $(".category-carousel-wrapper");
+      const scrollAmount = $wrapper.width() * 0.75;
+      $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() - scrollAmount }, 400);
+    });
+
+  } catch (err) {
+    console.error("Failed to load home page categories", err);
+    $container.html('<div class="col-12 text-center py-4 text-danger">Failed to load categories.</div>');
+  }
+}
+
+async function loadLatestProducts() {
+  const $container = $("#latestProductList");
+  if ($container.length === 0) return;
+
+  try {
+    const res = await getLatestProducts();
+    const products = res.result || res || [];
+    $container.empty();
+
+    if (products.length === 0) {
+      $container.html('<div class="col-12 text-center py-4 text-muted">No latest products found.</div>');
+      return;
+    }
+
+    products.forEach((item) => {
+      if (!item.name || item.name === "string") return;
+
+      const relativeImgUrl = item.imageUrl || "";
+      const fullImgUrl = relativeImgUrl.startsWith("http")
+        ? relativeImgUrl
+        : relativeImgUrl
+        ? (BASE_URL + relativeImgUrl)
+        : "img/product-default.jpg"; // fallback
+
+      const productCard = `
+        <div class="latest-product-card">
+          <div class="rounded position-relative fruite-item h-100">
+            <div class="fruite-img">
+              <a href="product-detail.html?id=${item.id}">
+                <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
+              </a>
+            </div>
+
+            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                 style="top:10px; left:10px">
+              ${item.category || "skincare"}
+            </div>
+
+            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+              <h4><a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a></h4>
+              <p class="text-muted small">${item.description || ""}</p>
+
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="text-dark fs-5 fw-bold mb-0">
+                  ₹${item.discountPrice ?? item.price}
+                </p>
+
+                <div class="d-flex gap-2">
+                  <a href="javascript:void(0)" 
+                     class="btn border border-secondary rounded-pill px-2 text-primary add-to-cart-btn"
+                     data-id="${item.id}"
+                     data-name="${item.name}"
+                     data-price="${item.discountPrice ?? item.price}"
+                     data-img="${fullImgUrl}">
+                    <i class="fa fa-shopping-bag me-2"></i>Add to cart
+                  </a>
+
+                  <a href="https://wa.me/?text=${encodeURIComponent(item.name)}"
+                     target="_blank"
+                     class="border-primary rounded-pill px-2 text-primary whatsapp-btn">
+                    <i class="fab fa-whatsapp fs-2"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      $container.append(productCard);
+    });
+
+    // Attach horizontal scroll controls
+    $(document).off("click", ".latest-next-btn").on("click", ".latest-next-btn", function () {
+      const $wrapper = $(".latest-carousel-wrapper");
+      const scrollAmount = $wrapper.width() * 0.75;
+      $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() + scrollAmount }, 400);
+    });
+
+    $(document).off("click", ".latest-prev-btn").on("click", ".latest-prev-btn", function () {
+      const $wrapper = $(".latest-carousel-wrapper");
+      const scrollAmount = $wrapper.width() * 0.75;
+      $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() - scrollAmount }, 400);
+    });
+
+  } catch (err) {
+    console.error("Failed to load latest products", err);
+    $container.html('<div class="col-12 text-center py-4 text-danger">Failed to load latest products.</div>');
   }
 }
 
@@ -865,6 +1051,9 @@ $(document).ready(function () {
     // On home page or other pages, just sync cart
     // loadProducts(); // Removed as per user request to hide products on home page
   }
+  loadNavbarCategories();
+  loadHomeCategories();
+  loadLatestProducts();
   loadDashboardStats();
   syncCartBadge();
 });
@@ -990,11 +1179,17 @@ $(document).on("submit", "#contactForm", async function (e) {
 ========================== */
 $(document).ready(function () {
   const currentLocation =
-    window.location.pathname.split("/").pop() || "index.html";
+    window.location.pathname.split("/").pop() || "home.html";
   $(".navbar-nav .nav-link").each(function () {
     const $this = $(this);
     const href = $this.attr("href");
-    if (href === currentLocation) {
+    const isProductsPage =
+      currentLocation === "shop.html" ||
+      currentLocation === "product-detail.html";
+    if (
+      href === currentLocation ||
+      (isProductsPage && $this.text().trim() === "Products")
+    ) {
       $(".navbar-nav .nav-link").removeClass("active");
       $this.addClass("active");
     }

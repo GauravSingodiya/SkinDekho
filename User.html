@@ -45,13 +45,13 @@
             >
           </div>
           <div class="top-link pe-2">
-            <a href="#" class="text-white"
+            <a href="privacy-policy.html" class="text-white"
               ><small class="text-white mx-2">Privacy Policy</small>/</a
             >
-            <a href="#" class="text-white"
+            <a href="terms-conditions.html" class="text-white"
               ><small class="text-white mx-2">Terms of Use</small>/</a
             >
-            <a href="#" class="text-white"
+            <a href="sales-refunds.html" class="text-white"
               ><small class="text-white ms-2">Sales and Refunds</small></a
             >
           </div>
@@ -60,7 +60,7 @@
       <div class="container px-0">
         <nav class="navbar navbar-light bg-white navbar-expand-xl">
           <!-- 🔹 Logo -->
-          <a href="index.html" class="navbar-brand d-flex align-items-center">
+          <a href="home.html" class="navbar-brand d-flex align-items-center">
             <!-- Desktop Logo -->
             <img
               src="img/logo.png"
@@ -91,10 +91,41 @@
           <!-- 🔹 Navbar Content -->
           <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
             <div class="navbar-nav mx-auto">
-              <a href="index.html" class="nav-item nav-link active">Home</a>
-              <a href="shop.html" class="nav-item nav-link">Shop</a>
-              <a href="cart.html" class="nav-item nav-link">Shop Cart</a>
-              <a href="chackout.html" class="nav-item nav-link">Checkout</a>
+              <a href="home.html" class="nav-item nav-link">Home</a>
+              <div class="nav-item dropdown">
+                <a
+                  href="#"
+                  class="nav-link dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                  >Products</a
+                >
+                <div
+                  class="dropdown-menu navbar-categories-dropdown m-0 bg-light border-0 rounded-3 shadow-sm"
+                >
+                  <a href="shop.html" class="dropdown-item">All Products</a>
+                  <a
+                    href="shop.html?category=Moisturing Lotion"
+                    class="dropdown-item"
+                    >Moisturing Lotion</a
+                  >
+                  <a
+                    href="shop.html?category=Moisturing Cream"
+                    class="dropdown-item"
+                    >Moisturing Cream</a
+                  >
+                  <a href="shop.html?category=Face Serum" class="dropdown-item"
+                    >Face Serum</a
+                  >
+                  <a
+                    href="shop.html?category=Sunscreen Lotion"
+                    class="dropdown-item"
+                    >Sunscreen Lotion</a
+                  >
+                  <a href="shop.html?category=Face Wash" class="dropdown-item"
+                    >Face Wash</a
+                  >
+                </div>
+              </div>
               <a href="contact.html" class="nav-item nav-link">Contact</a>
             </div>
 
@@ -137,14 +168,25 @@
           <a href="#" class="nav-link" data-section="payment"
             >Payment Methods</a
           >
-          <a href="#" class="nav-link d-none" data-section="admin-products" id="adminProductsTab"
+          <a
+            href="#"
+            class="nav-link d-none"
+            data-section="admin-products"
+            id="adminProductsTab"
             >Manage Products</a
+          >
+          <a
+            href="#"
+            class="nav-link d-none"
+            data-section="admin-categories"
+            id="adminCategoriesTab"
+            >Manage Categories</a
           >
           <a href="#" class="logout">Logout</a>
         </nav>
       </aside>
 
-      <main class="main-content" style="min-width: 0;">
+      <main class="main-content" style="min-width: 0">
         <!-- ================= PERSONAL INFO ================= -->
         <div id="personal" class="profile-section active-section">
           <section class="content-header">
@@ -274,13 +316,20 @@
         <div id="admin-products" class="profile-section d-none">
           <section class="content-header">
             <h2>Product Management</h2>
-            <button class="btn btn-primary rounded-pill px-4" id="addNewProductBtn">
+            <button
+              class="btn btn-primary rounded-pill px-4"
+              id="addNewProductBtn"
+            >
               <i class="fas fa-plus me-2"></i>Add Product
             </button>
           </section>
 
           <!-- Category Filters -->
-          <div id="adminCategoryFilters" class="d-flex gap-2 mt-3 overflow-auto p-2" style="white-space: nowrap;">
+          <div
+            id="adminCategoryFilters"
+            class="d-flex gap-2 mt-3 overflow-auto p-2"
+            style="white-space: nowrap"
+          >
             <!-- Categories will be injected here -->
           </div>
 
@@ -291,78 +340,310 @@
               <p class="mt-2 text-muted">Loading products...</p>
             </div>
           </div>
-          
+
           <!-- Pagination -->
           <div id="adminPagination" class="mt-4"></div>
+        </div>
+
+        <!-- ================= ADMIN: MANAGE CATEGORIES ================= -->
+        <div id="admin-categories" class="profile-section d-none">
+          <section
+            class="content-header d-flex justify-content-between align-items-center mb-4"
+          >
+            <h2>Category Management</h2>
+            <button
+              class="btn btn-primary rounded-pill px-4"
+              id="addNewCategoryBtn"
+            >
+              <i class="fas fa-plus me-2"></i>Add Category
+            </button>
+          </section>
+
+          <div id="adminCategoriesList" class="row g-4 mt-3">
+            <!-- Dynamic categories will be injected here -->
+            <div class="col-12 text-center py-5">
+              <div class="spinner-border text-primary" role="status"></div>
+              <p class="mt-2 text-muted">Loading categories...</p>
+            </div>
+          </div>
         </div>
       </main>
     </div>
 
     <!-- Product Modal -->
-    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div
+      class="modal fade"
+      id="productModal"
+      tabindex="-1"
+      aria-labelledby="productModalLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header bg-primary text-white">
             <h5 class="modal-title" id="productModalLabel">Add New Product</h5>
-            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
           <div class="modal-body">
             <form id="productForm" enctype="multipart/form-data">
               <input type="hidden" id="productId" />
               <div class="row g-3">
-                <div class="col-md-8">
+                <div class="col-12">
                   <label class="form-label">Product Name<sup>*</sup></label>
-                  <input type="text" class="form-control" id="prodName" name="Name" required />
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="prodName"
+                    name="Name"
+                    required
+                  />
                 </div>
-                <div class="col-md-4">
-                  <label class="form-label">SKU<sup>*</sup></label>
-                  <input type="text" class="form-control" id="prodSku" name="Sku" required />
+                <div class="col-md-4 d-none">
+                  <label class="form-label">SKU</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="prodSku"
+                    name="Sku"
+                  />
                 </div>
                 <div class="col-12">
                   <label class="form-label">Description<sup>*</sup></label>
-                  <textarea class="form-control" id="prodDesc" name="Description" rows="3" required></textarea>
+                  <textarea
+                    class="form-control"
+                    id="prodDesc"
+                    name="Description"
+                    rows="3"
+                    required
+                  ></textarea>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12">
                   <label class="form-label">Category<sup>*</sup></label>
-                  <input type="text" class="form-control" id="prodCategory" name="Category" required />
+                  <select
+                    class="form-select"
+                    id="prodCategory"
+                    name="Category"
+                    required
+                  >
+                    <option value="" disabled selected>Select Category</option>
+                  </select>
                 </div>
-                <div class="col-md-6">
-                  <label class="form-label">Category Icon (URL/Class)<sup>*</sup></label>
-                  <input type="text" class="form-control" id="prodCatIcon" name="CategoryIcon" required />
+                <div class="col-md-6 d-none">
+                  <label class="form-label">Category Icon (URL/Class)</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="prodCatIcon"
+                    name="CategoryIcon"
+                  />
                 </div>
                 <div class="col-md-4">
                   <label class="form-label">Price (₹)<sup>*</sup></label>
-                  <input type="number" class="form-control" id="prodPrice" name="Price" step="0.01" required />
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="prodPrice"
+                    name="Price"
+                    step="0.01"
+                    required
+                  />
                 </div>
                 <div class="col-md-4">
                   <label class="form-label">Discount Price (₹)</label>
-                  <input type="number" class="form-control" id="prodDiscount" name="DiscountPrice" step="0.01" />
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="prodDiscount"
+                    name="DiscountPrice"
+                    step="0.01"
+                  />
                 </div>
                 <div class="col-md-4">
                   <label class="form-label">Stock Quantity<sup>*</sup></label>
-                  <input type="number" class="form-control" id="prodStock" name="StockQuantity" required />
+                  <input
+                    type="number"
+                    class="form-control"
+                    id="prodStock"
+                    name="StockQuantity"
+                    required
+                  />
                 </div>
                 <div class="col-md-6">
                   <div class="form-check mt-4">
-                    <input class="form-check-input" type="checkbox" id="prodFeatured" name="Isfeatureproduct" />
-                    <label class="form-check-label" for="prodFeatured">Featured Product</label>
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="prodFeatured"
+                      name="Isfeatureproduct"
+                    />
+                    <label class="form-check-label" for="prodFeatured"
+                      >Featured Product</label
+                    >
                   </div>
                 </div>
                 <div class="col-md-6">
                   <label class="form-label">Product Image<sup>*</sup></label>
-                  <input type="file" class="form-control" id="prodImage" name="Image" accept="image/*" />
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="prodImage"
+                    name="Image"
+                    accept="image/*"
+                  />
                   <div id="imagePreview" class="mt-2 d-none">
-                    <img src="" class="img-thumbnail" style="max-height: 100px;" />
+                    <img
+                      src=""
+                      class="img-thumbnail"
+                      style="max-height: 100px"
+                    />
                   </div>
                 </div>
               </div>
             </form>
           </div>
           <div class="modal-footer border-0">
-            <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary rounded-pill px-4" id="saveProductBtn">
-              <span class="spinner-border spinner-border-sm d-none me-1" id="productSpinner"></span>
+            <button
+              type="button"
+              class="btn btn-light rounded-pill px-4"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary rounded-pill px-4"
+              id="saveProductBtn"
+            >
+              <span
+                class="spinner-border spinner-border-sm d-none me-1"
+                id="productSpinner"
+              ></span>
               Save Product
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div
+      class="modal fade"
+      id="categoryModal"
+      tabindex="-1"
+      aria-labelledby="categoryModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-md">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="categoryModalLabel">
+              Add New Category
+            </h5>
+            <button
+              type="button"
+              class="btn-close btn-close-white"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="categoryForm" enctype="multipart/form-data">
+              <div class="row g-3">
+                <div class="col-12">
+                  <label class="form-label">Category Name<sup>*</sup></label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="catName"
+                    name="Name"
+                    placeholder="Enter category name (e.g., Jackets, Bags)"
+                    required
+                  />
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Description<sup>*</sup></label>
+                  <textarea
+                    class="form-control"
+                    id="catDesc"
+                    name="Description"
+                    rows="3"
+                    placeholder="Enter category description"
+                    required
+                  ></textarea>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Category Image<sup>*</sup></label>
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="catImage"
+                    name="Image"
+                    accept="image/*"
+                    required
+                  />
+                  <div id="categoryImagePreview" class="mt-2 d-none">
+                    <img
+                      src=""
+                      class="img-thumbnail"
+                      style="max-height: 100px"
+                    />
+                  </div>
+                  <small class="text-muted"
+                    >Upload a category image (PNG, JPG, etc.)</small
+                  >
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label"
+                    >Icon (FontAwesome Class or Class Name)</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="catIcon"
+                    name="Icon"
+                    placeholder="e.g. fa-tag"
+                  />
+                </div>
+                <div class="col-12">
+                  <div class="form-check">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="catActive"
+                      name="IsActive"
+                      checked
+                    />
+                    <label class="form-check-label" for="catActive"
+                      >Active - Make this category visible to customers</label
+                    >
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer border-0">
+            <button
+              type="button"
+              class="btn btn-light rounded-pill px-4"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary rounded-pill px-4"
+              id="saveCategoryBtn"
+            >
+              <span
+                class="spinner-border spinner-border-sm d-none me-1"
+                id="categorySpinner"
+              ></span>
+              Save Category
             </button>
           </div>
         </div>
@@ -378,6 +659,7 @@
     <script src="lib/owlcarousel/owl.carousel.min.js"></script>
 
     <!-- Template Javascript -->
+    <script type="module" src="js/main.js"></script>
     <script type="module">
       import { getCurrentUser, updateUser } from "./js/auth.js";
       import {
@@ -386,19 +668,21 @@
         updateAddressAPI,
         deleteAddressAPI,
       } from "./js/api/orderService.js";
-      import { 
-        getAllProductsAPI, 
-        addProductAPI, 
-        updateProductAPI, 
-        deleteProductAPI 
+      import {
+        getAllProductsAPI,
+        addProductAPI,
+        updateProductAPI,
+        deleteProductAPI,
+        addCategoryAPI,
       } from "./js/api/productService.js";
+      import { getAllCategories } from "./js/products.js";
       import { showToast } from "./js/main.js";
 
       $(document).ready(async function () {
         const token = sessionStorage.getItem("token");
 
         if (!token) {
-          window.location.href = "index.html";
+          window.location.href = "home.html";
           return;
         }
 
@@ -440,10 +724,10 @@
 
           // Check if user is Admin
           if (user.role === "Admin") {
-            $("#adminProductsTab").removeClass("d-none");
+            $("#adminProductsTab, #adminCategoriesTab").removeClass("d-none");
             $(".user-info p").text("Administrator");
           } else {
-            $("#adminProductsTab").addClass("d-none");
+            $("#adminProductsTab, #adminCategoriesTab").addClass("d-none");
             $(".user-info p").text("Member");
           }
         }
@@ -584,97 +868,133 @@
         }
 
         // ================= ADMIN: PRODUCT MANAGEMENT =================
-        const productModal = new bootstrap.Modal(document.getElementById("productModal"));
+        const productModal = new bootstrap.Modal(
+          document.getElementById("productModal"),
+        );
 
         let allAdminProducts = [];
         let currentFilteredProducts = [];
         let adminCurrentPage = 1;
         const ADMIN_ITEMS_PER_PAGE = 10;
 
-        // Render Admin Categories
-        function renderAdminCategories(products) {
-           const $filters = $("#adminCategoryFilters");
-           $filters.empty();
+        let allCategories = [];
 
-           const categories = ["All", ...new Set(products.map(p => p.category).filter(c => c))];
+        // Fetch and Render Dynamic Categories in Admin Filter Buttons & Select Dropdown
+        async function fetchAndPopulateCategories() {
+          try {
+            const res = await getAllCategories();
+            allCategories = res.result || res || [];
 
-           categories.forEach(cat => {
-             const isActive = cat === "All" ? "active btn-primary text-white" : "btn-outline-primary";
-             const btn = `<button class="btn rounded-pill px-4 admin-cat-btn ${isActive}" data-category="${cat}">${cat}</button>`;
-             $filters.append(btn);
-           });
+            // Populate filter buttons
+            const $filters = $("#adminCategoryFilters");
+            $filters.empty();
+            $filters.append(
+              `<button class="btn rounded-pill px-4 admin-cat-btn active btn-primary text-white" data-category="All">All</button>`,
+            );
+
+            allCategories.forEach((item) => {
+              if (!item.category || item.category === "string") return;
+              const btn = `<button class="btn rounded-pill px-4 admin-cat-btn btn-outline-primary" data-category="${item.category}">${item.category}</button>`;
+              $filters.append(btn);
+            });
+
+            // Populate select dropdown
+            const $select = $("#prodCategory");
+            // Save current selected value if any
+            const currentVal = $select.val();
+            $select.empty();
+            $select.append(
+              '<option value="" disabled selected>Select Category</option>',
+            );
+            allCategories.forEach((item) => {
+              if (!item.category || item.category === "string") return;
+              $select.append(
+                `<option value="${item.category}">${item.category}</option>`,
+              );
+            });
+            if (currentVal) {
+              $select.val(currentVal);
+            }
+          } catch (err) {
+            console.error("Failed to load categories in admin panel", err);
+          }
         }
 
         // Render Admin Pagination
         function renderAdminPagination(totalItems, currentPage) {
-           const totalPages = Math.ceil(totalItems / ADMIN_ITEMS_PER_PAGE);
-           const $pagination = $("#adminPagination");
-           $pagination.empty();
+          const totalPages = Math.ceil(totalItems / ADMIN_ITEMS_PER_PAGE);
+          const $pagination = $("#adminPagination");
+          $pagination.empty();
 
-           if (totalPages <= 1) return;
+          if (totalPages <= 1) return;
 
-           const maxVisible = 10;
-           let startPage, endPage;
+          const maxVisible = 10;
+          let startPage, endPage;
 
-           if (totalPages <= maxVisible) {
-               startPage = 1;
-               endPage = totalPages;
-           } else {
-               // Sliding window logic: keep current page centered where possible
-               startPage = currentPage - 5;
-               endPage = currentPage + 4;
+          if (totalPages <= maxVisible) {
+            startPage = 1;
+            endPage = totalPages;
+          } else {
+            // Sliding window logic: keep current page centered where possible
+            startPage = currentPage - 5;
+            endPage = currentPage + 4;
 
-               if (startPage < 1) {
-                   startPage = 1;
-                   endPage = maxVisible;
-               } else if (endPage > totalPages) {
-                   endPage = totalPages;
-                   startPage = totalPages - maxVisible + 1;
-               }
-           }
+            if (startPage < 1) {
+              startPage = 1;
+              endPage = maxVisible;
+            } else if (endPage > totalPages) {
+              endPage = totalPages;
+              startPage = totalPages - maxVisible + 1;
+            }
+          }
 
-           let html = `<div class="admin-pagination-container"><nav><ul class="pagination justify-content-center mb-0">`;
-           
-           // Prev button
-           html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+          let html = `<div class="admin-pagination-container"><nav><ul class="pagination justify-content-center mb-0">`;
+
+          // Prev button
+          html += `<li class="page-item ${currentPage === 1 ? "disabled" : ""}">
                       <a class="page-link admin-page-link" href="#" data-page="${currentPage - 1}">«</a>
                     </li>`;
 
-           for (let i = startPage; i <= endPage; i++) {
-             html += `<li class="page-item ${currentPage === i ? 'active' : ''}">
+          for (let i = startPage; i <= endPage; i++) {
+            html += `<li class="page-item ${currentPage === i ? "active" : ""}">
                         <a class="page-link admin-page-link" href="#" data-page="${i}">${i}</a>
                       </li>`;
-           }
+          }
 
-           // Next button
-           html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+          // Next button
+          html += `<li class="page-item ${currentPage === totalPages ? "disabled" : ""}">
                       <a class="page-link admin-page-link" href="#" data-page="${currentPage + 1}">»</a>
                     </li>`;
 
-           html += `</ul></nav></div>`;
-           $pagination.append(html);
+          html += `</ul></nav></div>`;
+          $pagination.append(html);
         }
 
         // Render Admin Products
         function renderAdminProducts(products, page = 1) {
-           const $list = $("#adminProductsList");
-           $list.empty();
-           $("#adminPagination").empty();
+          const $list = $("#adminProductsList");
+          $list.empty();
+          $("#adminPagination").empty();
 
-           if (!products || products.length === 0) {
-             $list.append('<div class="col-12 text-center py-4 text-muted">No products found in this category.</div>');
-             return;
-           }
+          if (!products || products.length === 0) {
+            $list.append(
+              '<div class="col-12 text-center py-4 text-muted">No products found in this category.</div>',
+            );
+            return;
+          }
 
-           const startIndex = (page - 1) * ADMIN_ITEMS_PER_PAGE;
-           const paginatedItems = products.slice(startIndex, startIndex + ADMIN_ITEMS_PER_PAGE);
+          const startIndex = (page - 1) * ADMIN_ITEMS_PER_PAGE;
+          const paginatedItems = products.slice(
+            startIndex,
+            startIndex + ADMIN_ITEMS_PER_PAGE,
+          );
 
-           paginatedItems.forEach(p => {
-             const row = `
+          paginatedItems.forEach((p) => {
+            const row = `
                <div class="col-md-6">
                  <div class="address-card p-3 border rounded position-relative h-100">
                    <div class="d-flex justify-content-between align-items-start">
-                     <h6 class="fw-bold text-primary mb-2 text-truncate pe-2" style="max-width: 80%;">${p.name} ${p.isfeatureproduct ? '<span class="badge bg-soft-primary text-primary ms-2" style="background: #eef7e8; font-weight: 500;">Featured</span>' : ''}</h6>
+                     <h6 class="fw-bold text-primary mb-2 text-truncate pe-2" style="max-width: 80%;">${p.name} ${p.isfeatureproduct ? '<span class="badge bg-soft-primary text-primary ms-2" style="background: #eef7e8; font-weight: 500;">Featured</span>' : ""}</h6>
                      <div class="address-actions d-flex gap-2">
                        <button class="btn btn-sm btn-outline-primary edit-product-btn" 
                         data-product='${JSON.stringify(p).replace(/'/g, "&apos;")}'>
@@ -686,7 +1006,7 @@
                      </div>
                    </div>
                    <div class="d-flex align-items-center mt-2 mb-3">
-                     <img src="${p.imageUrl || 'img/product-default.jpg'}" class="rounded me-3 border" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
+                     <img src="${p.imageUrl || "img/product-default.jpg"}" class="rounded me-3 border" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
                      <div style="min-width: 0;">
                        <p class="small mb-1 text-dark"><strong>Category:</strong> <span class="badge bg-light text-dark border">${p.category}</span></p>
                        <p class="small mb-0 text-dark" style="word-break: break-all;"><strong>SKU:</strong> ${p.sku}</p>
@@ -695,176 +1015,410 @@
                    <div>
                      <p class="small mb-1 text-dark">
                        <strong>Price:</strong> 
-                       ${p.discountPrice && p.discountPrice < p.price 
-                         ? `<span class="text-success fw-bold">₹${p.discountPrice.toFixed(2)}</span> <del class="text-muted ms-1" style="font-size: 0.9em;">₹${p.price.toFixed(2)}</del>` 
-                         : `₹${p.price.toFixed(2)}`}
+                       ${
+                         p.discountPrice && p.discountPrice < p.price
+                           ? `<span class="text-success fw-bold">₹${p.discountPrice.toFixed(2)}</span> <del class="text-muted ms-1" style="font-size: 0.9em;">₹${p.price.toFixed(2)}</del>`
+                           : `₹${p.price.toFixed(2)}`
+                       }
                      </p>
-                     <p class="small mb-0 text-muted"><strong>Stock:</strong> <span class="${p.stockQuantity <= 5 ? 'text-danger fw-bold' : 'text-dark'}">${p.stockQuantity} items</span></p>
+                     <p class="small mb-0 text-muted"><strong>Stock:</strong> <span class="${p.stockQuantity <= 5 ? "text-danger fw-bold" : "text-dark"}">${p.stockQuantity} items</span></p>
                    </div>
                  </div>
                </div>
              `;
-             $list.append(row);
-           });
+            $list.append(row);
+          });
 
-           renderAdminPagination(products.length, page);
+          renderAdminPagination(products.length, page);
         }
 
         // Load Products in Admin Panel
         async function loadAdminProducts() {
-           const $list = $("#adminProductsList");
-           $list.html('<div class="col-12 text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-2 text-muted">Loading products...</p></div>');
+          const $list = $("#adminProductsList");
+          $list.html(
+            '<div class="col-12 text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-2 text-muted">Loading products...</p></div>',
+          );
 
-           try {
-             const res = await getAllProductsAPI();
-             allAdminProducts = res.result || res.data || res || [];
-             currentFilteredProducts = [...allAdminProducts];
-             adminCurrentPage = 1;
-             
-             renderAdminCategories(allAdminProducts);
-             renderAdminProducts(currentFilteredProducts, adminCurrentPage);
-           } catch (err) {
-             console.error("Failed to load admin products", err);
-             $list.html('<div class="col-12 text-center py-4 text-danger">Failed to load product list.</div>');
-           }
+          try {
+            const res = await getAllProductsAPI();
+            allAdminProducts = res.result || res.data || res || [];
+            currentFilteredProducts = [...allAdminProducts];
+            adminCurrentPage = 1;
+
+            renderAdminProducts(currentFilteredProducts, adminCurrentPage);
+          } catch (err) {
+            console.error("Failed to load admin products", err);
+            $list.html(
+              '<div class="col-12 text-center py-4 text-danger">Failed to load product list.</div>',
+            );
+          }
         }
 
         // Category Filter Click Handler
-        $(document).on("click", ".admin-cat-btn", function() {
-           const cat = $(this).data("category");
-           
-           $(".admin-cat-btn").removeClass("active btn-primary text-white").addClass("btn-outline-primary");
-           $(this).removeClass("btn-outline-primary").addClass("active btn-primary text-white");
-           
-           adminCurrentPage = 1; // Reset to first page
-           if (cat === "All") {
-             currentFilteredProducts = allAdminProducts;
-           } else {
-             currentFilteredProducts = allAdminProducts.filter(p => p.category === cat);
-           }
-           renderAdminProducts(currentFilteredProducts, adminCurrentPage);
+        $(document).on("click", ".admin-cat-btn", function () {
+          const cat = $(this).data("category");
+
+          $(".admin-cat-btn")
+            .removeClass("active btn-primary text-white")
+            .addClass("btn-outline-primary");
+          $(this)
+            .removeClass("btn-outline-primary")
+            .addClass("active btn-primary text-white");
+
+          adminCurrentPage = 1; // Reset to first page
+          if (cat === "All") {
+            currentFilteredProducts = allAdminProducts;
+          } else {
+            currentFilteredProducts = allAdminProducts.filter(
+              (p) => p.category === cat,
+            );
+          }
+          renderAdminProducts(currentFilteredProducts, adminCurrentPage);
         });
 
         // Pagination Click Handler
-        $(document).on("click", ".admin-page-link", function(e) {
-           e.preventDefault();
-           const $parent = $(this).parent();
-           
-           if ($parent.hasClass("disabled") || $parent.hasClass("active")) {
-             return;
-           }
-           
-           const page = $(this).data("page");
-           if (page) {
-             adminCurrentPage = page;
-             renderAdminProducts(currentFilteredProducts, adminCurrentPage);
-             // Scroll back to top of products list
-             document.getElementById("admin-products").scrollIntoView({ behavior: 'smooth' });
-           }
+        $(document).on("click", ".admin-page-link", function (e) {
+          e.preventDefault();
+          const $parent = $(this).parent();
+
+          if ($parent.hasClass("disabled") || $parent.hasClass("active")) {
+            return;
+          }
+
+          const page = $(this).data("page");
+          if (page) {
+            adminCurrentPage = page;
+            renderAdminProducts(currentFilteredProducts, adminCurrentPage);
+            // Scroll back to top of products list
+            document
+              .getElementById("admin-products")
+              .scrollIntoView({ behavior: "smooth" });
+          }
         });
 
         // Trigger load when Admin Products tab is clicked
-        $('a[data-section="admin-products"]').on('click', function() {
-           loadAdminProducts();
+        $('a[data-section="admin-products"]').on("click", function () {
+          fetchAndPopulateCategories();
+          loadAdminProducts();
         });
 
         // Add Product Button
-        $("#addNewProductBtn").on("click", function() {
-           $("#productForm")[0].reset();
-           $("#productId").val("");
-           $("#imagePreview").addClass("d-none");
-           $("#productModalLabel").text("Add New Product");
-           productModal.show();
+        $("#addNewProductBtn").on("click", function () {
+          $("#productForm")[0].reset();
+          $("#productId").val("");
+          $("#imagePreview").addClass("d-none");
+          $("#productModalLabel").text("Add New Product");
+          productModal.show();
         });
 
         // Edit Product Button
-        $(document).on("click", ".edit-product-btn", function() {
-           const p = $(this).data("product");
-           $("#productId").val(p.id);
-           $("#prodName").val(p.name);
-           $("#prodSku").val(p.sku);
-           $("#prodDesc").val(p.description);
-           $("#prodCategory").val(p.category);
-           $("#prodCatIcon").val(p.categoryIcon);
-           $("#prodPrice").val(p.price);
-           $("#prodDiscount").val(p.discountPrice);
-           $("#prodStock").val(p.stockQuantity);
-           $("#prodFeatured").prop("checked", p.isfeatureproduct);
-           
-           if(p.imageUrl) {
-             $("#imagePreview").removeClass("d-none").find("img").attr("src", p.imageUrl);
-           } else {
-             $("#imagePreview").addClass("d-none");
-           }
+        $(document).on("click", ".edit-product-btn", function () {
+          const p = $(this).data("product");
+          $("#productId").val(p.id);
+          $("#prodName").val(p.name);
+          $("#prodSku").val(p.sku);
+          $("#prodDesc").val(p.description);
+          $("#prodCategory").val(p.category);
+          $("#prodCatIcon").val(p.categoryIcon);
+          $("#prodPrice").val(p.price);
+          $("#prodDiscount").val(p.discountPrice);
+          $("#prodStock").val(p.stockQuantity);
+          $("#prodFeatured").prop("checked", p.isfeatureproduct);
 
-           $("#productModalLabel").text("Edit Product");
-           productModal.show();
+          if (p.imageUrl) {
+            $("#imagePreview")
+              .removeClass("d-none")
+              .find("img")
+              .attr("src", p.imageUrl);
+          } else {
+            $("#imagePreview").addClass("d-none");
+          }
+
+          $("#productModalLabel").text("Edit Product");
+          productModal.show();
         });
 
         // Image Preview Handler
-        $("#prodImage").on("change", function() {
-           const file = this.files[0];
-           if (file) {
-             const reader = new FileReader();
-             reader.onload = function(e) {
-               $("#imagePreview").removeClass("d-none").find("img").attr("src", e.target.result);
-             }
-             reader.readAsDataURL(file);
-           }
+        $("#prodImage").on("change", function () {
+          const file = this.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              $("#imagePreview")
+                .removeClass("d-none")
+                .find("img")
+                .attr("src", e.target.result);
+            };
+            reader.readAsDataURL(file);
+          }
         });
 
         // Save Product (Add/Update)
-        $("#saveProductBtn").on("click", async function() {
-           const formData = new FormData(document.getElementById("productForm"));
-           const id = $("#productId").val();
-           
-           // Fix Boolean Checkbox (API expects "true"/"false" strings)
-           formData.set("Isfeatureproduct", $("#prodFeatured").is(":checked") ? "true" : "false");
-           
-           // Add ID if it exists (for updates)
-           if (id) formData.append("id", id);
-           
-           // Basic Validation
-           if(!$("#prodName").val() || !$("#prodSku").val() || !$("#prodPrice").val()) {
-             showToast("Please fill all required fields", "warning");
-             return;
-           }
+        $("#saveProductBtn").on("click", async function () {
+          const formData = new FormData(document.getElementById("productForm"));
+          const id = $("#productId").val();
 
-           const $btn = $(this);
-           const $spinner = $("#productSpinner");
-           $btn.prop("disabled", true);
-           $spinner.removeClass("d-none");
+          // Fix Boolean Checkbox (API expects "true"/"false" strings)
+          formData.set(
+            "Isfeatureproduct",
+            $("#prodFeatured").is(":checked") ? "true" : "false",
+          );
 
-           try {
-             if (id) {
-               await updateProductAPI(id, formData, token);
-               showToast("Product updated successfully", "success");
-             } else {
-               await addProductAPI(formData, token);
-               showToast("Product added successfully", "success");
-             }
-             productModal.hide();
-             loadAdminProducts();
-           } catch (err) {
-             showToast(err.message || "Operation failed", "error");
-           } finally {
-             $btn.prop("disabled", false);
-             $spinner.addClass("d-none");
-           }
+          // Add ID if it exists (for updates)
+          if (id) formData.append("id", id);
+
+          // If adding a product, send sku and category icon null
+          if (!id) {
+            formData.set("Sku", "");
+            formData.set("CategoryIcon", "");
+          }
+
+          // Basic Validation
+          if (!$("#prodName").val() || !$("#prodPrice").val()) {
+            showToast("Please fill all required fields", "warning");
+            return;
+          }
+
+          const $btn = $(this);
+          const $spinner = $("#productSpinner");
+          $btn.prop("disabled", true);
+          $spinner.removeClass("d-none");
+
+          try {
+            if (id) {
+              await updateProductAPI(id, formData, token);
+              showToast("Product updated successfully", "success");
+            } else {
+              await addProductAPI(formData, token);
+              showToast("Product added successfully", "success");
+            }
+            productModal.hide();
+            loadAdminProducts();
+          } catch (err) {
+            showToast(err.message || "Operation failed", "error");
+          } finally {
+            $btn.prop("disabled", false);
+            $spinner.addClass("d-none");
+          }
         });
 
         // Delete Product
-        $(document).on("click", ".delete-product-btn", async function() {
-           const id = $(this).data("id");
-           if (confirm("Are you sure you want to delete this product?")) {
-             try {
-               await deleteProductAPI(id, token);
-               showToast("Product deleted successfully", "success");
-               loadAdminProducts();
-             } catch (err) {
-               showToast(err.message || "Delete failed", "error");
-             }
-           }
+        $(document).on("click", ".delete-product-btn", async function () {
+          const id = $(this).data("id");
+          if (confirm("Are you sure you want to delete this product?")) {
+            try {
+              await deleteProductAPI(id, token);
+              showToast("Product deleted successfully", "success");
+              loadAdminProducts();
+            } catch (err) {
+              showToast(err.message || "Delete failed", "error");
+            }
+          }
+        });
+
+        // ================= ADMIN: CATEGORY MANAGEMENT =================
+        const categoryModal = new bootstrap.Modal(
+          document.getElementById("categoryModal"),
+        );
+
+        function getCategoryIcon(name) {
+          const iconMap = {
+            "Face Wash": "fa-pump-soap",
+            "Moisturing Lotion": "fa-magic",
+            "Moisturing Cream": "fa-magic",
+            "Face Serum": "fa-tint",
+            "Sunscreen Lotion": "fa-sun",
+            "Hair Care": "fa-hand-holding-heart",
+            Acne: "fa-notes-medical",
+            Tablets: "fa-pills",
+          };
+          return iconMap[name] || "fa-tag";
+        }
+
+        // Render & Load Categories
+        async function loadAdminCategories() {
+          const $list = $("#adminCategoriesList");
+          $list.html(`
+            <div class="col-12 text-center py-5">
+              <div class="spinner-border text-primary" role="status"></div>
+              <p class="mt-2 text-muted">Loading categories...</p>
+            </div>
+          `);
+
+          try {
+            const res = await getAllCategories();
+            const categories = res.result || res || [];
+            $list.empty();
+
+            if (categories.length === 0) {
+              $list.append(
+                '<div class="col-12 text-center py-4 text-muted">No categories found.</div>',
+              );
+              return;
+            }
+
+            categories.forEach((item) => {
+              if (!item.category || item.category === "string") return;
+
+              const iconClass = getCategoryIcon(item.category);
+              const relativeImgUrl = item.imageUrl || "";
+              const fullImgUrl = relativeImgUrl.startsWith("http")
+                ? relativeImgUrl
+                : relativeImgUrl
+                  ? "http://skindekho.runasp.net" + relativeImgUrl
+                  : "img/product-default.jpg";
+
+              const isActive = item.isActive !== false;
+              const statusText = isActive ? "ACTIVE" : "INACTIVE";
+              const statusClass = isActive ? "active" : "inactive";
+
+              let dateStr = "N/A";
+              if (item.createdAt) {
+                try {
+                  const d = new Date(item.createdAt);
+                  dateStr = d.toLocaleDateString("en-IN", {
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric",
+                  });
+                } catch (e) {}
+              }
+
+              const cardHtml = `
+                <div class="col-lg-4 col-md-6 col-sm-12">
+                  <div class="admin-cat-card">
+                    <div class="admin-cat-card-header">
+                      <div class="admin-cat-icon-wrapper">
+                        <i class="fas ${iconClass}"></i>
+                      </div>
+                      <span class="admin-cat-status-badge ${statusClass}">${statusText}</span>
+                    </div>
+                    <div class="admin-cat-image-wrapper">
+                      <img src="${fullImgUrl}" alt="${item.category}" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
+                    </div>
+                    <div class="admin-cat-info">
+                      <h4 class="admin-cat-name">${item.category}</h4>
+                      <p class="admin-cat-desc" title="${item.description || ""}">${item.description || "No description available."}</p>
+                      <div class="admin-cat-date">
+                        <i class="far fa-calendar-alt"></i> Created: ${dateStr}
+                      </div>
+                    </div>
+                    <div class="admin-cat-actions">
+                      <button class="edit-category-btn" data-category='${JSON.stringify(item).replace(/'/g, "&apos;")}'>
+                        <i class="far fa-edit"></i> Edit
+                      </button>
+                      <button class="delete-category-btn" data-id="${item.id}">
+                        <i class="far fa-trash-alt"></i> Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              `;
+              $list.append(cardHtml);
+            });
+          } catch (err) {
+            console.error("Failed to load admin categories", err);
+            $list.html(
+              '<div class="col-12 text-center py-4 text-danger">Failed to load categories list.</div>',
+            );
+          }
+        }
+
+        // Trigger load when Admin Categories tab is clicked
+        $('a[data-section="admin-categories"]').on("click", function () {
+          loadAdminCategories();
+        });
+
+        // Add Category Button Click -> Open Modal
+        $("#addNewCategoryBtn").on("click", function () {
+          $("#categoryForm")[0].reset();
+          $("#categoryImagePreview")
+            .addClass("d-none")
+            .find("img")
+            .attr("src", "");
+          categoryModal.show();
+        });
+
+        // Category Image Preview Handler
+        $("#catImage").on("change", function () {
+          const file = this.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              $("#categoryImagePreview")
+                .removeClass("d-none")
+                .find("img")
+                .attr("src", e.target.result);
+            };
+            reader.readAsDataURL(file);
+          }
+        });
+
+        // Save Category Button Click
+        $("#saveCategoryBtn").on("click", async function () {
+          const form = document.getElementById("categoryForm");
+          if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+          }
+
+          const name = $("#catName").val().trim();
+          const desc = $("#catDesc").val().trim();
+          const imageFile = document.getElementById("catImage").files[0];
+          const icon = $("#catIcon").val().trim() || "fa-tag";
+          const isActive = $("#catActive").is(":checked") ? "true" : "false";
+
+          // Auto-generate Slug (kebab-case)
+          const slug = name
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/(^-|-$)/g, "");
+
+          if (!imageFile) {
+            showToast("Please choose a category image", "warning");
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append("Name", name);
+          formData.append("Slug", slug);
+          formData.append("Description", desc);
+          formData.append("Image", imageFile);
+          formData.append("Icon", icon);
+          formData.append("IsActive", isActive);
+
+          const $btn = $(this);
+          const $spinner = $("#categorySpinner");
+
+          $btn.prop("disabled", true);
+          $spinner.removeClass("d-none");
+
+          try {
+            await addCategoryAPI(formData, token);
+            showToast("Category added successfully!", "success");
+            categoryModal.hide();
+            loadAdminCategories();
+          } catch (err) {
+            showToast(err.message || "Failed to add category.", "error");
+          } finally {
+            $btn.prop("disabled", false);
+            $spinner.addClass("d-none");
+          }
+        });
+
+        // Edit/Delete Category Click Handlers (Not supported by endpoint)
+        $(document).on("click", ".edit-category-btn", function () {
+          showToast(
+            "Updating categories is not supported by the backend API.",
+            "warning",
+          );
+        });
+
+        $(document).on("click", ".delete-category-btn", function () {
+          showToast(
+            "Deleting categories is not supported by the backend API.",
+            "warning",
+          );
         });
 
         async function loadAddresses() {
@@ -935,7 +1489,7 @@
           if (e.message && e.message.toLowerCase().includes("unauthorized")) {
             sessionStorage.removeItem("token");
             sessionStorage.removeItem("user");
-            window.location.href = "index.html";
+            window.location.href = "home.html";
           } else {
             // Fallback to existing session storage if network error
             const userDataStr = sessionStorage.getItem("user");
@@ -951,7 +1505,7 @@
         }
 
         // --- Address Management Logic ---
-        $(document).on("click", "#addNewAddressBtn", function() {
+        $(document).on("click", "#addNewAddressBtn", function () {
           $("#addressForm")[0].reset();
           $("#addressId").val("");
           $("#addressModalLabel").text("Add New Address");
@@ -1066,7 +1620,7 @@
           e.preventDefault();
           sessionStorage.removeItem("token");
           sessionStorage.removeItem("user");
-          window.location.href = "index.html";
+          window.location.href = "home.html";
         });
 
         // Prevent JS error if User page has search input
@@ -1096,7 +1650,9 @@
 
         // Section Toggling
         $(".profile-section").addClass("d-none").removeClass("active-section");
-        $("#" + sectionId).removeClass("d-none").addClass("active-section");
+        $("#" + sectionId)
+          .removeClass("d-none")
+          .addClass("active-section");
 
         // Hash Sync
         history.pushState(null, null, "#" + sectionId);
@@ -1312,9 +1868,9 @@
               <h4 class="text-light mb-3">Shop Info</h4>
               <a class="btn-link" href="#">About Us</a>
               <a class="btn-link" href="contact.html">Contact Us</a>
-              <a class="btn-link" href="#">Privacy Policy</a>
-              <a class="btn-link" href="#">Terms & Condition</a>
-              <a class="btn-link" href="#">Return Policy</a>
+              <a class="btn-link" href="privacy-policy.html">Privacy Policy</a>
+              <a class="btn-link" href="terms-conditions.html">Terms & Condition</a>
+              <a class="btn-link" href="sales-refunds.html">Return Policy</a>
             </div>
           </div>
           <div class="col-lg-3 col-md-6">

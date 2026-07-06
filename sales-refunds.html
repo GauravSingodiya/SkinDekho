@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>SkinDekho - Premium Healthcare Products</title>
+    <title>Sales & Refunds Policy - SkinDekho</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <meta content="" name="keywords" />
-    <meta content="" name="description" />
+    <meta content="Sales & Refunds, Return Policy, SkinDekho" name="keywords" />
+    <meta content="Sales, Return, and Refund Policy for SkinDekho - Advanced Medical Skin & Hair Care" name="description" />
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -36,7 +36,7 @@
     <link href="css/style.css" rel="stylesheet" />
   </head>
 
-  <body class="shop-page">
+  <body>
     <!-- Spinner Start -->
     <div
       id="spinner"
@@ -123,14 +123,6 @@
             </div>
 
             <div class="d-flex m-3 me-0">
-              <button
-                class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
-                data-bs-toggle="modal"
-                data-bs-target="#searchModal"
-              >
-                <i class="fas fa-search text-primary"></i>
-              </button>
-
               <a href="cart.html" class="position-relative me-4 my-auto">
                 <i class="fa fa-shopping-bag fa-2x"></i>
                 <span
@@ -150,248 +142,44 @@
     </div>
     <!-- Navbar End -->
 
-    <!-- Modal Search Start -->
-    <div
-      class="modal fade"
-      id="searchModal"
-      tabindex="-1"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-fullscreen">
-        <div class="modal-content rounded-0">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">
-              Search by keyword
-            </h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body d-flex align-items-center">
-            <div class="input-group w-75 mx-auto d-flex">
-              <input
-                type="search"
-                id="modalSearchInput"
-                class="form-control p-3"
-                placeholder="keywords"
-              />
-
-              <span id="search-icon-1" class="input-group-text p-3"
-                ><i class="fa fa-search"></i
-              ></span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Modal Search End -->
-
-    <!-- Fruits Shop Start-->
-    <div class="container-fluid fruite py-5 content-header-margin">
+    <!-- Sales & Refunds Section Start -->
+    <div class="container-fluid py-5 content-header-margin">
       <div class="container py-5">
-        <h1 class="mb-4">Our Skincare Products</h1>
-        <div class="row g-4">
-          <div class="col-lg-12">
-            <div class="row g-4">
-              <div class="col-xl-3">
-                <div class="input-group w-100 mx-auto d-flex">
-                  <input
-                    type="search"
-                    id="shopSearchInput"
-                    class="form-control p-3"
-                    placeholder="keywords"
-                  />
+        <div class="p-5 bg-light rounded shadow-sm">
+          <div class="row">
+            <div class="col-12">
+              <h1 class="text-primary text-center mb-4 fw-bold">Sales & Refunds Policy</h1>
+              <p class="text-center text-muted mb-5">Last updated: June 2026</p>
 
-                  <span id="search-icon-1" class="input-group-text p-3"
-                    ><i class="fa fa-search"></i
-                  ></span>
-                </div>
-              </div>
-              <div class="col-6"></div>
-              <div class="col-xl-3">
-                <div class="d-flex align-items-center justify-content-end mb-4">
-                  <div class="premium-sort-container">
-                    <button
-                      class="btn btn-light rounded-pill px-4 py-2 border d-flex align-items-center"
-                      id="sortDropdownBtn"
-                      type="button"
-                    >
-                      <i
-                        class="fas fa-sort-amount-down-alt text-primary me-2"
-                      ></i>
-                      <span id="currentSortText">Default Sorting</span>
-                      <i class="fas fa-chevron-down ms-3 small text-muted"></i>
-                    </button>
-                    <div
-                      class="sort-menu shadow-sm border rounded-3 p-2 d-none"
-                    >
-                      <div class="sort-option active" data-value="">
-                        Default Sorting
-                      </div>
-                      <div class="sort-option" data-value="low">
-                        Price: Low to High
-                      </div>
-                      <div class="sort-option" data-value="high">
-                        Price: High to Low
-                      </div>
-                    </div>
-                    <!-- Hidden native select for existing JS compatibility -->
-                    <select id="fruits" class="d-none">
-                      <option value="">Default Sorting</option>
-                      <option value="low">Price: Low to High</option>
-                      <option value="high">Price: High to Low</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="row g-4">
-              <div class="col-lg-3">
-                <div class="row g-4">
-                  <div class="col-lg-12">
-                    <div class="mb-3">
-                      <h4>Categories</h4>
-                      <ul
-                        id="categoryTabs"
-                        class="list-unstyled fruite-categorie"
-                      ></ul>
-                    </div>
-                  </div>
-                  <div class="col-lg-12">
-                    <div class="mb-3">
-                      <h4 class="mb-2">Price</h4>
-                      <input
-                        type="range"
-                        class="form-range w-100"
-                        id="rangeInput"
-                        name="rangeInput"
-                        min="0"
-                        max="500"
-                        value="0"
-                        oninput="amount.value = rangeInput.value"
-                      />
-                      <output
-                        id="amount"
-                        name="amount"
-                        min-velue="0"
-                        max-value="500"
-                        for="rangeInput"
-                        >0</output
-                      >
-                    </div>
-                  </div>
-                  <!-- <div class="col-lg-12">
-                    <div class="mb-3">
-                      <h4>Additional</h4>
-                      <div class="mb-2">
-                        <input
-                          type="radio"
-                          class="me-2"
-                          id="Categories-1"
-                          name="Categories-1"
-                          value="Beverages"
-                        />
-                        <label for="Categories-1"> Organic</label>
-                      </div>
-                      <div class="mb-2">
-                        <input
-                          type="radio"
-                          class="me-2"
-                          id="Categories-2"
-                          name="Categories-1"
-                          value="Beverages"
-                        />
-                        <label for="Categories-2"> Fresh</label>
-                      </div>
-                      <div class="mb-2">
-                        <input
-                          type="radio"
-                          class="me-2"
-                          id="Categories-3"
-                          name="Categories-1"
-                          value="Beverages"
-                        />
-                        <label for="Categories-3"> Sales</label>
-                      </div>
-                      <div class="mb-2">
-                        <input
-                          type="radio"
-                          class="me-2"
-                          id="Categories-4"
-                          name="Categories-1"
-                          value="Beverages"
-                        />
-                        <label for="Categories-4"> Discount</label>
-                      </div>
-                      <div class="mb-2">
-                        <input
-                          type="radio"
-                          class="me-2"
-                          id="Categories-5"
-                          name="Categories-1"
-                          value="Beverages"
-                        />
-                        <label for="Categories-5"> Expired</label>
-                      </div>
-                    </div>
-                  </div> -->
-                  <div class="col-lg-12">
-                    <h4 class="mb-3">Featured products</h4>
+              <div class="policy-content" style="color: #4a4a4a; line-height: 1.8;">
+                <p class="lead">Thanks for shopping at <strong>SkinDekho</strong>. We value your satisfaction and want to make sure you have a premium shopping experience. If you are not entirely satisfied with your purchase, we are here to help.</p>
+                <hr class="my-4">
 
-                    <div id="featuredProductList"></div>
+                <h4 class="text-primary mt-4 mb-3 fw-bold"><i class="fas fa-undo me-2"></i>1. Returns Policy</h4>
+                <p>You have <strong>7 calendar days</strong> to return an item from the date you received it. To be eligible for a return, the item must fulfill the following conditions:</p>
+                <ul>
+                  <li>The item must be unused, unopened, and in the same condition that you received it.</li>
+                  <li>The item must be in its original packaging.</li>
+                  <li>You must have the receipt, invoice, or proof of purchase.</li>
+                </ul>
+                <p class="text-danger"><strong>Note:</strong> Certain hygiene or medical products are exempt from return/refund if opened due to safety regulations.</p>
 
-                    <div class="d-flex justify-content-center my-4">
-                      <a
-                        href="javascript:void(0)"
-                        id="viewMoreFeatured"
-                        class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100"
-                        style="display: none"
-                      >
-                        View More
-                      </a>
-                    </div>
-                  </div>
+                <h4 class="text-primary mt-4 mb-3 fw-bold"><i class="fas fa-wallet me-2"></i>2. Refunds Process</h4>
+                <p>Once we receive your item, we will inspect it and notify you that we have received your returned item. We will immediately notify you on the status of your refund after inspecting the item.</p>
+                <p>If your return is approved, we will initiate a refund to your credit card (or original method of payment). You will receive the credit within a certain number of days, depending on your card issuer's policies (typically 5-7 business days).</p>
 
-                  <!-- <div class="col-lg-12">
-                    <div class="position-relative">
-                      <img
-                        src="img/banner-fruits.jpg"
-                        class="img-fluid w-100 rounded"
-                        alt=""
-                      />
-                      <div
-                        class="position-absolute"
-                        style="
-                          top: 50%;
-                          right: 10px;
-                          transform: translateY(-50%);
-                        "
-                      >
-                        <h3 class="text-secondary fw-bold">
-                          Fresh <br />
-                          Fruits <br />
-                          Banner
-                        </h3>
-                      </div>
-                    </div>
-                  </div> -->
-                </div>
-              </div>
-              <div class="col-lg-9">
-                <div
-                  id="productList"
-                  class="row g-4 justify-content-center"
-                ></div>
+                <h4 class="text-primary mt-4 mb-3 fw-bold"><i class="fas fa-truck me-2"></i>3. Return Shipping</h4>
+                <p>You will be responsible for paying for your own shipping costs for returning your item. Shipping costs are non-refundable. If you receive a refund, the cost of return shipping will be deducted from your refund (unless the return is due to our error, such as a damaged/incorrect product).</p>
 
-                <div class="col-12">
-                  <div
-                    id="pagination"
-                    class="pagination d-flex justify-content-center mt-5"
-                  ></div>
+                <h4 class="text-primary mt-4 mb-3 fw-bold"><i class="fas fa-times-circle me-2"></i>4. Order Cancellations</h4>
+                <p>Orders can only be cancelled before they have been shipped. Once the status of your order has transitioned to "Shipped", we cannot cancel the order, and you must initiate a standard return process upon receiving the products.</p>
+
+                <h4 class="text-primary mt-4 mb-3 fw-bold"><i class="fas fa-envelope me-2"></i>5. Contact Us</h4>
+                <p>If you have any questions on how to return your item to us, please contact us at:</p>
+                <div class="bg-white p-4 rounded border border-secondary mt-3 d-inline-block">
+                  <p class="mb-1"><strong>Email:</strong> skindekho@gmail.com</p>
+                  <p class="mb-1"><strong>Address:</strong> 302016 jaipur, India</p>
+                  <p class="mb-0"><strong>Phone:</strong> +91 94619727590</p>
                 </div>
               </div>
             </div>
@@ -399,7 +187,7 @@
         </div>
       </div>
     </div>
-    <!-- Fruits Shop End-->
+    <!-- Sales & Refunds Section End -->
 
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
@@ -412,9 +200,7 @@
             <div class="col-lg-3">
               <a href="#">
                 <h1 class="text-primary mb-0">SkinDekho</h1>
-                <p class="text-secondary mb-0">
-                  Advanced Medical Skin & Hair Care
-                </p>
+                <p class="text-secondary mb-0">Advanced Medical Skin & Hair Care</p>
               </a>
             </div>
             <div class="col-lg-6">
@@ -464,9 +250,7 @@
             <div class="footer-item">
               <h4 class="text-light mb-3">Why People Like us!</h4>
               <p class="mb-4">
-                typesetting, remaining essentially unchanged. It was popularised
-                in the 1960s with the like Aldus PageMaker including of Lorem
-                Ipsum.
+                We provide premium, dermatologist-approved skincare and healthcare products tailored to ensure your skin and hair remain healthy and vibrant.
               </p>
             </div>
           </div>
@@ -494,7 +278,7 @@
               <h4 class="text-light mb-3">Contact</h4>
               <p>Address: 302016 jaipur, India</p>
               <p>Email: skindekho@gmail.com</p>
-              <p>Phone: +9194619727590</p>
+              <p>Phone: +91 94619727590</p>
               <p>Payment Accepted</p>
               <img src="img/payment.png" class="img-fluid" alt="" />
             </div>
@@ -511,16 +295,15 @@
           <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
             <span class="text-light"
               ><a href="#"
-                ><i class="fas fa-copyright text-light me-2"></i>Your Site
-                Name</a
+                ><i class="fas fa-copyright text-light me-2"></i>SkinDekho</a
               >, All right reserved.</span
             >
           </div>
           <div class="col-md-6 my-auto text-center text-md-end text-white">
-            <!--/*** The author’s attribution link must remain intact in the template. ***/-->
-            <!--/*** If you wish to remove this credit link, please purchase the Pro Version . ***/-->
             Designed By
-            <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>
+            <a class="border-bottom" href="https://htmlcodex.com"
+              >Gaurav Saini</a
+            >
           </div>
         </div>
       </div>
