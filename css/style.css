@@ -1091,7 +1091,8 @@
 /* ==========================================================================
    🧴 Horizontal Latest Products Carousel UI
    ========================================================================== */
-.latest-carousel-wrapper {
+.latest-carousel-wrapper,
+.featured-carousel-wrapper {
   overflow-x: auto;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
@@ -1100,11 +1101,13 @@
   padding: 15px 5px;
 }
 
-.latest-carousel-wrapper::-webkit-scrollbar {
+.latest-carousel-wrapper::-webkit-scrollbar,
+.featured-carousel-wrapper::-webkit-scrollbar {
   display: none; /* Hide scrollbar for Chrome, Safari and Opera */
 }
 
-.latest-product-card {
+.latest-product-card,
+.featured-product-card {
   flex: 0 0 calc(100% - 10px); /* 1 card on very small mobile */
   max-width: calc(100% - 10px);
   transition: all 0.3s ease;
@@ -1113,27 +1116,31 @@
 }
 
 @media (min-width: 576px) {
-  .latest-product-card {
+  .latest-product-card,
+  .featured-product-card {
     flex: 0 0 calc(100% / 2 - 16px); /* 2 cards */
     max-width: calc(100% / 2 - 16px);
   }
 }
 
 @media (min-width: 992px) {
-  .latest-product-card {
+  .latest-product-card,
+  .featured-product-card {
     flex: 0 0 calc(100% / 3 - 20px); /* 3 cards */
     max-width: calc(100% / 3 - 20px);
   }
 }
 
 @media (min-width: 1200px) {
-  .latest-product-card {
+  .latest-product-card,
+  .featured-product-card {
     flex: 0 0 calc(100% / 4 - 24px); /* 4 cards */
     max-width: calc(100% / 4 - 24px);
   }
 }
 
-.latest-nav-buttons button {
+.latest-nav-buttons button,
+.featured-nav-buttons button {
   background: white !important;
   border: 1px solid #eaeaea !important;
   transition: all 0.3s ease;
@@ -1144,17 +1151,20 @@
   justify-content: center;
 }
 
-.latest-nav-buttons button:hover {
+.latest-nav-buttons button:hover,
+.featured-nav-buttons button:hover {
   background: var(--bs-primary) !important;
   border-color: var(--bs-primary) !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.latest-nav-buttons button:hover i {
+.latest-nav-buttons button:hover i,
+.featured-nav-buttons button:hover i {
   color: white !important;
 }
 
-.latest-nav-buttons button i {
+.latest-nav-buttons button i,
+.featured-nav-buttons button i {
   font-size: 14px;
   transition: color 0.3s ease;
 }

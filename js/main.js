@@ -334,12 +334,19 @@ async function loadProducts(category = "") {
     products.forEach((item) => {
       if (!item.name || item.name === "string") return;
 
+      const relativeImgUrl = item.imageUrl || "";
+      const fullImgUrl = relativeImgUrl.startsWith("http")
+        ? relativeImgUrl
+        : relativeImgUrl
+        ? (BASE_URL + relativeImgUrl)
+        : "img/product-default.jpg";
+
       const productCard = `
         <div class="${colClass}">
           <div class="rounded position-relative fruite-item h-100">
             <div class="fruite-img">
               <a href="product-detail.html?id=${item.id}">
-                <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" />
+                <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
               </a>
             </div>
 
@@ -363,7 +370,7 @@ async function loadProducts(category = "") {
                      data-id="${item.id}"
                      data-name="${item.name}"
                      data-price="${item.discountPrice ?? item.price}"
-                     data-img="${item.imageUrl}">
+                     data-img="${fullImgUrl}">
                     <i class="fa fa-shopping-bag me-2"></i>Add to cart
                   </a>
 
@@ -436,6 +443,13 @@ function renderPaginatedProducts() {
   productsToShow.forEach((item) => {
     if (!item.name || item.name === "string") return;
 
+    const relativeImgUrl = item.imageUrl || "";
+    const fullImgUrl = relativeImgUrl.startsWith("http")
+      ? relativeImgUrl
+      : relativeImgUrl
+      ? (BASE_URL + relativeImgUrl)
+      : "img/product-default.jpg";
+
     const whatsappMessage = encodeURIComponent(
       `🧴 *${item.name}*\n💰 Price: ₹${item.discountPrice ?? item.price}`,
     );
@@ -445,7 +459,7 @@ function renderPaginatedProducts() {
         <div class="rounded position-relative fruite-item h-100">
           <div class="fruite-img">
             <a href="product-detail.html?id=${item.id}">
-              <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" />
+              <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
             </a>
           </div>
 
@@ -469,7 +483,7 @@ function renderPaginatedProducts() {
                    data-id="${item.id}"
                    data-name="${item.name}"
                    data-price="${item.discountPrice ?? item.price}"
-                   data-img="${item.imageUrl}">
+                   data-img="${fullImgUrl}">
                   <i class="fa fa-shopping-bag me-2"></i>Add to cart
                 </a>
 
@@ -939,6 +953,96 @@ $(document).on("click", "#categoryTabs a", function (e) {
 //   loadCategories(); // 👈 categories from API
 //   getFilterProducts(); // 👈 all products
 // });
+async function loadHomeFeaturedProducts() {
+  const $container = $("#featuredProductsHomeList");
+  if ($container.length === 0) return;
+
+  try {
+    const res = await getFeaturedProducts();
+    const products = res.result || res || [];
+    $container.empty();
+
+    if (products.length === 0) {
+      $container.html('<div class="col-12 text-center py-4 text-muted">No featured products found.</div>');
+      return;
+    }
+
+    products.forEach((item) => {
+      if (!item.name || item.name === "string") return;
+
+      const relativeImgUrl = item.imageUrl || "";
+      const fullImgUrl = relativeImgUrl.startsWith("http")
+        ? relativeImgUrl
+        : relativeImgUrl
+        ? (BASE_URL + relativeImgUrl)
+        : "img/product-default.jpg"; // fallback
+
+      const productCard = `
+        <div class="featured-product-card">
+          <div class="rounded position-relative fruite-item h-100">
+            <div class="fruite-img">
+              <a href="product-detail.html?id=${item.id}">
+                <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
+              </a>
+            </div>
+
+            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
+                 style="top:10px; left:10px">
+              ${item.category || "skincare"}
+            </div>
+
+            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
+              <h4><a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a></h4>
+              <p class="text-muted small">${item.description || ""}</p>
+
+              <div class="d-flex justify-content-between align-items-center">
+                <p class="text-dark fs-5 fw-bold mb-0">
+                  ₹${item.discountPrice ?? item.price}
+                </p>
+
+                <div class="d-flex gap-2">
+                  <a href="javascript:void(0)" 
+                     class="btn border border-secondary rounded-pill px-2 text-primary add-to-cart-btn"
+                     data-id="${item.id}"
+                     data-name="${item.name}"
+                     data-price="${item.discountPrice ?? item.price}"
+                     data-img="${fullImgUrl}">
+                    <i class="fa fa-shopping-bag me-2"></i>Add to cart
+                  </a>
+
+                  <a href="https://wa.me/?text=${encodeURIComponent(item.name)}"
+                     target="_blank"
+                     class="border-primary rounded-pill px-2 text-primary whatsapp-btn">
+                    <i class="fab fa-whatsapp fs-2"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      $container.append(productCard);
+    });
+
+    // Attach horizontal scroll controls
+    $(document).off("click", ".featured-next-btn").on("click", ".featured-next-btn", function () {
+      const $wrapper = $(".featured-carousel-wrapper");
+      const scrollAmount = $wrapper.width() * 0.75;
+      $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() + scrollAmount }, 400);
+    });
+
+    $(document).off("click", ".featured-prev-btn").on("click", ".featured-prev-btn", function () {
+      const $wrapper = $(".featured-carousel-wrapper");
+      const scrollAmount = $wrapper.width() * 0.75;
+      $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() - scrollAmount }, 400);
+    });
+
+  } catch (err) {
+    console.error("Failed to load home page featured products", err);
+    $container.html('<div class="col-12 text-center py-4 text-danger">Failed to load featured products.</div>');
+  }
+}
+
 let allFeaturedProducts = [];
 let showAllFeatured = false;
 
@@ -1053,6 +1157,7 @@ $(document).ready(function () {
   }
   loadNavbarCategories();
   loadHomeCategories();
+  loadHomeFeaturedProducts();
   loadLatestProducts();
   loadDashboardStats();
   syncCartBadge();

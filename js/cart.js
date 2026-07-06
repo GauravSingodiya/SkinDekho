@@ -1,6 +1,7 @@
 // js/cart.js - Now a module
 
 import { getCartAPI, removeFromCartAPI } from "./api/cartService.js";
+import { BASE_URL } from "./api/config.js";
 
 $(document).ready(function () {
   const token = sessionStorage.getItem("token");
@@ -31,7 +32,14 @@ async function loadCartItems(token) {
       const price = item.productPrice || 0;
       const quantity = item.quantity || 1;
       const total = (price * quantity).toFixed(2);
-      const imageUrl = item.imageUrl || "img/product-default.jpg";
+      
+      const relativeImgUrl = item.imageUrl || "";
+      const fullImgUrl = relativeImgUrl.startsWith("http")
+        ? relativeImgUrl
+        : relativeImgUrl
+        ? (BASE_URL + relativeImgUrl)
+        : "img/product-default.jpg";
+
       const name = item.productName || "Product";
       const productId = item.productId;
       
@@ -39,7 +47,7 @@ async function loadCartItems(token) {
         <tr data-id="${productId}">
           <th scope="row">
             <div class="d-flex align-items-center">
-              <img src="${imageUrl}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="${name}">
+              <img src="${fullImgUrl}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="${name}">
             </div>
           </th>
           <td>

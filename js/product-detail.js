@@ -1,6 +1,7 @@
 import { getProductById, getAllProducts } from "./products.js";
 import { addToCartAPI } from "./api/cartService.js";
 import { showToast, syncCartBadge } from "./main.js";
+import { BASE_URL } from "./api/config.js";
 
 $(document).ready(async function () {
   const urlParams = new URLSearchParams(window.location.search);
@@ -86,7 +87,15 @@ $(document).ready(async function () {
 
 function renderProductDetails(product) {
   $("#product-name").text(product.name);
-  $("#product-img").attr("src", product.imageUrl);
+  
+  const relativeImgUrl = product.imageUrl || "";
+  const fullImgUrl = relativeImgUrl.startsWith("http")
+    ? relativeImgUrl
+    : relativeImgUrl
+    ? (BASE_URL + relativeImgUrl)
+    : "img/product-default.jpg";
+  $("#product-img").attr("src", fullImgUrl);
+  
   $("#product-description").text(product.description || "No description available.");
   $("#product-category span").text(product.category);
   
@@ -114,19 +123,26 @@ async function loadRelatedProducts(category, currentId) {
         
         const $container = $("#related-products");
         $container.empty();
-
+ 
         if (related.length === 0) {
             $container.append('<div class="col-12 text-center text-muted">No related products found.</div>');
             return;
         }
 
         related.forEach(item => {
+            const relativeImgUrl = item.imageUrl || "";
+            const fullImgUrl = relativeImgUrl.startsWith("http")
+                ? relativeImgUrl
+                : relativeImgUrl
+                ? (BASE_URL + relativeImgUrl)
+                : "img/product-default.jpg";
+
             const card = `
                 <div class="col-md-6 col-lg-3">
                     <div class="rounded position-relative fruite-item h-100 border">
                         <div class="fruite-img">
                             <a href="product-detail.html?id=${item.id}">
-                                <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" style="height: 200px; object-fit: cover;">
+                                <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" style="height: 200px; object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
                             </a>
                         </div>
                         <div class="p-3">
