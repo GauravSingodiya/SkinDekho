@@ -7,6 +7,7 @@ import {
 } from "./api/orderService.js";
 import { getCartAPI } from "./api/cartService.js";
 import { showToast } from "./main.js";
+import { BASE_URL } from "./api/config.js";
 
 $(document).ready(function () {
   const token = sessionStorage.getItem("token");
@@ -265,7 +266,12 @@ $(document).ready(function () {
           const total = price * quantity;
           subtotal += total;
 
-          const imgSrc = item.imageUrl || "img/product-default.jpg";
+          const relativeImgUrl = item.imageUrl || "";
+          const imgSrc = relativeImgUrl.startsWith("http")
+            ? relativeImgUrl
+            : relativeImgUrl
+            ? (BASE_URL + relativeImgUrl)
+            : "img/product-default.jpg";
 
           const tr = `
             <tr>

@@ -1006,7 +1006,7 @@
                      </div>
                    </div>
                    <div class="d-flex align-items-center mt-2 mb-3">
-                     <img src="${p.imageUrl || "img/product-default.jpg"}" class="rounded me-3 border" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
+                      <img src="${p.imageUrl ? (p.imageUrl.startsWith('http') ? p.imageUrl : 'http://skindekho.runasp.net' + p.imageUrl) : 'img/product-default.jpg'}" class="rounded me-3 border" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
                      <div style="min-width: 0;">
                        <p class="small mb-1 text-dark"><strong>Category:</strong> <span class="badge bg-light text-dark border">${p.category}</span></p>
                        <p class="small mb-0 text-dark" style="word-break: break-all;"><strong>SKU:</strong> ${p.sku}</p>
@@ -1126,10 +1126,13 @@
           $("#prodFeatured").prop("checked", p.isfeatureproduct);
 
           if (p.imageUrl) {
+            const fullImgUrl = p.imageUrl.startsWith("http")
+              ? p.imageUrl
+              : "http://skindekho.runasp.net" + p.imageUrl;
             $("#imagePreview")
               .removeClass("d-none")
               .find("img")
-              .attr("src", p.imageUrl);
+              .attr("src", fullImgUrl);
           } else {
             $("#imagePreview").addClass("d-none");
           }
@@ -1164,13 +1167,26 @@
             $("#prodFeatured").is(":checked") ? "true" : "false",
           );
 
+          // Find selected CategoryId for AddProduct, and Category name for UpdateProduct
+          const selectedCategoryName = $("#prodCategory").val();
+          const categoryObj = allCategories.find((c) => c.category === selectedCategoryName);
+          const categoryId = categoryObj ? categoryObj.id : null;
+
           // Add ID if it exists (for updates)
-          if (id) formData.append("id", id);
+          if (id) {
+            formData.append("id", id);
+            // UpdateProduct expects Category string name (already in formData)
+            formData.delete("CategoryId");
+          }
 
           // If adding a product, send sku and category icon null
           if (!id) {
             formData.set("Sku", "");
             formData.set("CategoryIcon", "");
+            if (categoryId) {
+              formData.set("CategoryId", categoryId.toString());
+            }
+            formData.delete("Category");
           }
 
           // Basic Validation
@@ -1869,7 +1885,9 @@
               <a class="btn-link" href="#">About Us</a>
               <a class="btn-link" href="contact.html">Contact Us</a>
               <a class="btn-link" href="privacy-policy.html">Privacy Policy</a>
-              <a class="btn-link" href="terms-conditions.html">Terms & Condition</a>
+              <a class="btn-link" href="terms-conditions.html"
+                >Terms & Condition</a
+              >
               <a class="btn-link" href="sales-refunds.html">Return Policy</a>
             </div>
           </div>
