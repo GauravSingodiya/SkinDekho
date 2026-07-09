@@ -238,7 +238,7 @@
         transform: translateY(-1px);
         box-shadow: 0 6px 14px rgba(129, 196, 8, 0.35);
       }
-      
+
       .buy-now-btn {
         background-color: #ffb524 !important;
         box-shadow: 0 4px 10px rgba(255, 181, 36, 0.25) !important;
@@ -476,6 +476,7 @@
                 <i class="fas fa-search-plus"></i>
               </div>
             </div>
+            <div id="product-thumbnails" class="d-flex gap-2 mt-3 overflow-auto justify-content-start pb-2" style="white-space: nowrap;"></div>
           </div>
           <div class="col-lg-6">
             <h2 id="product-name" class="product-title mb-2">
@@ -523,10 +524,7 @@
                 Add To Cart +
               </button>
 
-              <button
-                id="buy-now-detail"
-                class="action-pill-btn buy-now-btn"
-              >
+              <button id="buy-now-detail" class="action-pill-btn buy-now-btn">
                 Buy Now
               </button>
             </div>
