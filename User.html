@@ -487,21 +487,16 @@
                   </div>
                 </div>
                 <div class="col-md-6">
-                  <label class="form-label">Product Image<sup>*</sup></label>
+                  <label class="form-label">Product Images<sup>*</sup></label>
                   <input
                     type="file"
                     class="form-control"
                     id="prodImage"
-                    name="Image"
+                    name="Images"
                     accept="image/*"
+                    multiple
                   />
-                  <div id="imagePreview" class="mt-2 d-none">
-                    <img
-                      src=""
-                      class="img-thumbnail"
-                      style="max-height: 100px"
-                    />
-                  </div>
+                  <div id="imagePreviewContainer" class="d-flex flex-wrap gap-2 mt-2"></div>
                 </div>
               </div>
             </form>
@@ -879,6 +874,49 @@
 
         let allCategories = [];
 
+        let selectedImages = [];
+        let existingImages = [];
+
+        function renderProductImagePreviews() {
+          const $container = $("#imagePreviewContainer");
+          $container.empty();
+
+          // Render existing images
+          existingImages.forEach((img) => {
+            const relativePath = img.imageUrl || "";
+            const fullImgUrl = relativePath.startsWith("http")
+              ? relativePath
+              : "http://skindekho.runasp.net" + relativePath;
+            
+            const thumbHtml = `
+              <div class="position-relative" style="width: 80px; height: 80px;">
+                <img src="${fullImgUrl}" class="img-thumbnail w-100 h-100" style="object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
+                <span class="badge bg-primary position-absolute top-0 start-0 m-1" style="font-size: 0.65rem;">Saved</span>
+              </div>
+            `;
+            $container.append(thumbHtml);
+          });
+
+          // Render new selected images
+          selectedImages.forEach((file, idx) => {
+            const url = URL.createObjectURL(file);
+            const thumbHtml = `
+              <div class="position-relative" style="width: 80px; height: 80px;">
+                <img src="${url}" class="img-thumbnail w-100 h-100" style="object-fit: cover;">
+                <button type="button" class="btn-close btn-close-white bg-danger rounded-circle position-absolute top-0 end-0 m-1 remove-new-img" data-index="${idx}" style="width: 16px; height: 16px; padding: 0.15rem; font-size: 0.6rem;"></button>
+              </div>
+            `;
+            $container.append(thumbHtml);
+          });
+        }
+
+        $(document).on("click", ".remove-new-img", function(e) {
+          e.preventDefault();
+          const idx = parseInt($(this).data("index"), 10);
+          selectedImages.splice(idx, 1);
+          renderProductImagePreviews();
+        });
+
         // Fetch and Render Dynamic Categories in Admin Filter Buttons & Select Dropdown
         async function fetchAndPopulateCategories() {
           try {
@@ -1006,7 +1044,7 @@
                      </div>
                    </div>
                    <div class="d-flex align-items-center mt-2 mb-3">
-                      <img src="${p.imageUrl ? (p.imageUrl.startsWith('http') ? p.imageUrl : 'http://skindekho.runasp.net' + p.imageUrl) : 'img/product-default.jpg'}" class="rounded me-3 border" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
+                      <img src="${p.imageUrl ? (p.imageUrl.startsWith("http") ? p.imageUrl : "http://skindekho.runasp.net" + p.imageUrl) : "img/product-default.jpg"}" class="rounded me-3 border" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
                      <div style="min-width: 0;">
                        <p class="small mb-1 text-dark"><strong>Category:</strong> <span class="badge bg-light text-dark border">${p.category}</span></p>
                        <p class="small mb-0 text-dark" style="word-break: break-all;"><strong>SKU:</strong> ${p.sku}</p>
@@ -1106,7 +1144,9 @@
         $("#addNewProductBtn").on("click", function () {
           $("#productForm")[0].reset();
           $("#productId").val("");
-          $("#imagePreview").addClass("d-none");
+          selectedImages = [];
+          existingImages = [];
+          renderProductImagePreviews();
           $("#productModalLabel").text("Add New Product");
           productModal.show();
         });
@@ -1125,17 +1165,12 @@
           $("#prodStock").val(p.stockQuantity);
           $("#prodFeatured").prop("checked", p.isfeatureproduct);
 
-          if (p.imageUrl) {
-            const fullImgUrl = p.imageUrl.startsWith("http")
-              ? p.imageUrl
-              : "http://skindekho.runasp.net" + p.imageUrl;
-            $("#imagePreview")
-              .removeClass("d-none")
-              .find("img")
-              .attr("src", fullImgUrl);
-          } else {
-            $("#imagePreview").addClass("d-none");
+          selectedImages = [];
+          existingImages = p.images || [];
+          if (existingImages.length === 0 && p.imageUrl) {
+            existingImages = [{ id: 0, imageUrl: p.imageUrl }];
           }
+          renderProductImagePreviews();
 
           $("#productModalLabel").text("Edit Product");
           productModal.show();
@@ -1143,17 +1178,10 @@
 
         // Image Preview Handler
         $("#prodImage").on("change", function () {
-          const file = this.files[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-              $("#imagePreview")
-                .removeClass("d-none")
-                .find("img")
-                .attr("src", e.target.result);
-            };
-            reader.readAsDataURL(file);
-          }
+          const files = Array.from(this.files);
+          selectedImages = [...selectedImages, ...files];
+          renderProductImagePreviews();
+          $(this).val("");
         });
 
         // Save Product (Add/Update)
@@ -1169,7 +1197,9 @@
 
           // Find selected CategoryId for AddProduct, and Category name for UpdateProduct
           const selectedCategoryName = $("#prodCategory").val();
-          const categoryObj = allCategories.find((c) => c.category === selectedCategoryName);
+          const categoryObj = allCategories.find(
+            (c) => c.category === selectedCategoryName,
+          );
           const categoryId = categoryObj ? categoryObj.id : null;
 
           // Add ID if it exists (for updates)
@@ -1187,6 +1217,21 @@
               formData.set("CategoryId", categoryId.toString());
             }
             formData.delete("Category");
+          }
+
+          // Clear default file fields
+          formData.delete("Image");
+          formData.delete("Images");
+
+          // For AddProduct: only send Images
+          // For UpdateProduct: send first image as Image, and all as Images
+          if (selectedImages.length > 0) {
+            if (id) {
+              formData.append("Image", selectedImages[0]);
+            }
+            selectedImages.forEach((file) => {
+              formData.append("Images", file);
+            });
           }
 
           // Basic Validation

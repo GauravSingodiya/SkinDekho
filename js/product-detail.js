@@ -151,6 +151,43 @@ function renderProductDetails(product) {
       : "img/product-default.jpg";
   $("#product-img").attr("src", fullImgUrl);
 
+  // Populate thumbnails
+  const $thumbnails = $("#product-thumbnails");
+  $thumbnails.empty();
+
+  if (product.images && product.images.length > 0) {
+    const sortedImages = [...product.images].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+    
+    sortedImages.forEach((imgObj) => {
+      const imgUrl = imgObj.imageUrl;
+      const fullThumbUrl = imgUrl.startsWith("http")
+        ? imgUrl
+        : BASE_URL + imgUrl;
+      
+      const isCurrentActive = imgUrl === relativeImgUrl;
+      const thumbHtml = `
+        <div class="thumb-item ${isCurrentActive ? "active" : ""}" style="width: 70px; height: 70px; cursor: pointer; border: 2px solid ${isCurrentActive ? '#81c408' : '#ddd'}; border-radius: 6px; overflow: hidden; transition: all 0.2s; flex-shrink: 0;">
+          <img src="${fullThumbUrl}" class="w-100 h-100" style="object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
+        </div>
+      `;
+      
+      const $thumb = $(thumbHtml);
+      $thumb.on("click", function() {
+        $(".thumb-item").css("border-color", "#ddd");
+        $(this).css("border-color", "#81c408");
+        
+        $("#product-img").fadeOut(150, function() {
+          $(this).attr("src", fullThumbUrl).fadeIn(150);
+        });
+      });
+      
+      $thumbnails.append($thumb);
+    });
+    $thumbnails.show();
+  } else {
+    $thumbnails.hide();
+  }
+
   // Parse description to bullet points
   const description = product.description || "No description available.";
   $("#product-description-list").data("full-description", description);
@@ -263,34 +300,40 @@ async function loadRelatedProducts(category, currentId) {
 function renderDescription(descText, showAll) {
   const $descList = $("#product-description-list");
   const words = descText.split(/\s+/).filter(Boolean);
-  
+
   let displayText = descText;
-  
+
   if (words.length > 100 && !showAll) {
     displayText = words.slice(0, 100).join(" ") + "...";
   }
-  
-  let points = displayText.split(/\r?\n/).map(p => p.trim()).filter(Boolean);
+
+  let points = displayText
+    .split(/\r?\n/)
+    .map((p) => p.trim())
+    .filter(Boolean);
   if (points.length === 1 && points[0].includes(".")) {
-    points = points[0].split(/\.\s+/).map(p => p.trim()).filter(Boolean);
+    points = points[0]
+      .split(/\.\s+/)
+      .map((p) => p.trim())
+      .filter(Boolean);
   }
-  
+
   $descList.empty();
-  points.forEach(pt => {
+  points.forEach((pt) => {
     if (pt) {
       let text = pt;
       if (text.endsWith(".")) text = text.slice(0, -1);
       $descList.append(`<li>${text}</li>`);
     }
   });
-  
+
   if (words.length > 100) {
     const btnText = showAll ? "Show Less" : "Show More";
     const btnState = showAll ? "less" : "more";
     $descList.append(`
       <li class="no-bullet" style="margin-top: 10px;">
         <a href="javascript:void(0)" class="toggle-desc-btn text-primary fw-bold" data-state="${btnState}" style="text-decoration: none;">
-          ${btnText} <i class="fas fa-chevron-${showAll ? 'up' : 'down'} ms-1" style="font-size: 0.8rem;"></i>
+          ${btnText} <i class="fas fa-chevron-${showAll ? "up" : "down"} ms-1" style="font-size: 0.8rem;"></i>
         </a>
       </li>
     `);
