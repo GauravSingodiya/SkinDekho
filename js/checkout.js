@@ -163,6 +163,7 @@ $(document).ready(function () {
     $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm me-2"></span>Placing Order...');
 
     try {
+      console.log("checkoutAPI payload:", payload);
       const response = await checkoutAPI(payload, token);
       if (response.success) {
         showToast("Order placed successfully!", "success");
