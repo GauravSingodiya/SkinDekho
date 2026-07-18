@@ -357,7 +357,7 @@ async function loadProducts(category = "") {
 
             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
               <h4><a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a></h4>
-              <p class="text-muted small">${item.description}</p>
+              <p class="text-muted small product-desc">${item.description}</p>
 
               <div class="d-flex justify-content-between align-items-center">
                 <p class="text-dark fs-5 fw-bold mb-0">
@@ -470,7 +470,7 @@ function renderPaginatedProducts() {
 
           <div class="p-4 border border-secondary border-top-0 rounded-bottom">
             <h4><a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a></h4>
-            <p class="text-muted small">${item.description}</p>
+            <p class="text-muted small product-desc">${item.description}</p>
 
             <div class="d-flex justify-content-between align-items-center">
               <p class="text-dark fs-5 fw-bold mb-0">
@@ -879,7 +879,7 @@ async function loadLatestProducts() {
 
             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
               <h4><a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a></h4>
-              <p class="text-muted small">${item.description || ""}</p>
+              <p class="text-muted small product-desc">${item.description || ""}</p>
 
               <div class="d-flex justify-content-between align-items-center">
                 <p class="text-dark fs-5 fw-bold mb-0">
@@ -993,7 +993,7 @@ async function loadHomeFeaturedProducts() {
 
             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
               <h4><a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a></h4>
-              <p class="text-muted small">${item.description || ""}</p>
+              <p class="text-muted small product-desc">${item.description || ""}</p>
 
               <div class="d-flex justify-content-between align-items-center">
                 <p class="text-dark fs-5 fw-bold mb-0">

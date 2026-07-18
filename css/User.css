@@ -418,3 +418,98 @@ body {
     background-color: #81c408;
     border-color: #81c408;
 }
+
+/* Order Management Summary Cards & Badges */
+.summary-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+.summary-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+}
+.summary-card .icon-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+.summary-card .value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-top: 10px;
+}
+.summary-card .label {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 500;
+    margin-top: 5px;
+}
+
+.badge-payment-pending {
+    background-color: #fffbeb !important;
+    color: #d97706 !important;
+    border: 1px solid #fef3c7;
+}
+.badge-processing {
+    background-color: #f0f9ff !important;
+    color: #0369a1 !important;
+    border: 1px solid #dbeafe;
+}
+.badge-shipped {
+    background-color: #faf5ff !important;
+    color: #7e22ce !important;
+    border: 1px solid #f3e8ff;
+}
+.badge-delivered {
+    background-color: #f0fdf4 !important;
+    color: #15803d !important;
+    border: 1px solid #dcfce7;
+}
+.badge-cancelled {
+    background-color: #fef2f2 !important;
+    color: #b91c1c !important;
+    border: 1px solid #fee2e2;
+}
+
+/* Modal form controls custom styling */
+#orderModal .modal-content {
+    border-radius: 16px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+#orderModal .modal-header {
+    border-bottom: none;
+    padding: 20px 24px;
+    border-radius: 16px 16px 0 0;
+}
+#orderModal .modal-body {
+    padding: 24px;
+}
+#orderModal .form-label {
+    font-weight: 600;
+    color: #334155;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+#orderModal .form-control,
+#orderModal .form-select {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+#orderModal .form-control:focus,
+#orderModal .form-select:focus {
+    border-color: #81c408;
+    box-shadow: 0 0 0 3px rgba(129, 196, 8, 0.15);
+}
