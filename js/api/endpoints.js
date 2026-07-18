@@ -34,6 +34,8 @@ export const API = {
   ORDERS: {
     CHECKOUT: "/api/Orders/checkout",
     GET_MY_ORDERS: "/api/Orders/my-orders",
+    GET_ALL_ADMIN: "/api/Orders/admin/all",
+    UPDATE_ADMIN: (id) => `/api/Orders/admin/update/${id}`,
   },
   DASHBOARD: {
     STATS: "/api/dashboard/stats",

@@ -24,3 +24,11 @@ export async function checkoutAPI(payload, token) {
 export async function getMyOrdersAPI(token) {
   return await apiRequest(API.ORDERS.GET_MY_ORDERS, "GET", null, token);
 }
+
+export async function getAllAdminOrdersAPI(token) {
+  return await apiRequest(API.ORDERS.GET_ALL_ADMIN, "GET", null, token);
+}
+
+export async function updateAdminOrderAPI(id, payload, token) {
+  return await apiRequest(API.ORDERS.UPDATE_ADMIN(id), "PUT", payload, token);
+}
