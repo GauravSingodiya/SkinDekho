@@ -374,7 +374,7 @@ async function loadProducts(category = "") {
                     <i class="fa fa-shopping-bag me-2"></i>Add to cart
                   </a>
 
-                  <a href="https://wa.me/?text=${encodeURIComponent(item.name)}"
+                  <a href="https://wa.me/919461972759?text=${encodeURIComponent(item.name)}"
                      target="_blank"
                      class="border-primary rounded-pill px-2 text-primary whatsapp-btn">
                     <i class="fab fa-whatsapp fs-2"></i>
@@ -487,7 +487,7 @@ function renderPaginatedProducts() {
                   <i class="fa fa-shopping-bag me-2"></i>Add to cart
                 </a>
 
-                <a href="https://wa.me/?text=${whatsappMessage}"
+                <a href="https://wa.me/919461972759?text=${whatsappMessage}"
                    target="_blank"
                    class="border-primary rounded-pill px-1 text-primary whatsapp-btn">
                   <i class="fab fa-whatsapp fs-2"></i>
@@ -591,7 +591,7 @@ $(document).on("click", "#pagination a", function (e) {
 //                     <i class="fa fa-shopping-bag me-2"></i>Add to cart
 //                   </a>
 
-//                   <a href="https://wa.me/?text=${whatsappMessage}"
+//                   <a href="https://wa.me/919461972759?text=${whatsappMessage}"
 //                      target="_blank"
 //                      class="border-success rounded-pill px-1 text-success whatsapp-btn">
 //                     <i class="fab fa-whatsapp"></i>
@@ -896,7 +896,7 @@ async function loadLatestProducts() {
                     <i class="fa fa-shopping-bag me-2"></i>Add to cart
                   </a>
 
-                  <a href="https://wa.me/?text=${encodeURIComponent(item.name)}"
+                  <a href="https://wa.me/919461972759?text=${encodeURIComponent(item.name)}"
                      target="_blank"
                      class="border-primary rounded-pill px-2 text-primary whatsapp-btn">
                     <i class="fab fa-whatsapp fs-2"></i>
@@ -1010,7 +1010,7 @@ async function loadHomeFeaturedProducts() {
                     <i class="fa fa-shopping-bag me-2"></i>Add to cart
                   </a>
 
-                  <a href="https://wa.me/?text=${encodeURIComponent(item.name)}"
+                  <a href="https://wa.me/919461972759?text=${encodeURIComponent(item.name)}"
                      target="_blank"
                      class="border-primary rounded-pill px-2 text-primary whatsapp-btn">
                     <i class="fab fa-whatsapp fs-2"></i>
