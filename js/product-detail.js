@@ -244,7 +244,7 @@ function renderProductDetails(product) {
   );
   $("#whatsapp-inquiry").attr(
     "href",
-    `https://wa.me/9194619727590?text=${whatsappMessage}`,
+    `https://wa.me/919461972759?text=${whatsappMessage}`,
   );
 }
 
