@@ -8,6 +8,7 @@ import {
 import { getCartAPI } from "./api/cartService.js";
 import { showToast } from "./main.js";
 import { BASE_URL } from "./api/config.js";
+import { getAllProducts } from "./products.js";
 
 $(document).ready(function () {
   const token = sessionStorage.getItem("token");
@@ -24,10 +25,19 @@ $(document).ready(function () {
 
   // Handle Add New Button
   $("#show-new-address-btn").on("click", function () {
-    $("#addressForm")[0].reset();
-    $("#addressId").val("");
-    $("#addressModalLabel").text("Add New Address");
-    $("#addressModal").modal("show");
+    $(".address-card").removeClass("selected");
+    $(".address-card").find(".fa-check-circle").hide();
+    selectedAddressId = null;
+    $("#new-address-section").removeClass("d-none").css("opacity", "1");
+    // Clear the form fields so they can enter a fresh address
+    $("#checkout-firstName").val("");
+    $("#checkout-lastName").val("");
+    $("#checkout-phone").val("");
+    $("#checkout-addr1").val("");
+    $("#checkout-addr2").val("");
+    $("#checkout-city").val("");
+    $("#checkout-state").val("");
+    $("#checkout-zip").val("");
   });
 
   // Handle Edit Address Click
@@ -123,17 +133,19 @@ $(document).ready(function () {
   // Handle Address Selection
   $("#address-list").on("click", ".address-card", function () {
     $(".address-card").removeClass("selected");
+    $(".address-card").find(".fa-check-circle").hide();
     $(this).addClass("selected");
+    $(this).find(".fa-check-circle").show();
     selectedAddressId = $(this).data("id");
-    // When an address is selected, we can hide/disable the new address form
-    $("#new-address-section").css("opacity", "0.5");
+    // When an address is selected, hide the new address form
+    $("#new-address-section").addClass("d-none");
   });
 
   // Place Order
   $("#placeOrderBtn").on("click", async function () {
     const $btn = $(this);
     let payload = {
-      addressId: selectedAddressId || 0,
+      addressId: selectedAddressId ? parseInt(selectedAddressId) : null,
       newAddress: null,
     };
 
@@ -158,6 +170,9 @@ $(document).ready(function () {
         return;
       }
       payload.newAddress = newAddr;
+      payload.addressId = null;
+    } else {
+      payload.newAddress = null;
     }
 
     $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm me-2"></span>Placing Order...');
@@ -188,13 +203,20 @@ $(document).ready(function () {
       if (addresses.length === 0) {
         $list.append('<div class="col-12 text-center py-4 text-muted">No saved addresses found.</div>');
         $("#new-address-section").removeClass("d-none").css("opacity", "1");
+        selectedAddressId = null;
       } else {
         $("#new-address-section").addClass("d-none"); // Hide form if addresses exist
+        
+        // Find default address or choose the first one
+        const defaultAddr = addresses.find(a => a.isDefault) || addresses[0];
+        selectedAddressId = defaultAddr ? defaultAddr.id : null;
+
         addresses.forEach((addr) => {
+          const isSelected = selectedAddressId === addr.id;
           const addressCard = `
             <div class="col-md-6">
-              <div class="address-card p-3 rounded border position-relative" data-id="${addr.id}">
-                <i class="fas fa-check-circle text-primary position-absolute" style="top: 10px; right: 10px; display: none; font-size: 1.2rem;"></i>
+              <div class="address-card p-3 rounded border position-relative ${isSelected ? "selected" : ""}" data-id="${addr.id}">
+                <i class="fas fa-check-circle text-primary position-absolute" style="top: 10px; right: 10px; ${isSelected ? "" : "display: none;"} font-size: 1.2rem;"></i>
                 <h6 class="fw-bold mb-1">${addr.firstName} ${addr.lastName}</h6>
                 <p class="small mb-1 text-dark">${addr.addressLine1}, ${addr.addressLine2 || ""}</p>
                 <p class="small mb-1 text-dark">${addr.city}, ${addr.state} - ${addr.postalCode}</p>
@@ -232,6 +254,23 @@ $(document).ready(function () {
     try {
       const res = await getCartAPI(token);
       const cartItems = res.result?.items || res.result || [];
+
+      try {
+        const productsRes = await getAllProducts();
+        const products = productsRes.result || productsRes || [];
+        const productPriceMap = {};
+        products.forEach(p => {
+          productPriceMap[p.id] = p.discountPrice !== null && p.discountPrice !== undefined ? p.discountPrice : p.price;
+        });
+        cartItems.forEach(item => {
+          if (productPriceMap[item.productId] !== undefined) {
+            item.productPrice = productPriceMap[item.productId];
+          }
+        });
+      } catch (e) {
+        console.error("Failed to map discount prices in checkout table", e);
+      }
+
       $tableBody.empty();
 
       if (!Array.isArray(cartItems) || cartItems.length === 0) {
@@ -300,13 +339,13 @@ $(document).ready(function () {
       $tableBody.append(`
         <tr>
           <th scope="row"></th>
-          <td class="py-5"></td>
-          <td class="py-5"></td>
-          <td class="py-5">
-            <p class="mb-0 text-dark py-3 fw-bold">Subtotal</p>
+          <td class="py-2"></td>
+          <td class="py-2"></td>
+          <td class="py-2">
+            <p class="mb-0 text-dark fw-bold">Subtotal</p>
           </td>
-          <td class="py-5">
-            <div class="py-3 border-bottom border-top">
+          <td class="py-2">
+            <div>
               <p class="mb-0 text-dark fw-bold">₹${subtotal.toFixed(2)}</p>
             </div>
           </td>
@@ -317,16 +356,12 @@ $(document).ready(function () {
       $tableBody.append(`
         <tr>
           <th scope="row"></th>
-          <td class="py-5">
-            <p class="mb-0 text-dark py-4">Shipping</p>
+          <td class="py-2">
+            <p class="mb-0 text-dark">Shipping</p>
           </td>
-          <td colspan="3" class="py-5">
+          <td colspan="3" class="py-2">
             <div class="form-check text-start">
-              <input type="checkbox" class="form-check-input bg-primary border-0 shipping-opt" id="Shipping-1" name="Shipping-1" value="0" checked />
-              <label class="form-check-label" for="Shipping-1">Free Shipping</label>
-            </div>
-            <div class="form-check text-start">
-              <input type="checkbox" class="form-check-input bg-primary border-0 shipping-opt" id="Shipping-2" name="Shipping-1" value="15" />
+              <input type="checkbox" class="form-check-input bg-primary border-0 shipping-opt" id="Shipping-2" name="Shipping-1" value="15" checked disabled />
               <label class="form-check-label" for="Shipping-2">Flat rate: ₹15.00</label>
             </div>
           </td>
@@ -334,17 +369,18 @@ $(document).ready(function () {
       `);
 
       // Add Final Total Row
+      const finalTotalWithShipping = subtotal + 15.00;
       $tableBody.append(`
         <tr>
           <th scope="row"></th>
-          <td class="py-5">
-            <p class="mb-0 text-dark text-uppercase py-3 fw-bold">TOTAL</p>
+          <td class="py-2">
+            <p class="mb-0 text-dark text-uppercase fw-bold">TOTAL</p>
           </td>
-          <td class="py-5"></td>
-          <td class="py-5"></td>
-          <td class="py-5">
-            <div class="py-3 border-bottom border-top">
-              <p class="mb-0 text-dark fw-bold" id="finalTotal">₹${subtotal.toFixed(2)}</p>
+          <td class="py-2"></td>
+          <td class="py-2"></td>
+          <td class="py-2">
+            <div>
+              <p class="mb-0 text-dark fw-bold" id="finalTotal">₹${finalTotalWithShipping.toFixed(2)}</p>
             </div>
           </td>
         </tr>
@@ -365,6 +401,21 @@ $(document).ready(function () {
     try {
       const res = await getCartAPI(token);
       const cartItems = res.result?.items || res.result || [];
+
+      try {
+        const productsRes = await getAllProducts();
+        const products = productsRes.result || productsRes || [];
+        const productPriceMap = {};
+        products.forEach(p => {
+          productPriceMap[p.id] = p.discountPrice !== null && p.discountPrice !== undefined ? p.discountPrice : p.price;
+        });
+        cartItems.forEach(item => {
+          if (productPriceMap[item.productId] !== undefined) {
+            item.productPrice = productPriceMap[item.productId];
+          }
+        });
+      } catch (e) {}
+
       let subtotal = 0;
       cartItems.forEach((item) => {
         subtotal +=
@@ -375,6 +426,22 @@ $(document).ready(function () {
       const finalTotal = subtotal + shippingCost;
       $("#finalTotal").text(`₹${finalTotal.toFixed(2)}`);
     } catch (e) {}
+  });
+
+  // Payment Method item click and toggle descriptions
+  $(document).on("change", "input[name='paymentMethod']", function() {
+    $(".payment-method-item").removeClass("selected-payment");
+    $(".payment-desc").addClass("d-none");
+    
+    const $parent = $(this).closest(".payment-method-item");
+    $parent.addClass("selected-payment");
+    $parent.find(".payment-desc").removeClass("d-none");
+  });
+
+  $(document).on("click", ".payment-method-item", function(e) {
+    if (!$(e.target).is("input")) {
+      $(this).find("input[name='paymentMethod']").prop("checked", true).trigger("change");
+    }
   });
 
   renderCartTable();

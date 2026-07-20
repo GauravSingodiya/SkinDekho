@@ -288,9 +288,29 @@ export function showToast(message, type = "success", title = "") {
       const res = await registerUser(payload);
       console.log("Signup Success:", res);
 
-      showToast("Signup successful 🎉", "success", "Account Created");
+      const token = res.result?.token?.accessToken;
+      const user = res.result?.user;
+
+      if (token) {
+        sessionStorage.setItem("token", token);
+        if (user) {
+          sessionStorage.setItem("user", JSON.stringify(user));
+        }
+        showToast("Signup & Login successful 🎉", "success", "Welcome");
+      } else {
+        showToast("Signup successful 🎉", "success", "Account Created");
+      }
+
       $("#authModal").modal("hide");
       this.reset();
+
+      if (typeof syncCartBadge === "function") {
+        syncCartBadge();
+      }
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     } catch (err) {
       console.log(err, "err");
       showToast(err.message || "Signup failed", "error", "Signup Error");
@@ -1267,6 +1287,9 @@ $(document).on("submit", "#contactForm", async function (e) {
     $messageDiv
       .addClass("text-success")
       .text("Message sent successfully! We will get back to you shortly.");
+    setTimeout(() => {
+      $messageDiv.text("").removeClass("text-success");
+    }, 3000);
     this.reset();
   } catch (err) {
     console.error("Contact Error:", err);

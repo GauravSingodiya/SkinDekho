@@ -28,8 +28,8 @@
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/User.css" />
-      <link rel="icon" href="img/logo.png" type="image/png" />
-</head>
+    <link rel="icon" href="img/logo.png" type="image/png" />
+  </head>
   <body>
     <!-- Navbar start -->
     <div class="container-fluid fixed-top">
@@ -385,7 +385,11 @@
           <!-- Summary Cards -->
           <div class="row g-3 mb-4" id="adminOrderSummaryCards">
             <div class="col-6 col-md-4 col-lg-2">
-              <div class="summary-card text-center" style="cursor: pointer;" data-filter="All">
+              <div
+                class="summary-card text-center"
+                style="cursor: pointer"
+                data-filter="All"
+              >
                 <div class="icon-wrapper bg-light text-secondary mx-auto">
                   <i class="fas fa-shopping-basket"></i>
                 </div>
@@ -394,8 +398,15 @@
               </div>
             </div>
             <div class="col-6 col-md-4 col-lg-2">
-              <div class="summary-card text-center" style="cursor: pointer;" data-filter="Payment Pending">
-                <div class="icon-wrapper mx-auto" style="background: #fffbeb; color: #d97706;">
+              <div
+                class="summary-card text-center"
+                style="cursor: pointer"
+                data-filter="Payment Pending"
+              >
+                <div
+                  class="icon-wrapper mx-auto"
+                  style="background: #fffbeb; color: #d97706"
+                >
                   <i class="fas fa-hourglass-half"></i>
                 </div>
                 <div class="value" id="countPaymentPending">0</div>
@@ -403,8 +414,15 @@
               </div>
             </div>
             <div class="col-6 col-md-4 col-lg-2">
-              <div class="summary-card text-center" style="cursor: pointer;" data-filter="Processing">
-                <div class="icon-wrapper mx-auto" style="background: #f0f9ff; color: #0369a1;">
+              <div
+                class="summary-card text-center"
+                style="cursor: pointer"
+                data-filter="Processing"
+              >
+                <div
+                  class="icon-wrapper mx-auto"
+                  style="background: #f0f9ff; color: #0369a1"
+                >
                   <i class="fas fa-cogs"></i>
                 </div>
                 <div class="value" id="countProcessing">0</div>
@@ -412,8 +430,15 @@
               </div>
             </div>
             <div class="col-6 col-md-4 col-lg-2">
-              <div class="summary-card text-center" style="cursor: pointer;" data-filter="Shipped">
-                <div class="icon-wrapper mx-auto" style="background: #faf5ff; color: #7e22ce;">
+              <div
+                class="summary-card text-center"
+                style="cursor: pointer"
+                data-filter="Shipped"
+              >
+                <div
+                  class="icon-wrapper mx-auto"
+                  style="background: #faf5ff; color: #7e22ce"
+                >
                   <i class="fas fa-truck"></i>
                 </div>
                 <div class="value" id="countShipped">0</div>
@@ -421,8 +446,15 @@
               </div>
             </div>
             <div class="col-6 col-md-4 col-lg-2">
-              <div class="summary-card text-center" style="cursor: pointer;" data-filter="Delivered">
-                <div class="icon-wrapper mx-auto" style="background: #f0fdf4; color: #15803d;">
+              <div
+                class="summary-card text-center"
+                style="cursor: pointer"
+                data-filter="Delivered"
+              >
+                <div
+                  class="icon-wrapper mx-auto"
+                  style="background: #f0fdf4; color: #15803d"
+                >
                   <i class="fas fa-check-circle"></i>
                 </div>
                 <div class="value" id="countDelivered">0</div>
@@ -430,8 +462,15 @@
               </div>
             </div>
             <div class="col-6 col-md-4 col-lg-2">
-              <div class="summary-card text-center" style="cursor: pointer;" data-filter="Cancelled">
-                <div class="icon-wrapper mx-auto" style="background: #fef2f2; color: #b91c1c;">
+              <div
+                class="summary-card text-center"
+                style="cursor: pointer"
+                data-filter="Cancelled"
+              >
+                <div
+                  class="icon-wrapper mx-auto"
+                  style="background: #fef2f2; color: #b91c1c"
+                >
                   <i class="fas fa-times-circle"></i>
                 </div>
                 <div class="value" id="countCancelled">0</div>
@@ -441,18 +480,58 @@
           </div>
 
           <!-- Status Filters -->
-          <div id="adminOrderStatusFilters" class="d-flex gap-2 my-3 overflow-auto p-2" style="white-space: nowrap">
-            <button class="btn rounded-pill px-4 admin-order-filter-btn active btn-primary text-white" data-status="All">All</button>
-            <button class="btn rounded-pill px-4 admin-order-filter-btn btn-outline-primary" data-status="Payment Pending">Payment Pending</button>
-            <button class="btn rounded-pill px-4 admin-order-filter-btn btn-outline-primary" data-status="Processing">Processing</button>
-            <button class="btn rounded-pill px-4 admin-order-filter-btn btn-outline-primary" data-status="Shipped">Shipped</button>
-            <button class="btn rounded-pill px-4 admin-order-filter-btn btn-outline-primary" data-status="Delivered">Delivered</button>
-            <button class="btn rounded-pill px-4 admin-order-filter-btn btn-outline-primary" data-status="Cancelled">Cancelled</button>
+          <div
+            id="adminOrderStatusFilters"
+            class="d-flex gap-2 my-3 overflow-auto p-2"
+            style="white-space: nowrap"
+          >
+            <button
+              class="btn rounded-pill px-4 admin-order-filter-btn active btn-primary text-white"
+              data-status="All"
+            >
+              All
+            </button>
+            <button
+              class="btn rounded-pill px-4 admin-order-filter-btn btn-outline-primary"
+              data-status="Payment Pending"
+            >
+              Payment Pending
+            </button>
+            <button
+              class="btn rounded-pill px-4 admin-order-filter-btn btn-outline-primary"
+              data-status="Processing"
+            >
+              Processing
+            </button>
+            <button
+              class="btn rounded-pill px-4 admin-order-filter-btn btn-outline-primary"
+              data-status="Shipped"
+            >
+              Shipped
+            </button>
+            <button
+              class="btn rounded-pill px-4 admin-order-filter-btn btn-outline-primary"
+              data-status="Delivered"
+            >
+              Delivered
+            </button>
+            <button
+              class="btn rounded-pill px-4 admin-order-filter-btn btn-outline-primary"
+              data-status="Cancelled"
+            >
+              Cancelled
+            </button>
           </div>
 
           <!-- Order Table -->
-          <div class="table-responsive rounded-3 shadow-sm border bg-white mt-3" style="border-color: #e2e8f0;">
-            <table class="table table-hover align-middle mb-0" id="adminOrdersTable">
+          <div
+            class="table-responsive rounded-3 shadow-sm border bg-white mt-3"
+            style="border-color: #e2e8f0"
+          >
+            <table
+              class="table table-hover align-middle mb-0"
+              id="adminOrdersTable"
+            >
               <thead class="bg-light">
                 <tr>
                   <th class="ps-3">Order ID</th>
@@ -467,7 +546,10 @@
                 <!-- Dynamic orders will be injected here -->
                 <tr>
                   <td colspan="6" class="text-center py-5">
-                    <div class="spinner-border text-primary" role="status"></div>
+                    <div
+                      class="spinner-border text-primary"
+                      role="status"
+                    ></div>
                     <p class="mt-2 text-muted mb-0">Loading orders...</p>
                   </td>
                 </tr>
@@ -607,7 +689,10 @@
                     accept="image/*"
                     multiple
                   />
-                  <div id="imagePreviewContainer" class="d-flex flex-wrap gap-2 mt-2"></div>
+                  <div
+                    id="imagePreviewContainer"
+                    class="d-flex flex-wrap gap-2 mt-2"
+                  ></div>
                 </div>
               </div>
             </form>
@@ -832,10 +917,14 @@
 
           // Check if user is Admin
           if (user.role === "Admin") {
-            $("#adminProductsTab, #adminCategoriesTab, #adminOrdersTab").removeClass("d-none");
+            $(
+              "#adminProductsTab, #adminCategoriesTab, #adminOrdersTab",
+            ).removeClass("d-none");
             $(".user-info p").text("Administrator");
           } else {
-            $("#adminProductsTab, #adminCategoriesTab, #adminOrdersTab").addClass("d-none");
+            $(
+              "#adminProductsTab, #adminCategoriesTab, #adminOrdersTab",
+            ).addClass("d-none");
             $(".user-info p").text("Member");
           }
         }
@@ -914,6 +1003,9 @@
             }
 
             $msg.text("Profile updated successfully!").addClass("text-success");
+            setTimeout(() => {
+              $msg.text("").removeClass("text-success");
+            }, 3000);
             toggleEditMode(false);
           } catch (err) {
             console.error("Update failed", err);
@@ -1000,7 +1092,7 @@
             const fullImgUrl = relativePath.startsWith("http")
               ? relativePath
               : "http://skindekho.runasp.net" + relativePath;
-            
+
             const thumbHtml = `
               <div class="position-relative" style="width: 80px; height: 80px;">
                 <img src="${fullImgUrl}" class="img-thumbnail w-100 h-100" style="object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
@@ -1023,7 +1115,7 @@
           });
         }
 
-        $(document).on("click", ".remove-new-img", function(e) {
+        $(document).on("click", ".remove-new-img", function (e) {
           e.preventDefault();
           const idx = parseInt($(this).data("index"), 10);
           selectedImages.splice(idx, 1);
@@ -1784,10 +1876,10 @@
           try {
             const res = await getAllAdminOrdersAPI(token);
             allAdminOrders = res.result || res.data || res || [];
-            
+
             // Calculate summary stats
             calculateOrderSummary(allAdminOrders);
-            
+
             // Apply filtering and pagination rendering
             filterAdminOrders();
           } catch (err) {
@@ -1805,16 +1897,16 @@
             Processing: 0,
             Shipped: 0,
             Delivered: 0,
-            Cancelled: 0
+            Cancelled: 0,
           };
-          
-          orders.forEach(order => {
+
+          orders.forEach((order) => {
             const status = order.orderStatus;
             if (counts[status] !== undefined) {
               counts[status]++;
             }
           });
-          
+
           $("#countTotalOrders").text(counts.Total);
           $("#countPaymentPending").text(counts["Payment Pending"]);
           $("#countProcessing").text(counts.Processing);
@@ -1825,25 +1917,33 @@
 
         function setActiveFilter(status) {
           activeOrderStatusFilter = status;
-          
+
           // Update pills active state
-          $(".admin-order-filter-btn").removeClass("active btn-primary text-white").addClass("btn-outline-primary");
-          $(`.admin-order-filter-btn[data-status="${status}"]`).removeClass("btn-outline-primary").addClass("active btn-primary text-white");
-          
+          $(".admin-order-filter-btn")
+            .removeClass("active btn-primary text-white")
+            .addClass("btn-outline-primary");
+          $(`.admin-order-filter-btn[data-status="${status}"]`)
+            .removeClass("btn-outline-primary")
+            .addClass("active btn-primary text-white");
+
           // Update summary cards active state style
-          $(".summary-card").css("border-color", "#e2e8f0").css("background-color", "#fff");
-          $(`.summary-card[data-filter="${status}"]`).css("border-color", "#81c408").css("background-color", "#f8fafc");
-          
+          $(".summary-card")
+            .css("border-color", "#e2e8f0")
+            .css("background-color", "#fff");
+          $(`.summary-card[data-filter="${status}"]`)
+            .css("border-color", "#81c408")
+            .css("background-color", "#f8fafc");
+
           adminOrdersCurrentPage = 1;
           filterAdminOrders();
         }
 
-        $(document).on("click", ".admin-order-filter-btn", function() {
+        $(document).on("click", ".admin-order-filter-btn", function () {
           const status = $(this).data("status");
           setActiveFilter(status);
         });
 
-        $(document).on("click", ".summary-card", function() {
+        $(document).on("click", ".summary-card", function () {
           const status = $(this).data("filter");
           setActiveFilter(status);
         });
@@ -1853,13 +1953,13 @@
             currentFilteredOrders = [...allAdminOrders];
           } else {
             currentFilteredOrders = allAdminOrders.filter(
-              (o) => o.orderStatus === activeOrderStatusFilter
+              (o) => o.orderStatus === activeOrderStatusFilter,
             );
           }
-          
+
           // Sort by Order ID descending to show most recent first
           currentFilteredOrders.sort((a, b) => b.orderId - a.orderId);
-          
+
           renderAdminOrdersTable(currentFilteredOrders, adminOrdersCurrentPage);
         }
 
@@ -1887,15 +1987,20 @@
               month: "short",
               year: "numeric",
               hour: "2-digit",
-              minute: "2-digit"
+              minute: "2-digit",
             });
-            
+
             let statusBadgeClass = "bg-secondary";
-            if (o.orderStatus === "Payment Pending") statusBadgeClass = "badge-payment-pending text-warning";
-            else if (o.orderStatus === "Processing") statusBadgeClass = "badge-processing text-primary";
-            else if (o.orderStatus === "Shipped") statusBadgeClass = "badge-shipped text-purple";
-            else if (o.orderStatus === "Delivered") statusBadgeClass = "badge-delivered text-success";
-            else if (o.orderStatus === "Cancelled") statusBadgeClass = "badge-cancelled text-danger";
+            if (o.orderStatus === "Payment Pending")
+              statusBadgeClass = "badge-payment-pending text-warning";
+            else if (o.orderStatus === "Processing")
+              statusBadgeClass = "badge-processing text-primary";
+            else if (o.orderStatus === "Shipped")
+              statusBadgeClass = "badge-shipped text-purple";
+            else if (o.orderStatus === "Delivered")
+              statusBadgeClass = "badge-delivered text-success";
+            else if (o.orderStatus === "Cancelled")
+              statusBadgeClass = "badge-cancelled text-danger";
 
             const row = `
               <tr>
@@ -1922,7 +2027,9 @@
         }
 
         function renderAdminOrdersPagination(totalItems, currentPage) {
-          const totalPages = Math.ceil(totalItems / ADMIN_ORDERS_ITEMS_PER_PAGE);
+          const totalPages = Math.ceil(
+            totalItems / ADMIN_ORDERS_ITEMS_PER_PAGE,
+          );
           const $pagination = $("#adminOrdersPagination");
           $pagination.empty();
 
@@ -1978,7 +2085,10 @@
           const page = $(this).data("page");
           if (page) {
             adminOrdersCurrentPage = page;
-            renderAdminOrdersTable(currentFilteredOrders, adminOrdersCurrentPage);
+            renderAdminOrdersTable(
+              currentFilteredOrders,
+              adminOrdersCurrentPage,
+            );
             document
               .getElementById("admin-orders")
               .scrollIntoView({ behavior: "smooth" });
@@ -1991,25 +2101,27 @@
         });
 
         // Populate Order details modal
-        $(document).on("click", ".view-order-btn", function() {
+        $(document).on("click", ".view-order-btn", function () {
           const o = $(this).data("order");
-          
+
           $("#manageOrderId").val(o.orderId);
           $("#orderModalLabel").text(`Order Details - #${o.orderId}`);
-          
+
           $("#orderCustomerName").text(o.customerName || "Customer");
           $("#orderCustomerEmail").text(o.customerEmail || "");
           $("#orderCustomerPhone").text(o.customerPhone || "-");
-          
+
           const addr = o.address || {};
           $("#orderAddressName").text(addr.fullName || o.customerName || "-");
           $("#orderAddressStreet").text(addr.street || "-");
-          $("#orderAddressCityPincode").text(`${addr.city || "-"} - ${addr.pincode || "-"}`);
-          
+          $("#orderAddressCityPincode").text(
+            `${addr.city || "-"} - ${addr.pincode || "-"}`,
+          );
+
           $("#manageOrderStatus").val(o.orderStatus || "Payment Pending");
           $("#manageOrderCarrier").val(o.carrier || "");
           $("#manageOrderTracking").val(o.trackingNumber || "");
-          
+
           if (o.shippingDate) {
             try {
               const dt = new Date(o.shippingDate);
@@ -2021,12 +2133,12 @@
           } else {
             $("#manageOrderShippingDate").val("");
           }
-          
+
           const $itemsList = $("#orderItemsList");
           $itemsList.empty();
-          
+
           const items = o.items || [];
-          items.forEach(item => {
+          items.forEach((item) => {
             const subtotal = (item.price || 0) * (item.quantity || 1);
             const row = `
               <tr>
@@ -2038,31 +2150,33 @@
             `;
             $itemsList.append(row);
           });
-          
+
           $("#orderTotalAmount").text(`₹${(o.totalAmount || 0).toFixed(2)}`);
-          
+
           $("#saveOrderBtn").prop("disabled", false);
           $("#orderSpinner").addClass("d-none");
-          
+
           orderModal.show();
         });
 
         // Save order changes
-        $("#saveOrderBtn").on("click", async function() {
+        $("#saveOrderBtn").on("click", async function () {
           const id = $("#manageOrderId").val();
           const payload = {
             orderStatus: $("#manageOrderStatus").val(),
             carrier: $("#manageOrderCarrier").val().trim() || null,
             trackingNumber: $("#manageOrderTracking").val().trim() || null,
-            shippingDate: $("#manageOrderShippingDate").val() ? new Date($("#manageOrderShippingDate").val()).toISOString() : null
+            shippingDate: $("#manageOrderShippingDate").val()
+              ? new Date($("#manageOrderShippingDate").val()).toISOString()
+              : null,
           };
-          
+
           const $btn = $(this);
           const $spinner = $("#orderSpinner");
-          
+
           $btn.prop("disabled", true);
           $spinner.removeClass("d-none");
-          
+
           try {
             await updateAdminOrderAPI(id, payload, token);
             showToast("Order updated successfully", "success");
@@ -2292,7 +2406,9 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header bg-primary text-white">
-            <h5 class="modal-title" id="orderModalLabel">Order Details & Management</h5>
+            <h5 class="modal-title" id="orderModalLabel">
+              Order Details & Management
+            </h5>
             <button
               type="button"
               class="btn-close btn-close-white"
@@ -2303,38 +2419,53 @@
           <div class="modal-body">
             <form id="orderForm">
               <input type="hidden" id="manageOrderId" />
-              
+
               <div class="row g-4">
                 <!-- Left Column: Customer & Shipping Details -->
                 <div class="col-md-6 border-end">
-                  <h6 class="fw-bold text-primary mb-3"><i class="fas fa-user me-2"></i>Customer Information</h6>
+                  <h6 class="fw-bold text-primary mb-3">
+                    <i class="fas fa-user me-2"></i>Customer Information
+                  </h6>
                   <div class="mb-3">
-                    <label class="form-label text-muted small mb-1">Customer Name</label>
+                    <label class="form-label text-muted small mb-1"
+                      >Customer Name</label
+                    >
                     <div class="fw-bold" id="orderCustomerName">-</div>
                   </div>
                   <div class="mb-3">
-                    <label class="form-label text-muted small mb-1">Email Address</label>
+                    <label class="form-label text-muted small mb-1"
+                      >Email Address</label
+                    >
                     <div id="orderCustomerEmail">-</div>
                   </div>
                   <div class="mb-3">
-                    <label class="form-label text-muted small mb-1">Phone Number</label>
+                    <label class="form-label text-muted small mb-1"
+                      >Phone Number</label
+                    >
                     <div id="orderCustomerPhone">-</div>
                   </div>
-                  
-                  <h6 class="fw-bold text-primary mt-4 mb-3"><i class="fas fa-map-marker-alt me-2"></i>Shipping Address</h6>
+
+                  <h6 class="fw-bold text-primary mt-4 mb-3">
+                    <i class="fas fa-map-marker-alt me-2"></i>Shipping Address
+                  </h6>
                   <div class="bg-light p-3 rounded border">
                     <div class="fw-bold" id="orderAddressName">-</div>
                     <div id="orderAddressStreet">-</div>
                     <div id="orderAddressCityPincode">-</div>
                   </div>
                 </div>
-                
+
                 <!-- Right Column: Status & Fulfillment -->
                 <div class="col-md-6">
-                  <h6 class="fw-bold text-primary mb-3"><i class="fas fa-shipping-fast me-2"></i>Fulfillment & Status</h6>
-                  
+                  <h6 class="fw-bold text-primary mb-3">
+                    <i class="fas fa-shipping-fast me-2"></i>Fulfillment &
+                    Status
+                  </h6>
+
                   <div class="mb-3">
-                    <label class="form-label fw-bold">Order Status<sup>*</sup></label>
+                    <label class="form-label fw-bold"
+                      >Order Status<sup>*</sup></label
+                    >
                     <select class="form-select" id="manageOrderStatus" required>
                       <option value="Payment Pending">Payment Pending</option>
                       <option value="Processing">Processing</option>
@@ -2343,37 +2474,55 @@
                       <option value="Cancelled">Cancelled</option>
                     </select>
                   </div>
-                  
+
                   <div class="mb-3">
                     <label class="form-label">Carrier</label>
-                    <input type="text" class="form-control" id="manageOrderCarrier" placeholder="e.g. FedEx, BlueDart" />
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="manageOrderCarrier"
+                      placeholder="e.g. FedEx, BlueDart"
+                    />
                   </div>
-                  
+
                   <div class="mb-3">
                     <label class="form-label">Tracking Number</label>
-                    <input type="text" class="form-control" id="manageOrderTracking" placeholder="e.g. 1234567890" />
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="manageOrderTracking"
+                      placeholder="e.g. 1234567890"
+                    />
                   </div>
-                  
+
                   <div class="mb-3">
                     <label class="form-label">Shipping Date</label>
-                    <input type="datetime-local" class="form-control" id="manageOrderShippingDate" />
+                    <input
+                      type="datetime-local"
+                      class="form-control"
+                      id="manageOrderShippingDate"
+                    />
                   </div>
                 </div>
               </div>
-              
+
               <hr class="my-4" />
-              
+
               <!-- Items Section -->
               <div>
-                <h6 class="fw-bold text-primary mb-3"><i class="fas fa-shopping-cart me-2"></i>Items Ordered</h6>
+                <h6 class="fw-bold text-primary mb-3">
+                  <i class="fas fa-shopping-cart me-2"></i>Items Ordered
+                </h6>
                 <div class="table-responsive">
                   <table class="table table-bordered table-sm align-middle">
                     <thead class="table-light text-secondary small">
                       <tr>
                         <th class="ps-2">Product Name</th>
-                        <th class="text-end" style="width: 100px;">Price</th>
-                        <th class="text-center" style="width: 80px;">Qty</th>
-                        <th class="text-end pe-2" style="width: 120px;">Total</th>
+                        <th class="text-end" style="width: 100px">Price</th>
+                        <th class="text-center" style="width: 80px">Qty</th>
+                        <th class="text-end pe-2" style="width: 120px">
+                          Total
+                        </th>
                       </tr>
                     </thead>
                     <tbody id="orderItemsList">
@@ -2381,14 +2530,20 @@
                     </tbody>
                     <tfoot>
                       <tr>
-                        <td colspan="3" class="text-end fw-bold">Total Amount:</td>
-                        <td class="text-end fw-bold text-success pe-2" id="orderTotalAmount">₹0.00</td>
+                        <td colspan="3" class="text-end fw-bold">
+                          Total Amount:
+                        </td>
+                        <td
+                          class="text-end fw-bold text-success pe-2"
+                          id="orderTotalAmount"
+                        >
+                          ₹0.00
+                        </td>
                       </tr>
                     </tfoot>
                   </table>
                 </div>
               </div>
-              
             </form>
           </div>
           <div class="modal-footer border-0">

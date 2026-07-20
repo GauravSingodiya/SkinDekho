@@ -2,6 +2,7 @@
 
 import { getCartAPI, removeFromCartAPI } from "./api/cartService.js";
 import { BASE_URL } from "./api/config.js";
+import { getAllProducts } from "./products.js";
 
 $(document).ready(function () {
   const token = sessionStorage.getItem("token");
@@ -20,6 +21,23 @@ async function loadCartItems(token) {
   try {
     const res = await getCartAPI(token);
     const cartItems = res.result?.items || res.result || [];
+
+    try {
+      const productsRes = await getAllProducts();
+      const products = productsRes.result || productsRes || [];
+      const productPriceMap = {};
+      products.forEach(p => {
+        productPriceMap[p.id] = p.discountPrice !== null && p.discountPrice !== undefined ? p.discountPrice : p.price;
+      });
+      cartItems.forEach(item => {
+        if (productPriceMap[item.productId] !== undefined) {
+          item.productPrice = productPriceMap[item.productId];
+        }
+      });
+    } catch (e) {
+      console.error("Failed to map discount prices in cart", e);
+    }
+
     $cartTableBody.empty();
 
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
