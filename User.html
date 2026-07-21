@@ -293,8 +293,14 @@
 
         <!-- ================= SHIPPING ADDRESS ================= -->
         <div id="address" class="profile-section d-none">
-          <section class="content-header">
+          <section class="content-header d-flex justify-content-between align-items-center mb-3">
             <h2>Shipping Addresses</h2>
+            <button
+              class="btn btn-primary rounded-pill px-4"
+              id="addNewAddressBtnHeader"
+            >
+              <i class="fas fa-plus me-2"></i>Add Address
+            </button>
           </section>
           <div id="addressesList" class="row g-3">
             <!-- Dynamic addresses will be injected here -->
@@ -856,6 +862,7 @@
       import {
         getAddressesAPI,
         getMyOrdersAPI,
+        addAddressAPI,
         updateAddressAPI,
         deleteAddressAPI,
         getAllAdminOrdersAPI,
@@ -1771,7 +1778,7 @@
         }
 
         // --- Address Management Logic ---
-        $(document).on("click", "#addNewAddressBtn", function () {
+        $(document).on("click", "#addNewAddressBtn, #addNewAddressBtnHeader", function () {
           $("#addressForm")[0].reset();
           $("#addressId").val("");
           $("#addressModalLabel").text("Add New Address");
