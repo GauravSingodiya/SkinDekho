@@ -36,15 +36,8 @@
       <div class="container topbar bg-primary d-none d-lg-block">
         <div class="d-flex justify-content-between">
           <div class="top-info ps-2">
-            <small class="me-3"
-              ><i class="fas fa-map-marker-alt me-2 text-secondary"></i>
-              <a href="#" class="text-white">302016 jaipur, India</a></small
-            >
-            <small class="me-3"
-              ><i class="fas fa-envelope me-2 text-secondary"></i
-              ><a href="#" class="text-white">skindekho@gmail.com</a></small
-            >
-          </div>
+          <small class="text-white">SkinDekho – Your Trusted Skincare Destination</small>
+        </div>
           <div class="top-link pe-2">
             <a href="privacy-policy.html" class="text-white"
               ><small class="text-white mx-2">Privacy Policy</small>/</a
@@ -293,8 +286,14 @@
 
         <!-- ================= SHIPPING ADDRESS ================= -->
         <div id="address" class="profile-section d-none">
-          <section class="content-header">
+          <section class="content-header d-flex justify-content-between align-items-center mb-3">
             <h2>Shipping Addresses</h2>
+            <button
+              class="btn btn-primary rounded-pill px-4"
+              id="addNewAddressBtnHeader"
+            >
+              <i class="fas fa-plus me-2"></i>Add Address
+            </button>
           </section>
           <div id="addressesList" class="row g-3">
             <!-- Dynamic addresses will be injected here -->
@@ -856,6 +855,7 @@
       import {
         getAddressesAPI,
         getMyOrdersAPI,
+        addAddressAPI,
         updateAddressAPI,
         deleteAddressAPI,
         getAllAdminOrdersAPI,
@@ -1771,7 +1771,7 @@
         }
 
         // --- Address Management Logic ---
-        $(document).on("click", "#addNewAddressBtn", function () {
+        $(document).on("click", "#addNewAddressBtn, #addNewAddressBtnHeader", function () {
           $("#addressForm")[0].reset();
           $("#addressId").val("");
           $("#addressModalLabel").text("Add New Address");

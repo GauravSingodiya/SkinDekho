@@ -2,7 +2,6 @@
 
 import { getCartAPI, removeFromCartAPI } from "./api/cartService.js";
 import { BASE_URL } from "./api/config.js";
-import { getAllProducts } from "./products.js";
 
 $(document).ready(function () {
   const token = sessionStorage.getItem("token");
@@ -11,7 +10,7 @@ $(document).ready(function () {
     return;
   }
   loadCartItems(token);
-  syncCartBadge(token); 
+  syncCartBadge(token);
 });
 
 async function loadCartItems(token) {
@@ -21,23 +20,6 @@ async function loadCartItems(token) {
   try {
     const res = await getCartAPI(token);
     const cartItems = res.result?.items || res.result || [];
-
-    try {
-      const productsRes = await getAllProducts();
-      const products = productsRes.result || productsRes || [];
-      const productPriceMap = {};
-      products.forEach(p => {
-        productPriceMap[p.id] = p.discountPrice !== null && p.discountPrice !== undefined ? p.discountPrice : p.price;
-      });
-      cartItems.forEach(item => {
-        if (productPriceMap[item.productId] !== undefined) {
-          item.productPrice = productPriceMap[item.productId];
-        }
-      });
-    } catch (e) {
-      console.error("Failed to map discount prices in cart", e);
-    }
-
     $cartTableBody.empty();
 
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
@@ -50,17 +32,17 @@ async function loadCartItems(token) {
       const price = item.productPrice || 0;
       const quantity = item.quantity || 1;
       const total = (price * quantity).toFixed(2);
-      
+
       const relativeImgUrl = item.imageUrl || "";
       const fullImgUrl = relativeImgUrl.startsWith("http")
         ? relativeImgUrl
         : relativeImgUrl
-        ? (BASE_URL + relativeImgUrl)
-        : "img/product-default.jpg";
+          ? (BASE_URL + relativeImgUrl)
+          : "img/product-default.jpg";
 
       const name = item.productName || "Product";
       const productId = item.productId;
-      
+
       const row = `
         <tr data-id="${productId}">
           <th scope="row">
@@ -101,7 +83,7 @@ async function loadCartItems(token) {
       `;
       $cartTableBody.append(row);
     });
-    
+
     updateCartTotals(cartItems);
   } catch (err) {
     console.error("Failed to load cart items:", err);
@@ -111,16 +93,16 @@ async function loadCartItems(token) {
 
 function updateCartTotals(cartItems) {
   let subtotal = 0;
-  
+
   cartItems.forEach(item => {
     const price = item.productPrice || 0;
     const quantity = item.quantity || 1;
     subtotal += price * quantity;
   });
-  
+
   const shipping = 0; // The API might handle shipping or it's free
   const total = subtotal + shipping;
-  
+
   $("#cart-subtotal").text(`₹${subtotal.toFixed(2)}`);
   $("#cart-shipping").text(subtotal > 0 ? "Free" : "₹0.00");
   $("#cart-total").text(`₹${total.toFixed(2)}`);
@@ -130,7 +112,7 @@ function updateCartTotals(cartItems) {
 $(document).on("click", ".btn-remove", async function () {
   const itemId = $(this).closest("tr").data("id");
   const token = sessionStorage.getItem("token");
-  
+
   if (!confirm("Are you sure you want to remove this item?")) return;
 
   try {
@@ -147,10 +129,10 @@ $(document).on("click", ".btn-plus, .btn-minus", async function () {
   const isPlus = $(this).hasClass("btn-plus");
   const productId = $(this).closest("tr").data("id");
   const token = sessionStorage.getItem("token");
-  
+
   const quantityChange = isPlus ? 1 : -1;
   const currentQty = parseInt($(this).closest(".quantity").find("input").val());
-  
+
   if (!isPlus && currentQty <= 1) return; // Prevent decrementing below 1
 
   const $btn = $(this);
@@ -160,7 +142,7 @@ $(document).on("click", ".btn-plus, .btn-minus", async function () {
   try {
     const { addToCartAPI } = await import("./api/cartService.js");
     const res = await addToCartAPI(productId, quantityChange, token);
-    
+
     // Refresh cart
     loadCartItems(token);
     syncCartBadge(token);
@@ -176,7 +158,7 @@ async function syncCartBadge(token) {
   try {
     const res = await getCartAPI(token);
     const cartItems = res.result?.items || res.result || [];
-    const totalItems = Array.isArray(cartItems) 
+    const totalItems = Array.isArray(cartItems)
       ? cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0)
       : 0;
     $(".fa-shopping-bag").next("span").text(totalItems);
