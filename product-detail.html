@@ -1,725 +1,1041 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>SkinDekho - Product Details</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <meta content="" name="keywords" />
-    <meta content="" name="description" />
 
-    <!-- Google Web Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="utf-8" />
+  <title>SkinDekho - Product Details</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <meta content="" name="keywords" />
+  <meta content="" name="description" />
 
-    <!-- Icon Font Stylesheet -->
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css"
-      rel="stylesheet"
-    />
+  <!-- Google Web Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+    rel="stylesheet" />
 
-    <!-- Libraries Stylesheet -->
-    <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
+  <!-- Icon Font Stylesheet -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet" />
 
-    <!-- Customized Bootstrap Stylesheet -->
-    <link href="css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Libraries Stylesheet -->
+  <link href="lib/lightbox/css/lightbox.min.css" rel="stylesheet" />
+  <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet" />
 
-    <!-- Template Stylesheet -->
-    <link href="css/style.css" rel="stylesheet" />
-    <style>
-      /* Premium design adjustments */
-      .product-img-card {
-        border: 1px solid #ff7e7e;
-        border-radius: 8px;
-        padding: 15px;
-        background: #fff;
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 400px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      }
-      .product-img-card img {
-        max-width: 100%;
-        max-height: 450px;
-        object-fit: contain;
-        transition: transform 0.5s ease;
-      }
-      .product-img-card:hover img {
-        transform: scale(1.03);
-      }
-      .zoom-icon {
-        position: absolute;
-        bottom: 15px;
-        left: 15px;
-        background: #fff;
-        border: 1px solid #ddd;
-        border-radius: 50%;
-        width: 38px;
-        height: 38px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #666;
-        cursor: pointer;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-      }
-      .zoom-icon:hover {
-        background: #f8f9fa;
-        color: #333;
-        transform: scale(1.05);
-      }
+  <!-- Customized Bootstrap Stylesheet -->
+  <link href="css/bootstrap.min.css" rel="stylesheet" />
 
-      .product-title {
-        color: #1b2f24;
-        font-weight: 800;
-        font-size: 2.2rem;
-      }
-      .price-display-section {
-        display: flex;
-        align-items: baseline;
-        gap: 15px;
-      }
-      .new-price {
-        color: #81c408;
-        font-weight: 800;
-        font-size: 1.8rem;
-      }
-      .old-price-crossed {
-        text-decoration: line-through;
-        color: #212529;
-        font-weight: 600;
-        font-size: 1.4rem;
-      }
-      .delivery-banner {
-        color: #ff3b30;
-        font-weight: 700;
-        font-size: 1rem;
-        margin-top: 10px;
-        margin-bottom: 20px;
-      }
-      .features-list {
-        list-style: none;
-        padding-left: 0;
-        margin-bottom: 25px;
-      }
-      .features-list li {
-        position: relative;
-        padding-left: 15px;
-        margin-bottom: 10px;
-        color: #212529;
-        font-size: 0.95rem;
-        line-height: 1.5;
-      }
-      .features-list li::before {
-        content: "•";
-        position: absolute;
-        left: 0;
-        color: #000;
-        font-weight: bold;
-      }
-      .features-list li.no-bullet {
-        padding-left: 0;
-      }
-      .features-list li.no-bullet::before {
-        content: none;
-      }
-      .whatsapp-order-btn {
-        background-color: #25d366;
-        color: #fff;
-        border: none;
-        font-weight: 700;
-        width: 100%;
-        text-align: center;
-        padding: 14px 20px;
-        border-radius: 6px;
-        font-size: 1.1rem;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        transition: background-color 0.3s ease;
-        text-decoration: none;
-        margin-bottom: 15px;
-        box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
-      }
-      .whatsapp-order-btn:hover {
-        background-color: #1ebe5d;
-        color: #fff;
-      }
-      .stock-badge {
-        font-weight: 700;
-        font-size: 1.05rem;
-        color: #000;
-        margin-bottom: 20px;
-      }
-      .stock-badge.out-of-stock {
-        color: #dc3545;
-      }
+  <!-- Template Stylesheet -->
+  <link href="css/style.css" rel="stylesheet" />
+  <style>
+    /* Premium design adjustments */
+    .product-img-card {
+      border: 1px solid #e9e5ff;
+      border-radius: 12px;
+      padding: 15px;
+      background: #fff;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 400px;
+      box-shadow: 0 8px 24px rgba(129, 196, 8, 0.06);
+    }
 
-      /* Actions Row styling */
-      .actions-row {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        flex-wrap: wrap;
-        margin-bottom: 25px;
-      }
-      .custom-qty-pill {
-        display: inline-flex;
-        align-items: center;
-        border: 1px solid #81c408;
-        border-radius: 30px;
-        padding: 4px 8px;
-        background: #fff;
-        min-width: 130px;
-        justify-content: space-between;
-      }
-      .custom-qty-pill button {
-        background: none;
-        border: none;
-        color: #81c408;
-        font-size: 1.2rem;
-        font-weight: 700;
-        width: 32px;
-        height: 32px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-      }
-      .custom-qty-pill button:hover {
-        background-color: #f2f9e6;
-      }
-      .custom-qty-pill input {
-        border: none;
-        width: 40px;
-        text-align: center;
-        font-weight: 700;
-        font-size: 1.1rem;
-        color: #81c408;
-        background: transparent;
-      }
-      .custom-qty-pill input:focus {
-        outline: none;
-      }
-      .action-pill-btn {
-        background-color: #81c408;
-        color: #fff;
-        border: none;
-        border-radius: 30px;
-        padding: 12px 28px;
-        font-weight: 700;
-        font-size: 0.95rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(129, 196, 8, 0.25);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-      }
-      .action-pill-btn:hover {
-        background-color: #6ea705;
-        color: #fff;
-        transform: translateY(-1px);
-        box-shadow: 0 6px 14px rgba(129, 196, 8, 0.35);
-      }
+    .product-img-card img {
+      max-width: 100%;
+      max-height: 450px;
+      object-fit: contain;
+      transition: transform 0.5s ease;
+    }
 
-      .buy-now-btn {
-        background-color: #ffb524 !important;
-        box-shadow: 0 4px 10px rgba(255, 181, 36, 0.25) !important;
-      }
-      .buy-now-btn:hover {
-        background-color: #e2af18 !important;
-        box-shadow: 0 6px 14px rgba(255, 181, 36, 0.35) !important;
-      }
+    .product-img-card:hover img {
+      transform: scale(1.03);
+    }
 
-      /* Metadata & Share icons */
-      .meta-info-section {
-        border-top: 1px solid #eee;
-        padding-top: 20px;
-        margin-top: 20px;
-        font-size: 0.95rem;
-        color: #555;
-      }
-      .meta-info-row {
-        margin-bottom: 8px;
-      }
-      .meta-info-row strong {
-        color: #000;
-      }
-      .share-icons {
-        display: inline-flex;
-        gap: 10px;
-        margin-left: 10px;
-        align-items: center;
-        vertical-align: middle;
-      }
-      .share-link {
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        border: 1px solid #ddd;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        color: #888;
-        font-size: 0.9rem;
-        transition: all 0.3s ease;
-        text-decoration: none;
-      }
-      .share-link:hover {
-        color: #81c408;
-        border-color: #81c408;
-        background-color: #f2f9e6;
-        transform: translateY(-1px);
-      }
+    .zoom-icon {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #666;
+      cursor: pointer;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
 
-      /* Floating viewports */
-      .floating-widget-container {
-        position: fixed;
-        bottom: 25px;
-        left: 25px;
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-        z-index: 1000;
-      }
-      .floating-circle-btn {
-        width: 55px;
-        height: 55px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-        color: #fff;
-        text-decoration: none;
-        position: relative;
-        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      }
-      .floating-circle-btn:hover {
-        transform: scale(1.08) translateY(-3px);
-        color: #fff;
-      }
-      .floating-cart {
-        background-color: #81c408;
-      }
-      .floating-whatsapp {
-        background-color: #25d366;
-      }
-      .floating-cart-badge {
-        position: absolute;
-        top: -3px;
-        right: -3px;
-        background-color: #dc3545;
-        color: white;
-        border-radius: 50%;
-        width: 22px;
-        height: 22px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.75rem;
-        font-weight: 700;
-        border: 2px solid #fff;
-      }
+    .zoom-icon:hover {
+      background: #f8f9fa;
+      color: #333;
+      transform: scale(1.05);
+    }
 
-      .breadcrumb-item a {
-        color: var(--bs-primary);
-        text-decoration: none;
-      }
-    </style>
-      <link rel="icon" href="img/logo.png" type="image/png" />
+    .product-title {
+      color: #1b2f24;
+      font-weight: 800;
+      font-size: 2.2rem;
+    }
+
+    .price-display-section {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .new-price {
+      color: #008a00;
+      font-weight: 700;
+      font-size: 2rem;
+    }
+
+    .old-price-crossed {
+      text-decoration: line-through;
+      color: #969bab;
+      font-weight: 700;
+      font-size: 1.4rem;
+      opacity: 0.8;
+    }
+
+    .delivery-banner {
+      color: #ff3b30;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+
+    .features-list {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 25px;
+    }
+
+    .features-list li {
+      position: relative;
+      padding-left: 15px;
+      margin-bottom: 10px;
+      color: #212529;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .features-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #000;
+      font-weight: bold;
+    }
+
+    .features-list li.no-bullet {
+      padding-left: 0;
+    }
+
+    .features-list li.no-bullet::before {
+      content: none;
+    }
+
+    .whatsapp-order-btn {
+      background-color: #25d366;
+      color: #fff;
+      border: none;
+      font-weight: 700;
+      width: 100%;
+      text-align: center;
+      padding: 14px 20px;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.3s ease;
+      text-decoration: none;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
+    }
+
+    .whatsapp-order-btn:hover {
+      background-color: #1ebe5d;
+      color: #fff;
+    }
+
+    .stock-badge {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #000;
+      margin-bottom: 20px;
+    }
+
+    .stock-badge.out-of-stock {
+      color: #dc3545;
+    }
+
+    /* Actions Row styling */
+    .actions-row {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 25px;
+    }
+
+    .custom-qty-pill {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid #81c408;
+      border-radius: 30px;
+      padding: 4px 8px;
+      background: #fff;
+      min-width: 130px;
+      justify-content: space-between;
+    }
+
+    .custom-qty-pill button {
+      background: none;
+      border: none;
+      color: #81c408;
+      font-size: 1.2rem;
+      font-weight: 700;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .custom-qty-pill button:hover {
+      background-color: #f2f9e6;
+    }
+
+    .custom-qty-pill input {
+      border: none;
+      width: 40px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #81c408;
+      background: transparent;
+    }
+
+    .custom-qty-pill input:focus {
+      outline: none;
+    }
+
+    .action-pill-btn {
+      background-color: #81c408;
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 12px 28px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(129, 196, 8, 0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .action-pill-btn:hover {
+      background-color: #6ea705;
+      color: #fff;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(129, 196, 8, 0.35);
+    }
+
+    .buy-now-btn {
+      background-color: #ffb524 !important;
+      box-shadow: 0 4px 10px rgba(255, 181, 36, 0.25) !important;
+    }
+
+    .buy-now-btn:hover {
+      background-color: #e2af18 !important;
+      box-shadow: 0 6px 14px rgba(255, 181, 36, 0.35) !important;
+    }
+
+    /* Metadata & Share icons */
+    .meta-info-section {
+      border-top: 1px solid #eee;
+      padding-top: 20px;
+      margin-top: 20px;
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .meta-info-row {
+      margin-bottom: 8px;
+    }
+
+    .meta-info-row strong {
+      color: #000;
+    }
+
+    .share-icons {
+      display: inline-flex;
+      gap: 10px;
+      margin-left: 10px;
+      align-items: center;
+      vertical-align: middle;
+    }
+
+    .share-link {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid #ddd;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+
+    .share-link:hover {
+      color: #81c408;
+      border-color: #81c408;
+      background-color: #f2f9e6;
+      transform: translateY(-1px);
+    }
+
+    /* Floating viewports */
+    .floating-widget-container {
+      position: fixed;
+      bottom: 25px;
+      left: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 1000;
+    }
+
+    .floating-circle-btn {
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      color: #fff;
+      text-decoration: none;
+      position: relative;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .floating-circle-btn:hover {
+      transform: scale(1.08) translateY(-3px);
+      color: #fff;
+    }
+
+    .floating-cart {
+      background-color: #81c408;
+    }
+
+    .floating-whatsapp {
+      background-color: #25d366;
+    }
+
+    .floating-cart-badge {
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background-color: #dc3545;
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 2px solid #fff;
+    }
+
+    .breadcrumb-item a {
+      color: #81c408;
+      text-decoration: none;
+    }
+
+    .breadcrumb-item.active {
+      color: #969bab;
+    }
+
+    .breadcrumb-item+.breadcrumb-item::before {
+      content: ">" !important;
+      color: #969bab !important;
+      font-size: 0.8rem;
+    }
+
+    /* Trust Badges Wrapper */
+    .logos-wrappper {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: #fdfcff;
+      border: 1px solid #e9e5ff;
+      border-radius: 12px;
+      padding: 15px 10px;
+      margin-top: 25px;
+      margin-bottom: 25px;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(129, 196, 8, 0.03);
+    }
+
+    .logo-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      flex: 1;
+    }
+
+    .logo-box img {
+      height: 40px;
+      margin-bottom: 6px;
+      object-fit: contain;
+      filter: hue-rotate(205deg) saturate(1.5);
+    }
+
+    .logo-box b {
+      font-size: 0.8rem;
+      color: #4a3e56;
+      font-weight: 700;
+      display: block;
+    }
+
+    /* Frequently bought together related cards custom styles */
+    .frequently_bought_together .fruite-item {
+      border: 1px solid #f2f9e6 !important;
+      border-radius: 12px !important;
+      box-shadow: 0 4px 12px rgba(129, 196, 8, 0.04) !important;
+      transition: all 0.3s ease !important;
+      background: #fff;
+    }
+
+    .frequently_bought_together .fruite-item:hover {
+      border-color: #81c408 !important;
+      box-shadow: 0 6px 18px rgba(129, 196, 8, 0.08) !important;
+      transform: translateY(-2px);
+    }
+
+    .best-used-product-card {
+      flex: 0 0 calc(50% - 12px);
+      max-width: calc(50% - 12px);
+      transition: all 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+
+
+    .frequently_bought_together .fruite-item .btn {
+      transition: all 0.2s ease !important;
+      flex-shrink: 0 !important;
+      white-space: nowrap !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+  </style>
+  <link rel="icon" href="img/logo.png" type="image/png" />
 </head>
 
-  <body>
-    <!-- Spinner Start -->
-    <div
-      id="spinner"
-      class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center"
-    >
-      <div class="spinner-grow text-primary" role="status"></div>
-    </div>
-    <!-- Spinner End -->
+<body>
+  <!-- Spinner Start -->
+  <div id="spinner"
+    class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-grow text-primary" role="status"></div>
+  </div>
+  <!-- Spinner End -->
 
-    <!-- Navbar start -->
-    <div class="container-fluid fixed-top">
-      <div class="container topbar bg-primary d-none d-lg-block">
-        <div class="d-flex justify-content-between">
-          <div class="top-info ps-2">
-            <small class="me-3"
-              ><i class="fas fa-map-marker-alt me-2 text-secondary"></i>
-              <a href="#" class="text-white">302016 jaipur, India</a></small
-            >
-            <small class="me-3"
-              ><i class="fas fa-envelope me-2 text-secondary"></i
-              ><a href="#" class="text-white">skindekho@gmail.com</a></small
-            >
-          </div>
-          <div class="top-link pe-2">
-            <a href="privacy-policy.html" class="text-white"
-              ><small class="text-white mx-2">Privacy Policy</small>/</a
-            >
-            <a href="terms-conditions.html" class="text-white"
-              ><small class="text-white mx-2">Terms of Use</small>/</a
-            >
-            <a href="sales-refunds.html" class="text-white"
-              ><small class="text-white ms-2">Sales and Refunds</small></a
-            >
-          </div>
+  <!-- Navbar start -->
+  <div class="container-fluid fixed-top">
+    <div class="container topbar bg-primary d-none d-lg-block">
+      <div class="d-flex justify-content-between">
+        <div class="top-info ps-2">
+          <small class="text-white">SkinDekho – Your Trusted Skincare Destination</small>
+        </div>
+        <div class="top-link pe-2">
+          <a href="privacy-policy.html" class="text-white"><small class="text-white mx-2">Privacy Policy</small>/</a>
+          <a href="terms-conditions.html" class="text-white"><small class="text-white mx-2">Terms of Use</small>/</a>
+          <a href="sales-refunds.html" class="text-white"><small class="text-white ms-2">Sales and Refunds</small></a>
         </div>
       </div>
-      <div class="container px-0">
-        <nav class="navbar navbar-light bg-white navbar-expand-xl">
-          <a href="home.html" class="navbar-brand d-flex align-items-center">
-            <img
-              src="img/logo.png"
-              alt="Logo"
-              class="img-fluid"
-              style="height: 65px"
-            />
-          </a>
-          <button
-            class="navbar-toggler py-2 px-3"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarCollapse"
-          >
-            <span class="fa fa-bars text-primary"></span>
-          </button>
-          <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
-            <div class="navbar-nav mx-auto">
-              <a href="home.html" class="nav-item nav-link">Home</a>
-              <div class="nav-item dropdown">
-                <a
-                  href="#"
-                  class="nav-link dropdown-toggle"
-                  data-bs-toggle="dropdown"
-                  >Products</a
-                >
-                <div
-                  class="dropdown-menu navbar-categories-dropdown m-0 bg-light border-0 rounded-3 shadow-sm"
-                >
-                  <a href="shop.html" class="dropdown-item">All Products</a>
-                  <a
-                    href="shop.html?category=Moisturing Lotion"
-                    class="dropdown-item"
-                    >Moisturing Lotion</a
-                  >
-                  <a
-                    href="shop.html?category=Moisturing Cream"
-                    class="dropdown-item"
-                    >Moisturing Cream</a
-                  >
-                  <a href="shop.html?category=Face Serum" class="dropdown-item"
-                    >Face Serum</a
-                  >
-                  <a
-                    href="shop.html?category=Sunscreen Lotion"
-                    class="dropdown-item"
-                    >Sunscreen Lotion</a
-                  >
-                  <a href="shop.html?category=Face Wash" class="dropdown-item"
-                    >Face Wash</a
-                  >
-                </div>
-              </div>
-              <a href="contact.html" class="nav-item nav-link">Contact</a>
-            </div>
-            <div class="d-flex m-3 me-0">
-              <a href="cart.html" class="position-relative me-4 my-auto">
-                <i class="fa fa-shopping-bag fa-2x"></i>
-                <span
-                  id="cart-badge"
-                  class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
-                  style="top: -5px; left: 15px; height: 20px; min-width: 20px"
-                  >0</span
-                >
-              </a>
-              <a href="#" class="my-auto user-icon-link">
-                <i class="fas fa-user fa-2x"></i>
-              </a>
-            </div>
-          </div>
-        </nav>
-      </div>
     </div>
-    <!-- Navbar End -->
-
-    <!-- Product Detail Section Start -->
-    <div class="container-fluid py-5 mt-5 content-header-margin">
-      <div class="container py-5">
-        <div class="row g-4" id="product-detail-content">
-          <div class="col-lg-6">
-            <div class="product-img-card">
-              <img
-                id="product-img"
-                src="img/placeholder.png"
-                class="img-fluid"
-                alt="Product Image"
-              />
-              <div class="zoom-icon">
-                <i class="fas fa-search-plus"></i>
+    <div class="container px-0">
+      <nav class="navbar navbar-light bg-white navbar-expand-xl">
+        <a href="home.html" class="navbar-brand d-flex align-items-center">
+          <img src="img/logo.png" alt="Logo" class="img-fluid" style="height: 65px" />
+        </a>
+        <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarCollapse">
+          <span class="fa fa-bars text-primary"></span>
+        </button>
+        <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
+          <div class="navbar-nav mx-auto">
+            <a href="home.html" class="nav-item nav-link">Home</a>
+            <div class="nav-item dropdown">
+              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Products</a>
+              <div class="dropdown-menu navbar-categories-dropdown m-0 bg-light border-0 rounded-3 shadow-sm">
+                <a href="shop.html" class="dropdown-item">All Products</a>
+                <a href="shop.html?category=Moisturing Lotion" class="dropdown-item">Moisturing Lotion</a>
+                <a href="shop.html?category=Moisturing Cream" class="dropdown-item">Moisturing Cream</a>
+                <a href="shop.html?category=Face Serum" class="dropdown-item">Face Serum</a>
+                <a href="shop.html?category=Sunscreen Lotion" class="dropdown-item">Sunscreen Lotion</a>
+                <a href="shop.html?category=Face Wash" class="dropdown-item">Face Wash</a>
               </div>
             </div>
-            <div id="product-thumbnails" class="d-flex gap-2 mt-3 overflow-auto justify-content-start pb-2" style="white-space: nowrap;"></div>
+            <a href="contact.html" class="nav-item nav-link">Contact</a>
           </div>
-          <div class="col-lg-6">
-            <h2 id="product-name" class="product-title mb-2">
-              Loading Product...
-            </h2>
-
-            <div class="price-display-section mb-2">
-              <span id="product-old-price" class="old-price-crossed"
-                >₹0.00</span
-              >
-              <span id="product-price" class="new-price">₹0.00</span>
-            </div>
-
-            <div class="delivery-banner">
-              Estimated Order delivered within 2 days
-            </div>
-
-            <ul id="product-description-list" class="features-list mb-4">
-              <!-- Dynamically populated list points -->
-            </ul>
-
-            <a
-              id="whatsapp-inquiry"
-              href="#"
-              target="_blank"
-              class="whatsapp-order-btn"
-            >
-              <i class="fab fa-whatsapp fa-lg"></i> Order On WhatsApp
+          <div class="d-flex m-3 me-0">
+            <a href="cart.html" class="position-relative me-4 my-auto">
+              <i class="fa fa-shopping-bag fa-2x"></i>
+              <span id="cart-badge"
+                class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
+                style="top: -5px; left: 15px; height: 20px; min-width: 20px">0</span>
             </a>
+            <a href="#" class="my-auto user-icon-link">
+              <i class="fas fa-user fa-2x"></i>
+            </a>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </div>
+  <!-- Navbar End -->
 
-            <div id="product-stock" class="stock-badge">In Stock</div>
+  <!-- Product Detail Section Start -->
+  <div class="container-fluid py-5 mt-5 content-header-margin">
+    <div class="container py-5">
+      <div class="row g-4" id="product-detail-content">
+        <div class="col-lg-6">
+          <div class="product-img-card">
+            <img id="product-img" src="img/placeholder.png" class="img-fluid" alt="Product Image" />
+            <div class="zoom-icon">
+              <i class="fas fa-search-plus"></i>
+            </div>
+          </div>
+          <div id="product-thumbnails" class="d-flex gap-2 mt-3 overflow-auto justify-content-start pb-2"
+            style="white-space: nowrap;"></div>
+        </div>
+        <div class="col-lg-6">
+          <!-- Breadcrumbs inside product detail container -->
+          <nav aria-label="breadcrumb" class="mb-3">
+            <ol class="breadcrumb mb-0" style="background: transparent; padding: 0; font-size: 0.85rem;">
+              <li class="breadcrumb-item"><a href="home.html"
+                  style="color: #81c408; text-decoration: none; font-weight: 500;">Home</a></li>
+              <li class="breadcrumb-item"><a href="shop.html"
+                  style="color: #81c408; text-decoration: none; font-weight: 500;">Products</a></li>
+              <li class="breadcrumb-item active text-muted" id="breadcrumb-category" aria-current="page"
+                style="font-weight: 500;">Category</li>
+            </ol>
+          </nav>
 
-            <div class="actions-row">
-              <div class="custom-qty-pill">
-                <button type="button" id="btn-minus">
-                  <i class="fa fa-minus"></i>
-                </button>
-                <input type="text" id="quantity" value="1" readonly />
-                <button type="button" id="btn-plus">
-                  <i class="fa fa-plus"></i>
-                </button>
-              </div>
+          <h2 id="product-name" class="product-title mb-2">
+            Loading Product...
+          </h2>
 
-              <button id="add-to-cart-detail" class="action-pill-btn">
-                Add To Cart +
+          <div class="product-meta__price-list-container d-flex flex-wrap align-items-center mb-3">
+            <div class="price-list d-flex align-items-baseline gap-2 me-3">
+              <span id="product-old-price" class="old-price-crossed">₹0.00</span>
+              <span id="product-price" class="new-price">₹0.00</span>
+              <span class="product__policies text-muted small">(incl. of all taxes.)</span>
+            </div>
+            <div id="product-save-badge" class="badge bg-soft-success text-success px-2 py-1 d-none"
+              style="background-color: #e6f6e6; border: 1px solid #c2ecc2; font-weight: 600; font-size: 0.85rem;">Save
+              0%</div>
+          </div>
+
+          <div class="delivery-banner">
+            Estimated Order delivered within 2 days
+          </div>
+
+
+
+          <a id="whatsapp-inquiry" href="#" target="_blank" class="whatsapp-order-btn">
+            <i class="fab fa-whatsapp fa-lg"></i> Order On WhatsApp
+          </a>
+
+          <div id="product-stock" class="stock-badge">In Stock</div>
+
+          <div class="actions-row">
+            <div class="custom-qty-pill">
+              <button type="button" id="btn-minus">
+                <i class="fa fa-minus"></i>
               </button>
-
-              <button id="buy-now-detail" class="action-pill-btn buy-now-btn">
-                Buy Now
+              <input type="text" id="quantity" value="1" readonly />
+              <button type="button" id="btn-plus">
+                <i class="fa fa-plus"></i>
               </button>
             </div>
 
-            <div class="meta-info-section">
-              <div class="meta-info-row">
-                <strong>Categories:</strong>
-                <span id="product-category-meta">Loading...</span>
+            <button id="add-to-cart-detail" class="action-pill-btn">
+              Add To Cart +
+            </button>
+
+            <button id="buy-now-detail" class="action-pill-btn buy-now-btn">
+              Buy Now
+            </button>
+          </div>
+
+          <!-- Trust Badges -->
+          <div class="logos-wrappper hide-on-v3">
+            <div class="logo-box">
+              <img src="https://www.clinikally.com/cdn/shop/files/shield.png?v=1711537188&width=300"
+                alt="100% Original">
+              <b>100% Original</b>
+            </div>
+            <div class="logo-box">
+              <img
+                src="https://www.clinikally.com/cdn/shop/files/Lowest_price_Icon_fddb029e-c955-49c5-9edc-4dd5cffdf0c0.png?v=1712757993&width=300"
+                alt="Lowest Price">
+              <b>Lowest Price</b>
+            </div>
+            <div class="logo-box">
+              <img
+                src="https://www.clinikally.com/cdn/shop/files/FreeShipping_icon_51f0da0c-8848-48c3-acf6-2ae61cd93177.png?v=1712757905&width=300"
+                alt="Free Shipping">
+              <b>Free Shipping</b>
+            </div>
+          </div>
+
+          <div class="meta-info-section">
+            <div class="meta-info-row">
+              <strong>Categories:</strong>
+              <span id="product-category-meta">Loading...</span>
+            </div>
+            <div class="meta-info-row mt-2">
+              <strong>Share Now:</strong>
+              <div class="share-icons">
+                <a href="#" id="share-fb" target="_blank" class="share-link"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" id="share-tw" target="_blank" class="share-link"><i class="fab fa-twitter"></i></a>
+                <a href="#" id="share-pin" target="_blank" class="share-link"><i class="fab fa-pinterest-p"></i></a>
+                <a href="#" id="share-ln" target="_blank" class="share-link"><i class="fab fa-linkedin-in"></i></a>
               </div>
-              <div class="meta-info-row mt-2">
-                <strong>Share Now:</strong>
-                <div class="share-icons">
-                  <a href="#" id="share-fb" target="_blank" class="share-link"
-                    ><i class="fab fa-facebook-f"></i
-                  ></a>
-                  <a href="#" id="share-tw" target="_blank" class="share-link"
-                    ><i class="fab fa-twitter"></i
-                  ></a>
-                  <a href="#" id="share-pin" target="_blank" class="share-link"
-                    ><i class="fab fa-pinterest-p"></i
-                  ></a>
-                  <a href="#" id="share-ln" target="_blank" class="share-link"
-                    ><i class="fab fa-linkedin-in"></i
-                  ></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Additional Content Section Start -->
+      <div id="shopify-section-template--22821828722935__product-content"
+        class="shopify-section shopify-section--product-content mt-4">
+        <div class="container border-top pt-5">
+          <div class="row g-4">
+            <!-- Accordion column -->
+            <div class="col-lg-7 col-md-12">
+              <div class="faq__wrapper">
+
+                <!-- Description accordion -->
+                <div class="faq__item custom-accordian-wrap">
+                  <div class="custom-accordian-title d-flex justify-content-between align-items-center"
+                    style="cursor: pointer; font-weight: 700; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 12px;">
+                    Product Description
+                    <span class="animated-plus">
+                      <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"
+                        style="fill: #81c408; transition: transform 0.2s;">
+                        <path
+                          d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z">
+                        </path>
+                      </svg>
+                    </span>
+                  </div>
+                  <div class="collapsible-content text-container mb-3" style="display: none;">
+                    <p id="accordion-desc-text">Loading description...</p>
+                  </div>
+                </div>
+
+                <!-- Key Benefits accordion -->
+                <div class="faq__item custom-accordian-wrap">
+                  <div class="custom-accordian-title d-flex justify-content-between align-items-center"
+                    style="cursor: pointer; font-weight: 700; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 12px;">
+                    Key Benefits
+                    <span class="animated-plus">
+                      <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"
+                        style="fill: #81c408; transition: transform 0.2s;">
+                        <path
+                          d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z">
+                        </path>
+                      </svg>
+                    </span>
+                  </div>
+                  <div class="collapsible-content text-container key_benefits_icons mb-3" style="display: none;">
+                    <ul id="accordion-benefits-list">
+                      <li>Loading benefits...</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- How to Use accordion -->
+                <div class="faq__item custom-accordian-wrap">
+                  <div class="custom-accordian-title d-flex justify-content-between align-items-center"
+                    style="cursor: pointer; font-weight: 700; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 12px;">
+                    How to Use
+                    <span class="animated-plus">
+                      <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"
+                        style="fill: #81c408; transition: transform 0.2s;">
+                        <path
+                          d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z">
+                        </path>
+                      </svg>
+                    </span>
+                  </div>
+                  <div class="collapsible-content text-container how_to_use_icons mb-3" style="display: none;">
+                    <ul id="accordion-howtouse-list">
+                      <li>Apply 360 Block Gel 20-30 mins before sun exposure on face/body.</li>
+                      <li>Re-apply after swimming or sweating.</li>
+                      <li>Gently massage until absorbed; avoid vigorous rubbing.</li>
+                      <li>Keep away from eyes.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Key Ingredients accordion -->
+                <div class="faq__item custom-accordian-wrap">
+                  <div class="custom-accordian-title d-flex justify-content-between align-items-center"
+                    style="cursor: pointer; font-weight: 700; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 12px; margin-bottom: 12px;">
+                    Key Ingredients
+                    <span class="animated-plus">
+                      <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"
+                        style="fill: #81c408; transition: transform 0.2s;">
+                        <path
+                          d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z">
+                        </path>
+                      </svg>
+                    </span>
+                  </div>
+                  <div class="collapsible-content text-container ingredients_icons mb-3" style="display: none;">
+                    <ul id="accordion-ingredients-list">
+                      <li>Cyclopentasiloxane, Dimethicone Crosspolymer, Octyl Methoxycinnamate, Zinc Oxide.</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Other Information header -->
+                <h2 class="custom-accordian-title other-info mt-4" style="font-weight: 700; font-size: 1.2rem;">Other
+                  Information</h2>
+
+                <!-- Country of Origin -->
+                <div class="faq__item sub-faq-item custom-accordian-wrap">
+                  <div class="custom-accordian-title country d-flex justify-content-between align-items-center"
+                    style="cursor: pointer; font-weight: 700; font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+                    Country of Origin
+                    <span class="animated-plus">
+                      <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"
+                        style="fill: #81c408; transition: transform 0.2s;">
+                        <path
+                          d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z">
+                        </path>
+                      </svg>
+                    </span>
+                  </div>
+                  <div class="collapsible-content text-container mb-2" style="display: none; padding-left: 38px;">
+                    India
+                  </div>
+                </div>
+
+                <!-- Mfg/Marketer Details -->
+                <div class="faq__item sub-faq-item custom-accordian-wrap">
+                  <div class="custom-accordian-title d-flex justify-content-between align-items-center"
+                    style="cursor: pointer; font-weight: 700; font-size: 1rem; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+                    Mfg/Marketer details
+                    <span class="animated-plus">
+                      <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"
+                        style="fill: #81c408; transition: transform 0.2s;">
+                        <path
+                          d="M233.4 406.6c12.5 12.5 32.8 12.5 45.3 0l192-192c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L256 338.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l192 192z">
+                        </path>
+                      </svg>
+                    </span>
+                  </div>
+                  <div class="collapsible-content text-container mb-2" style="display: none; padding-left: 38px;">
+                    <div class="mfg-icon fw-bold" id="accordion-mfg-name">Zymo Cosmetics</div>
+                    <span id="accordion-mfg-address">Block No. 115, Santej-Vadsar Road, Santej, Gujarat - 382721,
+                      India.</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Related products column (Best Used With) -->
+            <div class="col-lg-5 col-md-12 desc_right_side frequently_bought_together">
+              <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="primary-title fw-bold mb-0" style="color:#18191f; font-size: 1.3rem;">Best Used With</h3>
+                <!-- Navigation buttons -->
+                <div class="best-used-nav-buttons d-flex gap-2">
+                  <button type="button" class="btn btn-light rounded-circle shadow-sm border best-used-prev-btn" style="
+                        width: 38px;
+                        height: 38px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                      ">
+                    <i class="fas fa-chevron-left text-primary" style="font-size: 0.9rem;"></i>
+                  </button>
+                  <button type="button" class="btn btn-light rounded-circle shadow-sm border best-used-next-btn" style="
+                        width: 38px;
+                        height: 38px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                      ">
+                    <i class="fas fa-chevron-right text-primary" style="font-size: 0.9rem;"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="position-relative">
+                <div class="featured-carousel-wrapper" style="padding: 10px 0;">
+                  <div class="featured-carousel-track d-flex gap-3" id="related-products">
+                    <!-- Related products dynamic cards will load here -->
+                    <div class="col-12 text-center text-muted">Loading recommendations...</div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        <!-- Related Products (Optional placeholder) -->
-        <!-- <div class="mt-5">
-            <h3 class="fw-bold mb-4">You Might Also Like</h3>
-            <div id="related-products" class="row g-4">
-            </div>
-        </div> -->
       </div>
     </div>
-    <!-- Product Detail Section End -->
 
-    <!-- Footer Start -->
-    <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
-      <div class="container py-5">
-        <div
-          class="pb-4 mb-4"
-          style="border-bottom: 1px solid rgba(226, 175, 24, 0.5)"
-        >
-          <div class="row g-4">
-            <div class="col-lg-3">
-              <a href="#">
-                <h1 class="text-primary mb-0">SkinDekho</h1>
-                <p class="text-secondary mb-0">
-                  Advanced Medical Skin & Hair Care
-                </p>
-              </a>
-            </div>
-            <div class="col-lg-6">
-              <div class="position-relative mx-auto">
-                <input
-                  class="form-control border-0 w-100 py-3 px-4 rounded-pill"
-                  type="number"
-                  placeholder="Your Email"
-                />
-                <button
-                  type="submit"
-                  class="btn btn-primary border-0 border-secondary py-3 px-4 position-absolute rounded-pill text-white"
-                  style="top: 0; right: 0"
-                >
-                  Subscribe Now
-                </button>
-              </div>
-            </div>
-            <div class="col-lg-3">
-              <div class="d-flex justify-content-end pt-3">
-                <a
-                  class="btn btn-outline-secondary me-2 btn-md-square rounded-circle"
-                  href="#"
-                  ><i class="fab fa-twitter"></i
-                ></a>
-                <a
-                  class="btn btn-outline-secondary me-2 btn-md-square rounded-circle"
-                  href="#"
-                  ><i class="fab fa-facebook-f"></i
-                ></a>
-                <a
-                  class="btn btn-outline-secondary me-2 btn-md-square rounded-circle"
-                  href="#"
-                  ><i class="fab fa-youtube"></i
-                ></a>
-                <a
-                  class="btn btn-outline-secondary btn-md-square rounded-circle"
-                  href="#"
-                  ><i class="fab fa-linkedin-in"></i
-                ></a>
+    <!-- Related Products Section Start -->
+    <div class="container-fluid related-products-section py-3 border-top mt-5 pt-5">
+      <div class="container py-2 px-0">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h3 class="fw-bold mb-0" style="color: #1b2f24; font-weight: 800; font-size: 1.8rem;">Related Products</h3>
+          <!-- Navigation buttons -->
+          <div class="related-nav-buttons d-flex gap-2">
+            <button type="button" class="btn btn-light rounded-circle shadow-sm border related-prev-btn" style="
+                  width: 45px;
+                  height: 45px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                ">
+              <i class="fas fa-chevron-left text-primary"></i>
+            </button>
+            <button type="button" class="btn btn-light rounded-circle shadow-sm border related-next-btn" style="
+                  width: 45px;
+                  height: 45px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                ">
+              <i class="fas fa-chevron-right text-primary"></i>
+            </button>
+          </div>
+        </div>
+        <div class="position-relative">
+          <div class="featured-carousel-wrapper">
+            <div class="featured-carousel-track d-flex gap-4" id="related-category-products">
+              <div class="col-12 text-center py-5 text-muted">
+                <div class="spinner-border text-primary" role="status"></div>
+                <p class="mt-2">Loading related products...</p>
               </div>
             </div>
           </div>
         </div>
-        <div class="row g-5">
-          <div class="col-lg-3 col-md-6">
-            <div class="footer-item">
-              <h4 class="text-light mb-3">About Company</h4>
-              <p class="mb-4">
-                Welcome to our online dermatologist Product supply store
-                Skindekho.in, your one-stop-shop for high-quality surgical
-                supplies and medical equipment.
+      </div>
+    </div>
+    <!-- Related Products Section End -->
+
+  </div>
+  <!-- Product Detail Section End -->
+
+  <!-- Featurs Section Start -->
+  <div class="container-fluid featurs py-5">
+    <div class="container py-5">
+      <div class="row g-4">
+        <div class="col-6 col-md-6 col-lg-3">
+          <div class="featurs-item text-center rounded bg-light p-4">
+            <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+              <i class="fas fa-car-side fa-3x text-white"></i>
+            </div>
+            <div class="featurs-content text-center">
+              <h5>Free Shipping</h5>
+              <p class="mb-0">Free on order over ₹500</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-md-6 col-lg-3">
+          <div class="featurs-item text-center rounded bg-light p-4">
+            <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+              <i class="fas fa-user-shield fa-3x text-white"></i>
+            </div>
+            <div class="featurs-content text-center">
+              <h5>Security Payment</h5>
+              <p class="mb-0">100% security payment</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-md-6 col-lg-3">
+          <div class="featurs-item text-center rounded bg-light p-4">
+            <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+              <i class="fas fa-exchange-alt fa-3x text-white"></i>
+            </div>
+            <div class="featurs-content text-center">
+              <h5>7 Days Return</h5>
+              <p class="mb-0">7 days money guarantee</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-md-6 col-lg-3">
+          <div class="featurs-item text-center rounded bg-light p-4">
+            <div class="featurs-icon btn-square rounded-circle bg-secondary mb-5 mx-auto">
+              <i class="fa fa-phone-alt fa-3x text-white"></i>
+            </div>
+            <div class="featurs-content text-center">
+              <h5>24/7 Support</h5>
+              <p class="mb-0">Support every time fast</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Featurs Section End -->
+
+  <!-- Footer Start -->
+  <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
+    <div class="container py-5">
+      <div class="pb-4 mb-4" style="border-bottom: 1px solid rgba(226, 175, 24, 0.5)">
+        <div class="row g-4">
+          <div class="col-lg-3">
+            <a href="#">
+              <h1 class="text-primary mb-0">SkinDekho</h1>
+              <p class="text-secondary mb-0">
+                Advanced Medical Skin & Hair Care
               </p>
+            </a>
+          </div>
+          <div class="col-lg-6">
+            <div class="position-relative mx-auto">
+              <input class="form-control border-0 w-100 py-3 px-4 rounded-pill" type="number"
+                placeholder="Your Email" />
+              <button type="submit"
+                class="btn btn-primary border-0 border-secondary py-3 px-4 position-absolute rounded-pill text-white"
+                style="top: 0; right: 0">
+                Subscribe Now
+              </button>
             </div>
           </div>
-          <div class="col-lg-3 col-md-6">
-            <div class="d-flex flex-column text-start footer-item">
-              <h4 class="text-light mb-3">Shop Info</h4>
-              <a class="btn-link" href="about.html">About Us</a>
-              <a class="btn-link" href="contact.html">Contact Us</a>
-              <a class="btn-link" href="privacy-policy.html">Privacy Policy</a>
-              <a class="btn-link" href="terms-conditions.html"
-                >Terms & Condition</a
-              >
-              <a class="btn-link" href="sales-refunds.html">Return Policy</a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <div class="d-flex flex-column text-start footer-item">
-              <h4 class="text-light mb-3">Account</h4>
-              <a class="btn-link" href="User.html">My Account</a>
-              <a class="btn-link" href="shop.html">Shop details</a>
-              <a class="btn-link" href="cart.html">Shopping Cart</a>
-              <a class="btn-link" href="User.html">Order History</a>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6">
-            <div class="footer-item">
-              <h4 class="text-light mb-3">Contact</h4>
-              <p>Address: 302016 jaipur, India</p>
-              <p>Email: skindekho@gmail.com</p>
-              <p>Phone: +91 94619727590</p>
-              <p>Payment Accepted</p>
-              <img src="img/payment.png" class="img-fluid" alt="" />
+          <div class="col-lg-3">
+            <div class="d-flex justify-content-end pt-3">
+              <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href="#"><i
+                  class="fab fa-twitter"></i></a>
+              <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href="#"><i
+                  class="fab fa-facebook-f"></i></a>
+              <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href="#"><i
+                  class="fab fa-youtube"></i></a>
+              <a class="btn btn-outline-secondary btn-md-square rounded-circle" href="#"><i
+                  class="fab fa-linkedin-in"></i></a>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- Footer End -->
-
-    <!-- Copyright Start -->
-    <div class="container-fluid copyright bg-dark py-4">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-            <span class="text-light"
-              ><a href="#"
-                ><i class="fas fa-copyright text-light me-2"></i>SkinDekho</a
-              >, All right reserved.</span
-            >
+      <div class="row g-5">
+        <div class="col-lg-3 col-md-6">
+          <div class="footer-item">
+            <h4 class="text-light mb-3">About Company</h4>
+            <p class="mb-4">
+              Welcome to our online dermatologist Product supply store
+              Skindekho.in, your one-stop-shop for high-quality surgical
+              supplies and medical equipment.
+            </p>
           </div>
-          <div class="col-md-6 my-auto text-center text-md-end text-white">
-            <!--/*** The author’s attribution link must remain intact in the template. ***/-->
-            <!--/*** If you wish to remove this credit link, please purchase the Pro Version . ***/-->
-            Designed By
-            <a class="border-bottom" href="https://htmlcodex.com"
-              >Gaurav Saini</a
-            >
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="d-flex flex-column text-start footer-item">
+            <h4 class="text-light mb-3">Shop Info</h4>
+            <a class="btn-link" href="about.html">About Us</a>
+            <a class="btn-link" href="contact.html">Contact Us</a>
+            <a class="btn-link" href="privacy-policy.html">Privacy Policy</a>
+            <a class="btn-link" href="terms-conditions.html">Terms & Condition</a>
+            <a class="btn-link" href="sales-refunds.html">Return Policy</a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="d-flex flex-column text-start footer-item">
+            <h4 class="text-light mb-3">Account</h4>
+            <a class="btn-link" href="User.html">My Account</a>
+            <a class="btn-link" href="shop.html">Shop details</a>
+            <a class="btn-link" href="cart.html">Shopping Cart</a>
+            <a class="btn-link" href="User.html">Order History</a>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+          <div class="footer-item">
+            <h4 class="text-light mb-3">Contact</h4>
+            <p>Address: 302016 jaipur, India</p>
+            <p>Email: skindekho@gmail.com</p>
+            <p>Phone: +91 94619727590</p>
+            <p>Payment Accepted</p>
+            <img src="img/payment.png" class="img-fluid" alt="" />
           </div>
         </div>
       </div>
     </div>
-    <!-- Copyright End -->
+  </div>
+  <!-- Footer End -->
 
-    <!-- Floating Widgets -->
-    <div class="floating-widget-container">
-      <a href="cart.html" class="floating-circle-btn floating-cart">
-        <i class="fa fa-shopping-bag fa-lg"></i>
-        <span id="floating-cart-count" class="floating-cart-badge">0</span>
-      </a>
-      <a
-        href="https://wa.me/919461972759"
-        target="_blank"
-        class="floating-circle-btn floating-whatsapp"
-      >
-        <i class="fab fa-whatsapp fa-2x"></i>
-      </a>
+  <!-- Copyright Start -->
+  <div class="container-fluid copyright bg-dark py-4">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+          <span class="text-light"><a href="#"><i class="fas fa-copyright text-light me-2"></i>SkinDekho</a>, All right
+            reserved.</span>
+        </div>
+        <div class="col-md-6 my-auto text-center text-md-end text-white">
+          <!--/*** The author’s attribution link must remain intact in the template. ***/-->
+          <!--/*** If you wish to remove this credit link, please purchase the Pro Version . ***/-->
+          Designed By
+          <a class="border-bottom" href="https://htmlcodex.com">Gaurav Saini</a>
+        </div>
+      </div>
     </div>
+  </div>
+  <!-- Copyright End -->
 
-    <!-- JavaScript Libraries -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/waypoints/waypoints.min.js"></script>
-    <script src="lib/lightbox/js/lightbox.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+  <!-- Floating Widgets -->
+  <div class="floating-widget-container">
+    <a href="cart.html" class="floating-circle-btn floating-cart">
+      <i class="fa fa-shopping-bag fa-lg"></i>
+      <span id="floating-cart-count" class="floating-cart-badge">0</span>
+    </a>
+    <a href="https://wa.me/919461972759" target="_blank" class="floating-circle-btn floating-whatsapp">
+      <i class="fab fa-whatsapp fa-2x"></i>
+    </a>
+  </div>
 
-    <!-- Template Javascript -->
-    <script type="module" src="js/main.js"></script>
-    <script type="module" src="js/product-detail.js"></script>
-  </body>
+  <!-- JavaScript Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="lib/easing/easing.min.js"></script>
+  <script src="lib/waypoints/waypoints.min.js"></script>
+  <script src="lib/lightbox/js/lightbox.min.js"></script>
+  <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+
+  <!-- Template Javascript -->
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/product-detail.js"></script>
+</body>
+
 </html>
