@@ -60,6 +60,52 @@ export function showToast(message, type = "success", title = "") {
   }, 3000);
 }
 
+// ✅ Custom Premium Confirm Modal
+export function showConfirm(title, message) {
+  return new Promise((resolve) => {
+    const modalId = "confirm-modal-" + Date.now();
+    const modalHtml = `
+      <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true" style="backdrop-filter: blur(6px); background: rgba(24, 25, 31, 0.3); z-index: 10050;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+          <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden; background: #fff;">
+            <div class="modal-header border-0 pb-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+              <h5 class="modal-title fw-bold text-dark" style="font-size: 1.25rem; font-family: 'Raleway', sans-serif;">${title}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-size: 0.8rem;"></button>
+            </div>
+            <div class="modal-body px-4 py-3 text-muted" style="font-size: 0.95rem; line-height: 1.5; font-family: 'Open Sans', sans-serif;">
+              ${message}
+            </div>
+            <div class="modal-footer border-0 pt-2 pb-4 px-4 d-flex gap-2 justify-content-end">
+              <button type="button" class="btn border border-secondary rounded-pill px-4 py-2 text-primary cancel-btn" data-bs-dismiss="modal" style="font-size: 0.9rem; font-weight: 600; transition: all 0.2s;">Cancel</button>
+              <button type="button" class="btn btn-primary rounded-pill px-4 py-2 text-white confirm-btn" style="background-color: #81c408 !important; border: none !important; font-size: 0.9rem; font-weight: 600; transition: all 0.2s;">Remove</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    $("body").append(modalHtml);
+
+    const $modalEl = $(`#${modalId}`);
+    const modalInstance = new bootstrap.Modal($modalEl[0], {
+      backdrop: 'static',
+      keyboard: false
+    });
+
+    modalInstance.show();
+
+    $modalEl.find(".confirm-btn").on("click", function () {
+      modalInstance.hide();
+      resolve(true);
+    });
+
+    $modalEl.on("hidden.bs.modal", function () {
+      $modalEl.remove();
+      resolve(false);
+    });
+  });
+}
+
 (function ($) {
   "use strict";
 

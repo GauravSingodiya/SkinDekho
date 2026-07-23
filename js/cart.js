@@ -2,6 +2,7 @@
 
 import { getCartAPI, removeFromCartAPI } from "./api/cartService.js";
 import { BASE_URL } from "./api/config.js";
+import { showConfirm, showToast } from "./main.js";
 
 $(document).ready(function () {
   const token = sessionStorage.getItem("token");
@@ -113,14 +114,16 @@ $(document).on("click", ".btn-remove", async function () {
   const itemId = $(this).closest("tr").data("id");
   const token = sessionStorage.getItem("token");
 
-  if (!confirm("Are you sure you want to remove this item?")) return;
+  const confirmed = await showConfirm("Remove Item", "Are you sure you want to remove this item from your cart?");
+  if (!confirmed) return;
 
   try {
     await removeFromCartAPI(itemId, token);
     loadCartItems(token);
     syncCartBadge(token);
+    showToast("Item removed from cart", "success");
   } catch (err) {
-    alert("Failed to remove item: " + err.message);
+    showToast(err.message || "Failed to remove item", "error");
   }
 });
 
@@ -133,7 +136,27 @@ $(document).on("click", ".btn-plus, .btn-minus", async function () {
   const quantityChange = isPlus ? 1 : -1;
   const currentQty = parseInt($(this).closest(".quantity").find("input").val());
 
-  if (!isPlus && currentQty <= 1) return; // Prevent decrementing below 1
+  if (!isPlus && currentQty <= 1) {
+    const confirmed = await showConfirm("Remove Item", "Are you sure you want to remove this item from your cart?");
+    if (confirmed) {
+      const $btn = $(this);
+      const originalHtml = $btn.html();
+      $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
+      try {
+        await removeFromCartAPI(productId, token);
+        loadCartItems(token);
+        syncCartBadge(token);
+        showToast("Item removed from cart", "success");
+      } catch (err) {
+        console.error("Remove Item Error:", err);
+        showToast("Failed to remove item. Please try again.", "error");
+      } finally {
+        $btn.prop("disabled", false).html(originalHtml);
+      }
+    }
+    return;
+  }
 
   const $btn = $(this);
   const originalHtml = $btn.html();
@@ -148,7 +171,7 @@ $(document).on("click", ".btn-plus, .btn-minus", async function () {
     syncCartBadge(token);
   } catch (err) {
     console.error("Update Quantity Error:", err);
-    alert("Failed to update quantity. Please try again.");
+    showToast("Failed to update quantity. Please try again.", "error");
   } finally {
     $btn.prop("disabled", false).html(originalHtml);
   }

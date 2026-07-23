@@ -7,6 +7,7 @@ export const API = {
     GET_MY_ADDRESSES: "/api/auth/GetMyAddresses",
     UPDATE_ADDRESS: (id) => `/api/auth/UpdateAddress/${id}`,
     DELETE_ADDRESS: (id) => `/api/auth/DeleteAddress/${id}`,
+    ADD_ADDRESS: "/api/auth/AddAddress",
   },
 
   PRODUCTS: {
@@ -19,6 +20,7 @@ export const API = {
     ADD: "/api/Products/AddProduct",
     UPDATE: (id) => `/api/Products/UpdateProduct/${id}`,
     DELETE: (id) => `/api/Products/DeleteProduct/${id}`,
+    SAVE_DETAILS: (id) => `/api/Products/SaveProductDetails/${id}`,
   },
 
   CART: {

@@ -20,6 +20,152 @@ $(document).ready(function () {
     return;
   }
 
+  // --- India Regions Database for Dynamic Dropdowns ---
+  const INDIA_REGIONS = {
+    "Andhra Pradesh": ["Visakhapatnam", "Vijayawada", "Guntur", "Nellore", "Kurnool", "Tirupati", "Rajahmundry", "Kakinada", "Kadapa", "Anantapur"],
+    "Arunachal Pradesh": ["Itanagar", "Naharlagun", "Tawang", "Pasighat", "Ziro", "Bomdila"],
+    "Assam": ["Guwahati", "Dibrugarh", "Silchar", "Jorhat", "Nagaon", "Tinsukia", "Tezpur"],
+    "Bihar": ["Patna", "Gaya", "Bhagalpur", "Muzaffarpur", "Purnia", "Darbhanga", "Arrah", "Begusarai"],
+    "Chhattisgarh": ["Raipur", "Bhilai", "Bilaspur", "Korba", "Rajnandgaon", "Jagdalpur", "Ambikapur"],
+    "Delhi": ["New Delhi", "North Delhi", "South Delhi", "West Delhi", "East Delhi", "Dwarka", "Rohini"],
+    "Goa": ["Panaji", "Margao", "Vasco da Gama", "Mapusa", "Ponda"],
+    "Gujarat": ["Ahmedabad", "Surat", "Vadodara", "Rajkot", "Bhavnagar", "Jamnagar", "Gandhinagar", "Junagadh", "Anand", "Navsari"],
+    "Haryana": ["Faridabad", "Gurugram", "Panipat", "Ambala", "Yamunanagar", "Rohtak", "Hisar", "Karnal", "Sonipat", "Panchkula"],
+    "Himachal Pradesh": ["Shimla", "Dharamshala", "Solan", "Mandi", "Nahan", "Kullu", "Chamba"],
+    "Jammu and Kashmir": ["Srinagar", "Jammu", "Anantnag", "Baramulla", "Kathua", "Samba", "Udhampur"],
+    "Jharkhand": ["Ranchi", "Jamshedpur", "Dhanbad", "Bokaro", "Deoghar", "Hazaribagh", "Giridih"],
+    "Karnataka": ["Bengaluru", "Mysuru", "Hubballi-Dharwad", "Mangaluru", "Belagavi", "Davangere", "Bellary", "Shimoga", "Tumakuru"],
+    "Kerala": ["Thiruvananthapuram", "Kochi", "Kozhikode", "Thrissur", "Kollam", "Alappuzha", "Palakkad", "Kannur", "Kottayam"],
+    "Madhya Pradesh": ["Indore", "Bhopal", "Jabalpur", "Gwalior", "Ujjain", "Sagar", "Dewas", "Satna", "Ratlam", "Rewa"],
+    "Maharashtra": ["Mumbai", "Pune", "Nagpur", "Thane", "Nashik", "Kalyan-Dombivli", "Vasai-Virar", "Aurangabad", "Navi Mumbai", "Solapur", "Kolhapur"],
+    "Manipur": ["Imphal", "Thoubal", "Bishnupur", "Churachandpur"],
+    "Meghalaya": ["Shillong", "Tura", "Jowai", "Nongpoh"],
+    "Mizoram": ["Aizawl", "Lunglei", "Champhai"],
+    "Nagaland": ["Dimapur", "Kohima", "Mokokchung", "Tuensang"],
+    "Odisha": ["Bhubaneswar", "Cuttack", "Rourkela", "Berhampur", "Sambalpur", "Balasore", "Puri", "Bhadrak"],
+    "Punjab": ["Ludhiana", "Amritsar", "Jalandhar", "Patiala", "Bathinda", "Mohali", "Hoshiarpur", "Pathankot"],
+    "Rajasthan": ["Jaipur", "Jodhpur", "Kota", "Bikaner", "Ajmer", "Udaipur", "Bhilwara", "Alwar", "Sikar", "Bharatpur", "Sri Ganganagar"],
+    "Sikkim": ["Gangtok", "Namchi", "Geyzing"],
+    "Tamil Nadu": ["Chennai", "Coimbatore", "Madurai", "Tiruchirappalli", "Salem", "Tiruppur", "Erode", "Vellore", "Thoothukudi", "Nagercoil"],
+    "Telangana": ["Hyderabad", "Warangal", "Nizamabad", "Karimnagar", "Ramagundam", "Khammam", "Mahbubnagar"],
+    "Tripura": ["Agartala", "Dharmanagar", "Udaipur", "Kailasahar"],
+    "Uttar Pradesh": ["Lucknow", "Kanpur", "Ghaziabad", "Agra", "Meerut", "Varanasi", "Prayagraj", "Bareilly", "Aligarh", "Noida", "Moradabad", "Gorakhpur"],
+    "Uttarakhand": ["Dehradun", "Haridwar", "Haldwani", "Roorkee", "Rudrapur", "Kashipur", "Rishikesh"],
+    "West Bengal": ["Kolkata", "Howrah", "Darjeeling", "Siliguri", "Asansol", "Durgapur", "Kharagpur", "Bardhaman", "Malda", "Baharampur"]
+  };
+
+  // --- Modal Address Render Helpers ---
+  function renderStateField(isIndia) {
+    if (isIndia) {
+      const options = Object.keys(INDIA_REGIONS).map(s => `<option value="${s}">${s}</option>`).join("");
+      $("#stateContainer").html(`
+        <label class="form-label">State</label>
+        <select class="form-select" id="addrState" required>
+          <option value="">Select State</option>
+          ${options}
+        </select>
+      `);
+    } else {
+      $("#stateContainer").html(`
+        <label class="form-label">State</label>
+        <input type="text" class="form-control" id="addrState" placeholder="Enter State" required />
+      `);
+    }
+  }
+
+  function renderCityField(isIndia, stateName = "") {
+    if (isIndia) {
+      let options = "";
+      if (stateName && INDIA_REGIONS[stateName]) {
+        options = INDIA_REGIONS[stateName].map(c => `<option value="${c}">${c}</option>`).join("");
+      }
+      $("#cityContainer").html(`
+        <label class="form-label">City/District</label>
+        <select class="form-select" id="addrCity" required ${stateName ? "" : "disabled"}>
+          <option value="">Select City</option>
+          ${options}
+        </select>
+      `);
+    } else {
+      $("#cityContainer").html(`
+        <label class="form-label">City/District</label>
+        <input type="text" class="form-control" id="addrCity" placeholder="Enter City" required />
+      `);
+    }
+  }
+
+  // --- Inline Checkout Address Render Helpers ---
+  function renderCheckoutStateField(isIndia) {
+    if (isIndia) {
+      const options = Object.keys(INDIA_REGIONS).map(s => `<option value="${s}">${s}</option>`).join("");
+      $("#checkoutStateContainer").html(`
+        <label class="form-label">State<sup>*</sup></label>
+        <select class="form-select" id="checkout-state" required>
+          <option value="">Select State</option>
+          ${options}
+        </select>
+      `);
+    } else {
+      $("#checkoutStateContainer").html(`
+        <label class="form-label">State<sup>*</sup></label>
+        <input type="text" class="form-control" id="checkout-state" placeholder="State" required />
+      `);
+    }
+  }
+
+  function renderCheckoutCityField(isIndia, stateName = "") {
+    if (isIndia) {
+      let options = "";
+      if (stateName && INDIA_REGIONS[stateName]) {
+        options = INDIA_REGIONS[stateName].map(c => `<option value="${c}">${c}</option>`).join("");
+      }
+      $("#checkoutCityContainer").html(`
+        <label class="form-label">City<sup>*</sup></label>
+        <select class="form-select" id="checkout-city" required ${stateName ? "" : "disabled"}>
+          <option value="">Select City</option>
+          ${options}
+        </select>
+      `);
+    } else {
+      $("#checkoutCityContainer").html(`
+        <label class="form-label">City<sup>*</sup></label>
+        <input type="text" class="form-control" id="checkout-city" placeholder="City" required />
+      `);
+    }
+  }
+
+  // Event Listeners for Modal Select Changes
+  $(document).on("change", "#addrCountry", function () {
+    const isIndia = $(this).val() === "India";
+    renderStateField(isIndia);
+    renderCityField(isIndia, "");
+  });
+
+  $(document).on("change", "#addrState", function () {
+    const isIndia = $("#addrCountry").val() === "India";
+    if (isIndia) {
+      renderCityField(true, $(this).val());
+    }
+  });
+
+  // Event Listeners for Inline Form Select Changes
+  $(document).on("change", "#checkout-country", function () {
+    const isIndia = $(this).val() === "India";
+    renderCheckoutStateField(isIndia);
+    renderCheckoutCityField(isIndia, "");
+  });
+
+  $(document).on("change", "#checkout-state", function () {
+    const isIndia = $("#checkout-country").val() === "India";
+    if (isIndia) {
+      renderCheckoutCityField(true, $(this).val());
+    }
+  });
+
+  // Initialize Checkout Inline Form selectors
+  renderCheckoutStateField(true);
+  renderCheckoutCityField(true, "");
+
   // Load addresses on start
   loadAddresses();
 
@@ -35,8 +181,9 @@ $(document).ready(function () {
     $("#checkout-phone").val("");
     $("#checkout-addr1").val("");
     $("#checkout-addr2").val("");
-    $("#checkout-city").val("");
-    $("#checkout-state").val("");
+    $("#checkout-country").val("India");
+    renderCheckoutStateField(true);
+    renderCheckoutCityField(true, "");
     $("#checkout-zip").val("");
   });
 
@@ -51,10 +198,16 @@ $(document).ready(function () {
     $("#addrType").val(addr.addressType || "Home");
     $("#addrLine1").val(addr.addressLine1);
     $("#addrLine2").val(addr.addressLine2 || "");
-    $("#addrCity").val(addr.city);
-    $("#addrState").val(addr.state);
     $("#addrZip").val(addr.postalCode);
     $("#addrDefault").prop("checked", addr.isDefault);
+
+    const isIndia = !addr.country || addr.country === "India";
+    $("#addrCountry").val(isIndia ? "India" : "Other");
+
+    renderStateField(isIndia);
+    $("#addrState").val(addr.state);
+    renderCityField(isIndia, addr.state);
+    $("#addrCity").val(addr.city);
 
     $("#addressModalLabel").text("Edit Shipping Address");
     $("#addressModal").modal("show");
@@ -78,6 +231,7 @@ $(document).ready(function () {
   // Handle Save Address Button in Modal
   $("#saveAddressBtn").on("click", async function () {
     const id = $("#addressId").val();
+    const countryVal = $("#addrCountry").val();
     const payload = {
       firstName: $("#addrFirstName").val().trim(),
       lastName: $("#addrLastName").val().trim(),
@@ -85,11 +239,11 @@ $(document).ready(function () {
       addressType: $("#addrType").val(),
       addressLine1: $("#addrLine1").val().trim(),
       addressLine2: $("#addrLine2").val().trim(),
-      city: $("#addrCity").val().trim(),
-      state: $("#addrState").val().trim(),
+      city: $("#addrCity").val() ? $("#addrCity").val().trim() : "",
+      state: $("#addrState").val() ? $("#addrState").val().trim() : "",
       postalCode: $("#addrZip").val().trim(),
       isDefault: $("#addrDefault").is(":checked"),
-      country: "India",
+      country: countryVal === "India" ? "India" : "Other",
     };
 
     if (id) payload.id = parseInt(id);

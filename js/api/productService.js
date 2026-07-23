@@ -39,3 +39,7 @@ export async function getAllProductsAPI() {
 export async function addCategoryAPI(formData, token) {
   return await apiRequest("/api/Products/AddCategory", "POST", formData, token);
 }
+
+export async function saveProductDetailsAPI(id, payload, token) {
+  return await apiRequest(API.PRODUCTS.SAVE_DETAILS(id), "POST", payload, token);
+}

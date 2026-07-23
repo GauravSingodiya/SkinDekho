@@ -312,41 +312,26 @@
                       placeholder="Landmark, Area"
                     />
                   </div>
-                  <div class="col-md-4">
-                    <label class="form-label">City<sup>*</sup></label>
-                    <input
-                      type="text"
-                      id="checkout-city"
-                      class="form-control"
-                      placeholder="City"
-                    />
+                  <div class="col-md-3">
+                    <label class="form-label">Country<sup>*</sup></label>
+                    <select class="form-select" id="checkout-country" required>
+                      <option value="India">India</option>
+                      <option value="Other">Other Country</option>
+                    </select>
                   </div>
-                  <div class="col-md-4">
-                    <label class="form-label">State<sup>*</sup></label>
-                    <input
-                      type="text"
-                      id="checkout-state"
-                      class="form-control"
-                      placeholder="State"
-                    />
+                  <div class="col-md-3" id="checkoutStateContainer">
+                    <!-- Dynamic State Field -->
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-3" id="checkoutCityContainer">
+                    <!-- Dynamic City Field -->
+                  </div>
+                  <div class="col-md-3">
                     <label class="form-label">Zip Code<sup>*</sup></label>
                     <input
                       type="text"
                       id="checkout-zip"
                       class="form-control"
                       placeholder="302001"
-                    />
-                  </div>
-                  <div class="col-md-12">
-                    <label class="form-label">Country<sup>*</sup></label>
-                    <input
-                      type="text"
-                      id="checkout-country"
-                      class="form-control"
-                      value="India"
-                      readonly
                     />
                   </div>
                 </div>
@@ -690,25 +675,20 @@
                   <label class="form-label">Address Line 2 (Optional)</label>
                   <input type="text" class="form-control" id="addrLine2" />
                 </div>
-                <div class="col-md-4">
-                  <label class="form-label">City</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="addrCity"
-                    required
-                  />
+                <div class="col-md-3">
+                  <label class="form-label">Country</label>
+                  <select class="form-select" id="addrCountry" required>
+                    <option value="India">India</option>
+                    <option value="Other">Other Country</option>
+                  </select>
                 </div>
-                <div class="col-md-4">
-                  <label class="form-label">State</label>
-                  <input
-                    type="text"
-                    class="form-control"
-                    id="addrState"
-                    required
-                  />
+                <div class="col-md-3" id="stateContainer">
+                  <!-- Dynamic State Field -->
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3" id="cityContainer">
+                  <!-- Dynamic City Field -->
+                </div>
+                <div class="col-md-3">
                   <label class="form-label">Postal Code</label>
                   <input
                     type="text"
