@@ -612,9 +612,9 @@
     import { getAllCategories } from "./js/products.js";
     import { showToast } from "./js/main.js";
 
-    $(document).ready(async function () {
-      const token = sessionStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
+    $(document).ready(async function () {
       if (!token) {
         window.location.href = "home.html";
         return;
