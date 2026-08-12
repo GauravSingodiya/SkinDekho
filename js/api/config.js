@@ -1,5 +1,5 @@
 // config.js
-const BASE_URL = "http://skindekho.runasp.net";
+const BASE_URL = "https://skindekho.in";
 
 // Example: http://localhost:5000/api
 

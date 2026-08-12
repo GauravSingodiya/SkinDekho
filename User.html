@@ -921,7 +921,7 @@
           const relativePath = img.imageUrl || "";
           const fullImgUrl = relativePath.startsWith("http")
             ? relativePath
-            : "http://skindekho.runasp.net" + relativePath;
+            : "https://skindekho.in" + relativePath;
 
           const thumbHtml = `
               <div class="position-relative" style="width: 80px; height: 80px;">
@@ -1087,7 +1087,7 @@
                      </div>
                    </div>
                    <div class="d-flex align-items-center mt-2 mb-3">
-                      <img src="${p.imageUrl ? (p.imageUrl.startsWith("http") ? p.imageUrl : "http://skindekho.runasp.net" + p.imageUrl) : "img/product-default.jpg"}" class="rounded me-3 border" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
+                      <img src="${p.imageUrl ? (p.imageUrl.startsWith("http") ? p.imageUrl : "https://skindekho.in" + p.imageUrl) : "img/product-default.jpg"}" class="rounded me-3 border" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
                      <div style="min-width: 0;">
                        <p class="small mb-1 text-dark"><strong>Category:</strong> <span class="badge bg-light text-dark border">${p.category}</span></p>
                        <p class="small mb-0 text-dark" style="word-break: break-all;"><strong>SKU:</strong> ${p.sku}</p>
@@ -1439,7 +1439,7 @@
             const fullImgUrl = relativeImgUrl.startsWith("http")
               ? relativeImgUrl
               : relativeImgUrl
-                ? "http://skindekho.runasp.net" + relativeImgUrl
+                ? "https://skindekho.in" + relativeImgUrl
                 : "img/product-default.jpg";
 
             const isActive = item.isActive !== false;
