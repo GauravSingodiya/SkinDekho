@@ -4,9 +4,10 @@ import {
   updateAddressAPI,
   deleteAddressAPI,
   addAddressAPI,
+  verifyPaymentAPI,
 } from "./api/orderService.js";
-import { getCartAPI } from "./api/cartService.js";
-import { showToast } from "./main.js";
+import { getCartAPI, removeFromCartAPI } from "./api/cartService.js";
+import { showToast, syncCartBadge } from "./main.js";
 import { BASE_URL } from "./api/config.js";
 import { getAllProducts } from "./products.js";
 
@@ -298,6 +299,13 @@ $(document).ready(function () {
   // Place Order
   $("#placeOrderBtn").on("click", async function () {
     const $btn = $(this);
+    const paymentMethod = $("input[name='paymentMethod']:checked").val();
+
+    if (paymentMethod !== "Razorpay") {
+      showToast("This payment method is not active. Please select Razorpay.", "warning");
+      return;
+    }
+
     let payload = {
       addressId: selectedAddressId ? parseInt(selectedAddressId) : null,
       newAddress: null,
@@ -334,10 +342,88 @@ $(document).ready(function () {
     try {
       console.log("checkoutAPI payload:", payload);
       const response = await checkoutAPI(payload, token);
-      if (response.success) {
-        showToast("Order placed successfully!", "success");
+      if (response.success && response.result) {
+        const rzpData = response.result;
+        
+        // Remove items from local cart immediately since the order is placed
         sessionStorage.removeItem("cart");
-        setTimeout(() => (window.location.href = "home.html"), 2000);
+
+        // Open Razorpay Checkout modal
+        const rzpOptions = {
+          key: rzpData.keyId,
+          amount: Math.round(rzpData.amount * 100), // convert to paise
+          currency: rzpData.currency || "INR",
+          name: "SkinDekho",
+          description: "Payment for Order #" + rzpData.orderId,
+          order_id: rzpData.razorpayOrderId,
+          handler: async function (authResponse) {
+            $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm me-2"></span>Verifying Payment...');
+            try {
+              const verifyPayload = {
+                orderId: rzpData.orderId,
+                razorpayPaymentId: authResponse.razorpay_payment_id,
+                razorpayOrderId: authResponse.razorpay_order_id,
+                razorpaySignature: authResponse.razorpay_signature
+              };
+              
+              const verificationResult = await verifyPaymentAPI(verifyPayload, token);
+              if (verificationResult.success) {
+                showToast("Order placed & payment verified successfully!", "success");
+                setTimeout(() => {
+                  window.location.href = "User.html#orders";
+                }, 2000);
+              } else {
+                showToast(verificationResult.message || "Payment verification failed. Redirecting to My Orders...", "error");
+                setTimeout(() => {
+                  window.location.href = "User.html#orders";
+                }, 2000);
+              }
+            } catch (err) {
+              showToast(err.message || "Verification failed. Redirecting to My Orders...", "error");
+              setTimeout(() => {
+                window.location.href = "User.html#orders";
+              }, 2000);
+            }
+          },
+          prefill: {
+            name: payload.newAddress ? `${payload.newAddress.firstName} ${payload.newAddress.lastName}` : "",
+            contact: payload.newAddress ? payload.newAddress.phoneNumber : ""
+          },
+          theme: {
+            color: "#e2af18"
+          },
+          modal: {
+            ondismiss: function () {
+              showToast("Payment cancelled. Redirecting to My Orders...", "warning");
+              setTimeout(() => {
+                window.location.href = "User.html#orders";
+              }, 2000);
+            }
+          }
+        };
+
+        // Attempt to prefill logged-in user details from session storage
+        try {
+          const userStr = sessionStorage.getItem("user");
+          if (userStr) {
+            const user = JSON.parse(userStr);
+            if (!rzpOptions.prefill.name && (user.firstName || user.lastName)) {
+              rzpOptions.prefill.name = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+            }
+            if (!rzpOptions.prefill.contact && user.phoneNumber) {
+              rzpOptions.prefill.contact = user.phoneNumber;
+            }
+            if (user.email) {
+              rzpOptions.prefill.email = user.email;
+            }
+          }
+        } catch (e) {
+          console.error("Failed to parse user details for prefill", e);
+        }
+
+        const rzp = new Razorpay(rzpOptions);
+        rzp.open();
+        $btn.html("Awaiting Payment...");
       } else {
         throw new Error(response.message || "Failed to place order");
       }
@@ -360,7 +446,7 @@ $(document).ready(function () {
         selectedAddressId = null;
       } else {
         $("#new-address-section").addClass("d-none"); // Hide form if addresses exist
-        
+
         // Find default address or choose the first one
         const defaultAddr = addresses.find(a => a.isDefault) || addresses[0];
         selectedAddressId = defaultAddr ? defaultAddr.id : null;
@@ -440,7 +526,7 @@ $(document).ready(function () {
 
         $tableBody.html(`
           <tr>
-            <td colspan="5" class="py-5 text-center">
+            <td colspan="6" class="py-5 text-center">
               <div class="py-5">
                 <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
                 <h4 class="text-muted mb-4">Your cart is currently empty.</h4>
@@ -453,6 +539,13 @@ $(document).ready(function () {
           </tr>
         `);
       } else {
+        // Enable Place Order button if items exist
+        $("#placeOrderBtn")
+          .prop("disabled", false)
+          .removeClass("opacity-50")
+          .css("cursor", "pointer")
+          .removeAttr("title");
+
         // Generate Cart Item Rows
         cartItems.forEach((item) => {
           const price = parseFloat(item.productPrice) || 0;
@@ -464,8 +557,10 @@ $(document).ready(function () {
           const imgSrc = relativeImgUrl.startsWith("http")
             ? relativeImgUrl
             : relativeImgUrl
-            ? (BASE_URL + relativeImgUrl)
-            : "img/product-default.jpg";
+              ? (BASE_URL + relativeImgUrl)
+              : "img/product-default.jpg";
+
+          const itemId = item.id || item.cartId || item.productId;
 
           const tr = `
             <tr>
@@ -474,15 +569,20 @@ $(document).ready(function () {
                   <img
                     src="${imgSrc}"
                     class="img-fluid rounded-circle"
-                    style="width: 70px; height: 70px; object-fit: cover;"
+                    style="width: 55px; height: 55px; object-fit: cover;"
                     alt="${item.productName || "Product"}"
                   />
                 </div>
               </th>
-              <td class="py-5">${item.productName || "Product Name"}</td>
-              <td class="py-5">₹${price.toFixed(2)}</td>
-              <td class="py-5">${quantity}</td>
-              <td class="py-5">₹${total.toFixed(2)}</td>
+              <td class="py-4 align-middle">${item.productName || "Product Name"}</td>
+              <td class="py-4 align-middle">₹${price.toFixed(2)}</td>
+              <td class="py-4 align-middle">${quantity}</td>
+              <td class="py-4 align-middle fw-bold">₹${total.toFixed(2)}</td>
+              <td class="py-4 align-middle text-center">
+                <button type="button" class="btn btn-md rounded-circle bg-light border text-danger remove-checkout-item-btn p-1 px-2" data-id="${itemId}" title="Remove item from order">
+                  <i class="fa fa-times"></i>
+                </button>
+              </td>
             </tr>
           `;
           $tableBody.append(tr);
@@ -498,13 +598,16 @@ $(document).ready(function () {
           <td class="py-2">
             <p class="mb-0 text-dark fw-bold">Subtotal</p>
           </td>
-          <td class="py-2">
+          <td class="py-2 text-end" colspan="2">
             <div>
               <p class="mb-0 text-dark fw-bold">₹${subtotal.toFixed(2)}</p>
             </div>
           </td>
         </tr>
       `);
+
+      // Calculate Shipping (₹50 if subtotal <= ₹500, else Free)
+      const shippingCharge = subtotal <= 500 ? 50.00 : 0.00;
 
       // Add Shipping Options Row
       $tableBody.append(`
@@ -513,17 +616,19 @@ $(document).ready(function () {
           <td class="py-2">
             <p class="mb-0 text-dark">Shipping</p>
           </td>
-          <td colspan="3" class="py-2">
-            <div class="form-check text-start">
-              <input type="checkbox" class="form-check-input bg-primary border-0 shipping-opt" id="Shipping-2" name="Shipping-1" value="15" checked disabled />
-              <label class="form-check-label" for="Shipping-2">Flat rate: ₹15.00</label>
+          <td colspan="4" class="py-2 text-end">
+            <div class="form-check d-inline-block text-start me-0">
+              <input type="checkbox" class="form-check-input bg-primary border-0 shipping-opt" id="Shipping-2" name="Shipping-1" value="${shippingCharge}" checked disabled />
+              <label class="form-check-label fw-semibold" for="Shipping-2">
+                ${shippingCharge > 0 ? `Flat rate: ₹50.00` : `Free Shipping (Order > ₹500)`}
+              </label>
             </div>
           </td>
         </tr>
       `);
 
       // Add Final Total Row
-      const finalTotalWithShipping = subtotal + 15.00;
+      const finalTotalWithShipping = subtotal + shippingCharge;
       $tableBody.append(`
         <tr>
           <th scope="row"></th>
@@ -532,7 +637,7 @@ $(document).ready(function () {
           </td>
           <td class="py-2"></td>
           <td class="py-2"></td>
-          <td class="py-2">
+          <td class="py-2 text-end" colspan="2">
             <div>
               <p class="mb-0 text-dark fw-bold" id="finalTotal">₹${finalTotalWithShipping.toFixed(2)}</p>
             </div>
@@ -542,10 +647,30 @@ $(document).ready(function () {
     } catch (err) {
       console.error("Failed to load checkout cart:", err);
       $tableBody.html(
-        '<tr><td colspan="5" class="py-5 text-center text-danger">Failed to load order items.</td></tr>',
+        '<tr><td colspan="6" class="py-5 text-center text-danger">Failed to load order items.</td></tr>',
       );
     }
   }
+
+  // Remove Item from Cart in Checkout
+  $(document).on("click", ".remove-checkout-item-btn", async function () {
+    const itemId = $(this).data("id");
+    if (!itemId) return;
+
+    const $btn = $(this);
+    $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm" role="status"></span>');
+
+    try {
+      await removeFromCartAPI(itemId, token);
+      showToast("Item removed from order", "success");
+      syncCartBadge();
+      await renderCartTable();
+    } catch (err) {
+      console.error("Failed to remove item from checkout:", err);
+      showToast(err.message || "Failed to remove item. Please try again.", "error");
+      $btn.prop("disabled", false).html('<i class="fa fa-times"></i>');
+    }
+  });
 
   // Update total on shipping change (Global listener)
   $(document).on("change", ".shipping-opt", async function () {
@@ -568,7 +693,7 @@ $(document).ready(function () {
             item.productPrice = productPriceMap[item.productId];
           }
         });
-      } catch (e) {}
+      } catch (e) { }
 
       let subtotal = 0;
       cartItems.forEach((item) => {
@@ -579,20 +704,20 @@ $(document).ready(function () {
       const shippingCost = parseFloat($(this).val()) || 0;
       const finalTotal = subtotal + shippingCost;
       $("#finalTotal").text(`₹${finalTotal.toFixed(2)}`);
-    } catch (e) {}
+    } catch (e) { }
   });
 
   // Payment Method item click and toggle descriptions
-  $(document).on("change", "input[name='paymentMethod']", function() {
+  $(document).on("change", "input[name='paymentMethod']", function () {
     $(".payment-method-item").removeClass("selected-payment");
     $(".payment-desc").addClass("d-none");
-    
+
     const $parent = $(this).closest(".payment-method-item");
     $parent.addClass("selected-payment");
     $parent.find(".payment-desc").removeClass("d-none");
   });
 
-  $(document).on("click", ".payment-method-item", function(e) {
+  $(document).on("click", ".payment-method-item", function (e) {
     if (!$(e.target).is("input")) {
       $(this).find("input[name='paymentMethod']").prop("checked", true).trigger("change");
     }

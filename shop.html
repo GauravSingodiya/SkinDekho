@@ -5,8 +5,22 @@
   <meta charset="utf-8" />
   <title>SkinDekho - Premium Healthcare Products</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <meta content="" name="keywords" />
-  <meta content="" name="description" />
+  <meta name="description"
+    content="Browse dermatologist-recommended products and gentle skin solutions. Find premium moisturizers, sunscreens, and face washes as highly effective Cetaphil alternatives." />
+  <meta name="keywords"
+    content="dermatologist products, Cetaphil products online, buy skincare online, clinical face wash, moisturizer online, buy sunscreen cream, face serum online, SkinDekho shop" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://skindekho.in/shop.html" />
+  <meta property="og:title" content="Shop Dermatologist-Approved Skincare Products - SkinDekho" />
+  <meta property="og:description"
+    content="Browse our complete collection of dermatologist-approved moisturizers, serums, facewashes, and sunscreens. Order online from SkinDekho." />
+  <meta property="og:image" content="https://skindekho.in/img/logo.png" />
+
+  <!-- Canonical Link -->
+  <link rel="canonical" href="https://skindekho.in/shop.html" />
 
   <!-- Google Web Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -138,47 +152,60 @@
       <h1 class="mb-4">Our Skincare Products</h1>
       <div class="row g-4">
         <div class="col-lg-12">
-          <div class="row g-4">
-            <div class="col-xl-3">
-              <div class="input-group w-100 mx-auto d-flex">
-                <input type="search" id="shopSearchInput" class="form-control p-3" placeholder="keywords" />
-
-                <span id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></span>
+          <div class="row align-items-center justify-content-between g-3 mb-4 shop-controls-bar">
+            <div class="col-12 col-lg-5">
+              <div class="shop-search-wrapper position-relative">
+                <div class="input-group shadow-sm rounded-pill overflow-hidden border bg-white p-1">
+                  <input type="search" id="shopSearchInput" class="form-control border-0 py-2 ps-3 pe-2 shadow-none"
+                    placeholder="Search by name, category, SKU..." autocomplete="off" />
+                  <button type="button" id="clearShopSearchBtn" class="btn bg-white border-0 text-muted d-none pe-2"
+                    title="Clear search">
+                    <i class="fas fa-times"></i>
+                  </button>
+                  <button type="button" class="btn btn-primary text-white rounded-pill px-3 px-md-4 ms-1"
+                    id="shopSearchIconBtn" title="Search">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </div>
               </div>
             </div>
-            <div class="col-6"></div>
-            <div class="col-xl-3">
-              <div class="d-flex align-items-center justify-content-end mb-4">
-                <div class="premium-sort-container">
-                  <button class="btn btn-light rounded-pill px-4 py-2 border d-flex align-items-center"
-                    id="sortDropdownBtn" type="button">
+            <div class="col-12 col-lg-7 d-flex align-items-center justify-content-between justify-content-lg-end gap-2">
+              <button type="button" class="btn btn-outline-primary rounded-pill px-3 py-1.5 d-lg-none"
+                id="toggleMobileFiltersBtn">
+                <i class="fas fa-sliders-h me-1 small"></i>Filters
+              </button>
+              <div class="premium-sort-container flex-grow-1 flex-sm-grow-0">
+                <button
+                  class="btn btn-light rounded-pill px-4 py-2 border w-100 d-flex align-items-center justify-content-between"
+                  id="sortDropdownBtn" type="button">
+                  <span class="d-flex align-items-center">
                     <i class="fas fa-sort-amount-down-alt text-primary me-2"></i>
                     <span id="currentSortText">Default Sorting</span>
-                    <i class="fas fa-chevron-down ms-3 small text-muted"></i>
-                  </button>
-                  <div class="sort-menu shadow-sm border rounded-3 p-2 d-none">
-                    <div class="sort-option active" data-value="">
-                      Default Sorting
-                    </div>
-                    <div class="sort-option" data-value="low">
-                      Price: Low to High
-                    </div>
-                    <div class="sort-option" data-value="high">
-                      Price: High to Low
-                    </div>
+                  </span>
+                  <i class="fas fa-chevron-down ms-3 small text-muted"></i>
+                </button>
+                <div class="sort-menu shadow-sm border rounded-3 p-2 d-none">
+                  <div class="sort-option active" data-value="">
+                    Default Sorting
                   </div>
-                  <!-- Hidden native select for existing JS compatibility -->
-                  <select id="fruits" class="d-none">
-                    <option value="">Default Sorting</option>
-                    <option value="low">Price: Low to High</option>
-                    <option value="high">Price: High to Low</option>
-                  </select>
+                  <div class="sort-option" data-value="low">
+                    Price: Low to High
+                  </div>
+                  <div class="sort-option" data-value="high">
+                    Price: High to Low
+                  </div>
                 </div>
+                <!-- Hidden native select for existing JS compatibility -->
+                <select id="fruits" class="d-none">
+                  <option value="">Default Sorting</option>
+                  <option value="low">Price: Low to High</option>
+                  <option value="high">Price: High to Low</option>
+                </select>
               </div>
             </div>
           </div>
           <div class="row g-4">
-            <div class="col-lg-3">
+            <div class="col-lg-3 shop-sidebar-col d-none d-lg-block" id="mobileFiltersContainer">
               <div class="row g-4">
                 <div class="col-lg-12">
                   <div class="mb-3">

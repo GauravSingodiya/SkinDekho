@@ -1265,3 +1265,189 @@
     margin-bottom: 0 !important;
   }
 }
+
+/* 🔍 Mobile & Desktop Shop Search Controls */
+.shop-controls-bar {
+  background-color: #f8f9fa;
+  padding: 1rem;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.shop-search-wrapper .input-group {
+  transition: all 0.3s ease;
+  border: 1px solid #dee2e6 !important;
+}
+
+.shop-search-wrapper .input-group:focus-within {
+  border-color: var(--bs-primary) !important;
+  box-shadow: 0 0 0 0.25rem rgba(129, 196, 8, 0.25) !important;
+}
+
+#shopSearchInput {
+  font-size: 0.95rem;
+}
+
+/* 🚫 Hide browser native clear cancel button to prevent duplicate X icons */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none !important;
+}
+
+#shopSearchIconBtn {
+  cursor: pointer !important;
+  transition: all 0.2s ease;
+  border: none !important;
+}
+
+#shopSearchIconBtn:hover {
+  opacity: 0.9;
+  box-shadow: 0 4px 10px rgba(129, 196, 8, 0.3);
+}
+
+#shopSearchIconBtn:active {
+  transform: scale(0.96);
+}
+
+#clearShopSearchBtn {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+#clearShopSearchBtn:hover {
+  color: #dc3545 !important;
+}
+
+/* 📱 Mobile Responsiveness for Shop Controls & Categories */
+@media (max-width: 991.98px) {
+  .shop-controls-bar {
+    padding: 0.5rem 0.65rem !important;
+    border-radius: 12px;
+  }
+
+  #shopSearchInput {
+    font-size: 0.825rem !important;
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+  }
+
+  #shopSearchIconBtn {
+    padding: 0.25rem 0.75rem !important;
+    font-size: 0.8rem !important;
+    border-radius: 50px !important;
+  }
+
+  #toggleMobileFiltersBtn {
+    font-size: 0.8rem !important;
+    padding: 0.35rem 0.75rem !important;
+    white-space: nowrap;
+    border-radius: 50px !important;
+    font-weight: 600;
+  }
+
+  .premium-sort-container #sortDropdownBtn {
+    min-width: 100% !important;
+    width: 100% !important;
+    font-size: 0.8rem !important;
+    padding: 0.35rem 0.75rem !important;
+    border-radius: 50px !important;
+  }
+
+  .sort-menu {
+    font-size: 0.8rem !important;
+  }
+
+  .fruite-categorie {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+    gap: 8px;
+    scrollbar-width: none;
+    /* Firefox */
+  }
+
+  .fruite-categorie::-webkit-scrollbar {
+    display: none;
+    /* Chrome/Safari */
+  }
+
+  .fruite-categorie li {
+    flex: 0 0 auto !important;
+    margin-bottom: 0 !important;
+  }
+
+  .fruite-categorie li a {
+    display: inline-flex !important;
+    align-items: center;
+    padding: 6px 14px !important;
+    background-color: #f0f2f5;
+    border-radius: 50px !important;
+    font-size: 0.85rem !important;
+    white-space: nowrap;
+    color: #495057 !important;
+    text-decoration: none;
+    transition: all 0.2s ease;
+  }
+
+  .fruite-categorie li a.active,
+  .fruite-categorie li a:hover {
+    background-color: var(--bs-primary) !important;
+    color: #fff !important;
+  }
+
+  /* 📱 Ensure heading is 100% visible below fixed top navbar on mobile */
+  .shop-page .content-header-margin {
+    margin-top: 105px !important;
+  }
+
+  .shop-page .container-fluid.fruite {
+    padding-top: 0.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  .shop-page .container-fluid.fruite>.container {
+    padding-top: 0.25rem !important;
+    padding-bottom: 1rem !important;
+  }
+
+  .shop-page h1 {
+    font-size: 1.4rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  #mobileFiltersContainer {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 1rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e9ecef;
+    margin-bottom: 1.25rem;
+  }
+
+  #mobileFiltersContainer.d-block {
+    display: block !important;
+  }
+}
+
+/* 💻 Remove excess top space on desktop for shop page */
+@media (min-width: 992px) {
+  .shop-page .content-header-margin {
+    margin-top: 122px !important;
+  }
+
+  .shop-page .container-fluid.fruite {
+    padding-top: 0.5rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .shop-page .container-fluid.fruite>.container {
+    padding-top: 0.5rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+}

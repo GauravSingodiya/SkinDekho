@@ -21,6 +21,10 @@ export const API = {
     UPDATE: (id) => `/api/Products/UpdateProduct/${id}`,
     DELETE: (id) => `/api/Products/DeleteProduct/${id}`,
     SAVE_DETAILS: (id) => `/api/Products/SaveProductDetails/${id}`,
+    ADD_CATEGORY: "/api/Products/AddCategory",
+    UPDATE_CATEGORY: (id) => `/api/Products/UpdateCategory/${id}`,
+    DELETE_CATEGORY: (id) => `/api/Products/DeleteCategory/${id}`,
+    DELETE_PRODUCT_IMAGE: (id) => `/api/Products/DeleteProductImage/${id}`,
   },
 
   CART: {
@@ -35,6 +39,8 @@ export const API = {
   },
   ORDERS: {
     CHECKOUT: "/api/Orders/checkout",
+    VERIFY_PAYMENT: "/api/Orders/verify-payment",
+    PAY_PENDING: (id) => `/api/Orders/pay-pending/${id}`,
     GET_MY_ORDERS: "/api/Orders/my-orders",
     GET_ALL_ADMIN: "/api/Orders/admin/all",
     UPDATE_ADMIN: (id) => `/api/Orders/admin/update/${id}`,

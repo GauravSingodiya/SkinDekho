@@ -180,6 +180,45 @@ $(document).ready(async function () {
       $btn.prop("disabled", false);
     }
   });
+
+  // Handle zoom-trigger click to trigger custom premium zoom modal
+  $(document).on("click", "#zoom-trigger", function () {
+    const imgSrc = $("#product-img").attr("src");
+    if (!imgSrc || imgSrc.includes("placeholder.png") || imgSrc.includes("product-default.jpg")) return;
+
+    const modalId = "zoom-modal-" + Date.now();
+    const modalHtml = `
+      <div class="modal fade" id="${modalId}" tabindex="-1" aria-hidden="true" style="backdrop-filter: blur(8px); background: rgba(10, 11, 15, 0.85); z-index: 10500;">
+        <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width: 90%; width: auto;">
+          <div class="modal-content border-0 bg-transparent shadow-none position-relative">
+            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3" data-bs-dismiss="modal" aria-label="Close" style="z-index: 10510; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));"></button>
+            <div class="modal-body p-0 text-center d-flex justify-content-center align-items-center">
+              <img src="${imgSrc}" class="img-fluid rounded shadow-lg" style="max-height: 85vh; object-fit: contain; border: 4px solid #fff; animation: zoomIn 0.3s ease;" />
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    $("body").append(modalHtml);
+
+    if ($("#zoom-animation-style").length === 0) {
+      $("head").append(`
+        <style id="zoom-animation-style">
+          @keyframes zoomIn {
+            from { opacity: 0; transform: scale3d(0.3, 0.3, 0.3); }
+            50% { opacity: 1; }
+          }
+        </style>
+      `);
+    }
+
+    const $modalEl = $(`#${modalId}`);
+    const modalInstance = new bootstrap.Modal($modalEl[0]);
+    modalInstance.show();
+    $modalEl.on("hidden.bs.modal", function () {
+      $modalEl.remove();
+    });
+  });
 });
 
 function renderProductDetails(product) {
@@ -198,6 +237,7 @@ function renderProductDetails(product) {
       ? BASE_URL + relativeImgUrl
       : "img/product-default.jpg";
   $("#product-img").attr("src", fullImgUrl);
+  $("#product-img-zoom").attr("href", fullImgUrl);
 
   // Populate thumbnails
   const $thumbnails = $("#product-thumbnails");
@@ -226,6 +266,7 @@ function renderProductDetails(product) {
 
         $("#product-img").fadeOut(150, function () {
           $(this).attr("src", fullThumbUrl).fadeIn(150);
+          $("#product-img-zoom").attr("href", fullThumbUrl);
         });
       });
 

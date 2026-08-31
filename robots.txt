@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /User.html
+Disallow: /admin
+
+Sitemap: https://skindekho.in/sitemap.xml

@@ -21,6 +21,14 @@ export async function checkoutAPI(payload, token) {
   return await apiRequest(API.ORDERS.CHECKOUT, "POST", payload, token);
 }
 
+export async function verifyPaymentAPI(payload, token) {
+  return await apiRequest(API.ORDERS.VERIFY_PAYMENT, "POST", payload, token);
+}
+
+export async function payPendingOrderAPI(orderId, token) {
+  return await apiRequest(API.ORDERS.PAY_PENDING(orderId), "POST", null, token);
+}
+
 export async function getMyOrdersAPI(token) {
   return await apiRequest(API.ORDERS.GET_MY_ORDERS, "GET", null, token);
 }

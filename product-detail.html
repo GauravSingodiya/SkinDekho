@@ -5,8 +5,22 @@
   <meta charset="utf-8" />
   <title>SkinDekho - Product Details</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <meta content="" name="keywords" />
-  <meta content="" name="description" />
+  <meta name="description"
+    content="View product specifications, ingredients, directions of use, and reviews. Order high-quality dermatologist-approved skincare products from SkinDekho." />
+  <meta name="keywords"
+    content="skindekho product ingredients, skin care directions, buy dermatologist moisturizer, clinical serum reviews" />
+  <meta name="robots" content="index, follow" />
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="product" />
+  <meta property="og:url" content="https://skindekho.in/product-detail.html" />
+  <meta property="og:title" content="Product Details - SkinDekho" />
+  <meta property="og:description"
+    content="View product specifications, ingredients, directions of use, and reviews. Order high-quality dermatologist-approved skincare products from SkinDekho." />
+  <meta property="og:image" content="https://skindekho.in/img/logo.png" />
+
+  <!-- Canonical Link -->
+  <link rel="canonical" href="https://skindekho.in/product-detail.html" />
 
   <!-- Google Web Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -482,7 +496,11 @@
     <div class="container px-0">
       <nav class="navbar navbar-light bg-white navbar-expand-xl">
         <a href="home.html" class="navbar-brand d-flex align-items-center">
-          <img src="img/logo.png" alt="Logo" class="img-fluid" style="height: 65px" />
+          <!-- Desktop Logo -->
+          <img src="img/logo.png" alt="Logo" class="img-fluid d-none d-xl-block" style="height: 65px" />
+
+          <!-- Mobile Logo -->
+          <img src="img/logo.png" alt="Logo" class="img-fluid d-xl-none" style="height: 40px" />
         </a>
         <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
           data-bs-target="#navbarCollapse">
@@ -527,8 +545,10 @@
       <div class="row g-4" id="product-detail-content">
         <div class="col-lg-6">
           <div class="product-img-card">
-            <img id="product-img" src="img/placeholder.png" class="img-fluid" alt="Product Image" />
-            <div class="zoom-icon">
+            <a id="product-img-zoom" href="img/placeholder.png" data-lightbox="product-gallery">
+              <img id="product-img" src="img/placeholder.png" class="img-fluid" alt="Product Image" />
+            </a>
+            <div class="zoom-icon" id="zoom-trigger">
               <i class="fas fa-search-plus"></i>
             </div>
           </div>

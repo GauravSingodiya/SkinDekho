@@ -122,6 +122,45 @@ export function showConfirm(title, message) {
   spinner();
 
   /* ==========================
+     Mobile Header Branding
+  ========================== */
+  function injectMobileBranding() {
+    const $mobileLogo = $(".navbar-brand img.d-xl-none");
+    if ($mobileLogo.length > 0 && $("#mobile-brand-title").length === 0) {
+      const brandTextHtml = `
+        <span id="mobile-brand-title" class="d-inline d-xl-none ms-2 fw-bold text-primary" style="font-family: 'Raleway', sans-serif; font-size: 1.25rem; letter-spacing: -0.5px; vertical-align: middle;">
+          Skin Dekh<i class="fas fa-eye text-primary" style="font-size: 0.95em; margin-left: 1px; vertical-align: middle;"></i>
+        </span>
+      `;
+      $mobileLogo.after(brandTextHtml);
+
+      // Center the mobile brand container in the header bar
+      if ($("#mobile-brand-center-style").length === 0) {
+        $("head").append(`
+          <style id="mobile-brand-center-style">
+            @media (max-width: 1199px) {
+              .navbar {
+                position: relative;
+                display: flex;
+                align-items: center;
+              }
+              #mobile-brand-title {
+                position: absolute;
+                left: 50% !important;
+                transform: translateX(-50%) !important;
+                margin: 0 !important;
+                white-space: nowrap;
+                z-index: 5;
+              }
+            }
+          </style>
+        `);
+      }
+    }
+  }
+  injectMobileBranding();
+
+  /* ==========================
      Inject Auth Modal if Missing
   ========================== */
   function ensureAuthModal() {
@@ -375,6 +414,22 @@ export function showConfirm(title, message) {
       $("#authModal").modal("show");
     }
   });
+
+  /* ==========================
+     FOOTER ACCOUNT LINKS LOGIN CHECK
+  ========================== */
+  $(document).on("click", ".footer-item a", function (e) {
+    const linkText = $(this).text().trim();
+    const loginRequiredLinks = ["My Account", "Shop details", "Shopping Cart", "Order History"];
+
+    if (loginRequiredLinks.includes(linkText)) {
+      const token = sessionStorage.getItem("token");
+      if (!token) {
+        e.preventDefault();
+        $("#authModal").modal("show");
+      }
+    }
+  });
 })(jQuery);
 
 async function loadProducts(category = "") {
@@ -404,8 +459,8 @@ async function loadProducts(category = "") {
       const fullImgUrl = relativeImgUrl.startsWith("http")
         ? relativeImgUrl
         : relativeImgUrl
-        ? (BASE_URL + relativeImgUrl)
-        : "img/product-default.jpg";
+          ? (BASE_URL + relativeImgUrl)
+          : "img/product-default.jpg";
 
       const productCard = `
         <div class="${colClass}">
@@ -459,13 +514,7 @@ async function loadProducts(category = "") {
   }
 }
 
-$(document).on("click", "#categoryTabs a", function () {
-  $("#categoryTabs a").removeClass("active");
-  $(this).addClass("active");
 
-  const category = $(this).data("category") || "";
-  loadProducts(category);
-});
 
 // $(document).ready(function () {
 //   loadProducts(); // loads all products
@@ -493,6 +542,28 @@ function renderPaginatedProducts() {
   const $productList = $("#productList");
   $productList.empty();
 
+  if (!allProducts || allProducts.length === 0) {
+    const searchVal = $("#shopSearchInput").val()?.trim() || "";
+    const activeCat = $("#categoryTabs a.active").data("category") || "";
+
+    const emptyHtml = `
+      <div class="col-12 text-center py-5">
+        <div class="mb-3">
+          <i class="fas fa-search-minus text-muted" style="font-size: 3.5rem;"></i>
+        </div>
+        <h4 class="fw-bold text-dark mb-2">No products found ${searchVal ? `for "${searchVal}"` : ""}</h4>
+        <p class="text-muted mb-4" style="max-width: 450px; margin: 0 auto;">
+          We couldn't find any products matching your current filters ${activeCat ? `in category "${activeCat}"` : ""}. Try searching for different keywords or reset your filters.
+        </p>
+        <button class="btn btn-outline-primary rounded-pill px-4 text-primary mt-2 fw-bold" id="clearAllFiltersBtn">
+          <i class="fas fa-redo me-2"></i>Reset All Filters
+        </button>
+      </div>
+    `;
+    $productList.html(emptyHtml);
+    return;
+  }
+
   const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
   const end = start + PRODUCTS_PER_PAGE;
 
@@ -513,8 +584,8 @@ function renderPaginatedProducts() {
     const fullImgUrl = relativeImgUrl.startsWith("http")
       ? relativeImgUrl
       : relativeImgUrl
-      ? (BASE_URL + relativeImgUrl)
-      : "img/product-default.jpg";
+        ? (BASE_URL + relativeImgUrl)
+        : "img/product-default.jpg";
 
     const whatsappMessage = encodeURIComponent(
       `🧴 *${item.name}*\n💰 Price: ₹${item.discountPrice ?? item.price}`,
@@ -677,33 +748,149 @@ $(document).on("click", "#pagination a", function (e) {
 //   }
 // }
 
-$(document).on("click", "#categoryTabs a", function () {
-  const category = $(this).data("category") || "";
 
-  getFilterProducts({
-    category,
-  });
-});
 
 // $("#searchInput").on("input", function () {
 //   getFilterProducts({
 //     productName: $(this).val().trim(),
 //   });
 // });
+let searchDebounceTimer = null;
+
 function handleSearch(value) {
-  getFilterProducts({
-    productName: value.trim(),
-  });
+  clearTimeout(searchDebounceTimer);
+
+  const query = value.trim();
+  const $clearBtn = $("#clearShopSearchBtn");
+  if (query.length > 0) {
+    $clearBtn.removeClass("d-none");
+  } else {
+    $clearBtn.addClass("d-none");
+  }
+
+  searchDebounceTimer = setTimeout(() => {
+    getFilterProducts({
+      productName: query,
+    });
+  }, 300);
 }
 
-// Shop search
+// Shop search input
 $(document).on("input", "#shopSearchInput", function () {
   handleSearch(this.value);
 });
 
-// Modal search
+// Click handler for search icon inside shop input box
+$(document).on("click", "#shopSearchIconBtn, #shopSearchIconBtn *", function (e) {
+  e.preventDefault();
+  clearTimeout(searchDebounceTimer);
+  const query = $("#shopSearchInput").val()?.trim() || "";
+  $("#categoryTabs a").removeClass("active");
+  $("#categoryTabs a[data-category='']").addClass("active");
+  if (query.length > 0) {
+    $("#clearShopSearchBtn").removeClass("d-none");
+    getFilterProducts({ productName: query });
+  } else {
+    $("#clearShopSearchBtn").addClass("d-none");
+    getFilterProducts({});
+  }
+});
+
+// Trigger search when pressing Enter key in shop search input
+$(document).on("keypress", "#shopSearchInput", function (e) {
+  if (e.which === 13) {
+    e.preventDefault();
+    clearTimeout(searchDebounceTimer);
+    const query = $(this).val().trim();
+    $("#categoryTabs a").removeClass("active");
+    $("#categoryTabs a[data-category='']").addClass("active");
+    if (query.length > 0) {
+      $("#clearShopSearchBtn").removeClass("d-none");
+      getFilterProducts({ productName: query });
+    } else {
+      $("#clearShopSearchBtn").addClass("d-none");
+      getFilterProducts({});
+    }
+  }
+});
+
+// Clear shop search button
+$(document).on("click", "#clearShopSearchBtn", function () {
+  $("#shopSearchInput").val("").focus();
+  $(this).addClass("d-none");
+  $("#categoryTabs a").removeClass("active");
+  $("#categoryTabs a[data-category='']").addClass("active");
+  getFilterProducts({});
+});
+
+// Reset all filters button
+$(document).on("click", "#clearAllFiltersBtn", function () {
+  $("#shopSearchInput").val("");
+  $("#clearShopSearchBtn").addClass("d-none");
+  $("#categoryTabs a").removeClass("active");
+  $("#categoryTabs a[data-category='']").addClass("active");
+  getFilterProducts({});
+});
+
+// Toggle extra mobile filters (Categories, Price slider, Featured)
+$(document).on("click", "#toggleMobileFiltersBtn", function () {
+  const $filters = $("#mobileFiltersContainer");
+  const isHidden = $filters.hasClass("d-none") || !$filters.hasClass("d-block");
+
+  if (isHidden) {
+    $filters.removeClass("d-none").addClass("d-block");
+    $(this).html('<i class="fas fa-times me-2"></i>Hide Filters');
+    $(this).addClass("btn-primary text-white").removeClass("btn-outline-primary");
+  } else {
+    $filters.removeClass("d-block").addClass("d-none");
+    $(this).html('<i class="fas fa-sliders-h me-2"></i>Filters');
+    $(this).addClass("btn-outline-primary").removeClass("btn-primary text-white");
+  }
+});
+
+// Modal search handling (Input & Enter Key)
 $(document).on("input", "#modalSearchInput", function () {
-  handleSearch(this.value);
+  const isShopPage = $("body").hasClass("shop-page") || window.location.pathname.includes("shop.html");
+  if (isShopPage) {
+    $("#shopSearchInput").val(this.value);
+    handleSearch(this.value);
+  }
+});
+
+$(document).on("keypress", "#modalSearchInput", function (e) {
+  if (e.which === 13) {
+    e.preventDefault();
+    const query = $(this).val().trim();
+    const isShopPage = $("body").hasClass("shop-page") || window.location.pathname.includes("shop.html");
+    if (isShopPage) {
+      $("#shopSearchInput").val(query);
+      handleSearch(query);
+      const searchModal = bootstrap.Modal.getInstance($("#searchModal")[0]);
+      if (searchModal) searchModal.hide();
+    } else if (query) {
+      window.location.href = `shop.html?search=${encodeURIComponent(query)}`;
+    }
+  }
+});
+
+$(document).on("click", "#search-icon-1", function () {
+  const modalVal = $("#modalSearchInput").val()?.trim();
+  const shopVal = $("#shopSearchInput").val()?.trim();
+  const query = modalVal || shopVal || "";
+  const isShopPage = $("body").hasClass("shop-page") || window.location.pathname.includes("shop.html");
+
+  if (isShopPage) {
+    if (modalVal) {
+      $("#shopSearchInput").val(modalVal);
+      handleSearch(modalVal);
+      const searchModal = bootstrap.Modal.getInstance($("#searchModal")[0]);
+      if (searchModal) searchModal.hide();
+    } else {
+      handleSearch(query);
+    }
+  } else if (query) {
+    window.location.href = `shop.html?search=${encodeURIComponent(query)}`;
+  }
 });
 
 $("#rangeInput").on("input", function () {
@@ -748,9 +935,7 @@ $("#fruits").on("change", function () {
   });
 });
 
-$(document).ready(function () {
-  getFilterProducts(); // no filters
-});
+
 
 /**
  * 🧴 Custom Icon Mapping for SkinDekho Categories
@@ -870,8 +1055,8 @@ async function loadHomeCategories() {
       const fullImgUrl = relativeImgUrl.startsWith("http")
         ? relativeImgUrl
         : relativeImgUrl
-        ? (BASE_URL + relativeImgUrl)
-        : "img/product-default.jpg"; // fallback
+          ? (BASE_URL + relativeImgUrl)
+          : "img/product-default.jpg"; // fallback
 
       const cardHtml = `
         <div class="category-card" onclick="window.location.href='shop.html?category=${encodeURIComponent(item.category)}'">
@@ -926,8 +1111,8 @@ async function loadLatestProducts() {
       const fullImgUrl = relativeImgUrl.startsWith("http")
         ? relativeImgUrl
         : relativeImgUrl
-        ? (BASE_URL + relativeImgUrl)
-        : "img/product-default.jpg"; // fallback
+          ? (BASE_URL + relativeImgUrl)
+          : "img/product-default.jpg"; // fallback
 
       const productCard = `
         <div class="latest-product-card">
@@ -1040,8 +1225,8 @@ async function loadHomeFeaturedProducts() {
       const fullImgUrl = relativeImgUrl.startsWith("http")
         ? relativeImgUrl
         : relativeImgUrl
-        ? (BASE_URL + relativeImgUrl)
-        : "img/product-default.jpg"; // fallback
+          ? (BASE_URL + relativeImgUrl)
+          : "img/product-default.jpg"; // fallback
 
       const productCard = `
         <div class="featured-product-card">
@@ -1151,11 +1336,10 @@ function renderFeaturedProducts() {
 
           <div class="d-flex mb-2">
             <h5 class="fw-bold me-2">₹${item.discountPrice ?? item.price}</h5>
-            ${
-              item.discountPrice
-                ? `<h5 class="text-danger text-decoration-line-through">₹${item.price}</h5>`
-                : ""
-            }
+            ${item.discountPrice
+        ? `<h5 class="text-danger text-decoration-line-through">₹${item.price}</h5>`
+        : ""
+      }
           </div>
         </div>
       </div>
@@ -1198,28 +1382,38 @@ async function loadDashboardStats() {
 $(document).ready(function () {
   const urlParams = new URLSearchParams(window.location.search);
   const categoryParam = urlParams.get("category");
+  const searchParam = urlParams.get("search");
 
   if (
     $("body").hasClass("shop-page") ||
     window.location.pathname.includes("shop.html")
   ) {
+    // 1. Trigger product fetching immediately (with search query or category filter)
+    if (searchParam && searchParam.trim()) {
+      $("#shopSearchInput").val(searchParam.trim());
+      $("#clearShopSearchBtn").removeClass("d-none");
+      getFilterProducts({ productName: searchParam.trim() });
+    } else if (categoryParam && categoryParam.trim()) {
+      getFilterProducts({ category: categoryParam.trim() });
+    } else {
+      getFilterProducts();
+    }
+
+    // 2. Load categories list asynchronously and highlight active tab
     loadCategories().then(() => {
-      if (categoryParam) {
-        getFilterProducts({ category: categoryParam });
-        // Highlight active tab
-        setTimeout(() => {
-          $("#categoryTabs a").removeClass("active");
-          $(`#categoryTabs a[data-category="${categoryParam}"]`).addClass(
-            "active",
-          );
-        }, 100);
-      } else {
-        getFilterProducts();
+      if (categoryParam && categoryParam.trim()) {
+        const targetCategory = categoryParam.trim().toLowerCase();
+        $("#categoryTabs a").removeClass("active");
+        $("#categoryTabs a").each(function () {
+          const cat = $(this).data("category");
+          if (cat && cat.toString().trim().toLowerCase() === targetCategory) {
+            $(this).addClass("active");
+          }
+        });
       }
     });
+
     loadFeaturedProducts();
-    // On home page or other pages, just sync cart
-    // loadProducts(); // Removed as per user request to hide products on home page
   }
   loadNavbarCategories();
   loadHomeCategories();

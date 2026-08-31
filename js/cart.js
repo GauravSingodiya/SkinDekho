@@ -96,16 +96,22 @@ function updateCartTotals(cartItems) {
   let subtotal = 0;
 
   cartItems.forEach(item => {
-    const price = item.productPrice || 0;
-    const quantity = item.quantity || 1;
+    const price = parseFloat(item.productPrice) || 0;
+    const quantity = parseInt(item.quantity) || 1;
     subtotal += price * quantity;
   });
 
-  const shipping = 0; // The API might handle shipping or it's free
+  const shipping = (subtotal > 0 && subtotal <= 500) ? 50 : 0;
   const total = subtotal + shipping;
 
   $("#cart-subtotal").text(`₹${subtotal.toFixed(2)}`);
-  $("#cart-shipping").text(subtotal > 0 ? "Free" : "₹0.00");
+  if (subtotal === 0) {
+    $("#cart-shipping").html('<span class="text-muted">₹0.00</span>');
+  } else if (shipping > 0) {
+    $("#cart-shipping").html('<span class="text-dark fw-bold">₹50.00</span> <small class="text-muted d-block" style="font-size: 0.75rem;">(Free shipping over ₹500)</small>');
+  } else {
+    $("#cart-shipping").html('<span class="text-success fw-bold">Free</span> <small class="text-muted d-block" style="font-size: 0.75rem;">(Order over ₹500)</small>');
+  }
   $("#cart-total").text(`₹${total.toFixed(2)}`);
 }
 
