@@ -448,10 +448,16 @@
                   <label class="form-check-label" for="prodFeatured">Featured Product</label>
                 </div>
               </div>
-              <div class="col-md-6">
-                <label class="form-label">Product Images<sup>*</sup></label>
-                <input type="file" class="form-control" id="prodImage" name="Images" accept="image/*" multiple />
-                <div id="imagePreviewContainer" class="d-flex flex-wrap gap-2 mt-2"></div>
+              <div class="col-md-12 mt-2">
+                <label class="form-label">Product Images<sup>*</sup> <small class="text-muted">(Drag & drop cards to reorder images)</small></label>
+                <div id="imageDropZone" class="image-drop-zone mb-2">
+                  <i class="fas fa-cloud-upload-alt fa-2x text-primary mb-2"></i>
+                  <p class="mb-1 text-dark fw-semibold" style="font-size: 0.9rem;">Drag & Drop product images here or click to browse</p>
+                  <small class="text-muted">Supports JPG, PNG, WEBP (Multiple allowed)</small>
+                  <input type="file" class="form-control d-none" id="prodImage" name="Images" accept="image/*" multiple />
+                  <input type="file" class="d-none" id="replaceSingleImageInput" accept="image/*" />
+                </div>
+                <div id="imagePreviewContainer" class="d-flex flex-wrap gap-2 mt-2 p-2 bg-light rounded border border-dashed" style="min-height: 60px;"></div>
               </div>
             </div>
           </form>
@@ -618,6 +624,7 @@
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script type="module" src="js/main.js"></script>
   <script type="module">
+    import { BASE_URL } from "./js/api/config.js";
     import { getCurrentUser, updateUser } from "./js/auth.js";
     import {
       getAddressesAPI,
@@ -1076,23 +1083,33 @@
       let selectedImages = [];
       let existingImages = [];
       let removeProductMainImage = false;
+      let draggedImageIndex = null;
+      let draggedImageType = null;
 
       function renderProductImagePreviews() {
         const $container = $("#imagePreviewContainer");
         $container.empty();
+
+        let currentOrderNum = 1;
+
+        if (existingImages.length === 0 && selectedImages.length === 0) {
+          $container.html('<span class="text-muted small w-100 text-center py-2"><i class="fas fa-images me-1"></i>No images uploaded yet. Drag images here or click browse above.</span>');
+          return;
+        }
 
         // Render existing images
         existingImages.forEach((img, idx) => {
           const relativePath = img.imageUrl || "";
           const fullImgUrl = relativePath.startsWith("http")
             ? relativePath
-            : "https://skindekho.in" + relativePath;
+            : BASE_URL + relativePath;
 
           const thumbHtml = `
-              <div class="position-relative" style="width: 80px; height: 80px;">
-                <img src="${fullImgUrl}" class="img-thumbnail w-100 h-100" style="object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
-                <button type="button" class="btn btn-sm btn-link text-danger position-absolute top-0 end-0 p-1 remove-existing-img" data-id="${img.id}" data-index="${idx}" style="line-height: 1; z-index: 10; font-size: 1rem; background: rgba(255, 255, 255, 0.9); border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Remove Saved Image"><i class="fas fa-times-circle"></i></button>
-                <span class="badge bg-primary position-absolute bottom-0 start-0 m-1" style="font-size: 0.65rem;">Saved</span>
+              <div class="image-preview-item" draggable="true" data-type="existing" data-index="${idx}" title="Drag to reorder">
+                <img src="${fullImgUrl}" class="w-100 h-100" style="object-fit: cover; pointer-events: none;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
+                <span class="image-order-badge">#${currentOrderNum++} (Saved)</span>
+                <button type="button" class="btn btn-sm btn-link text-primary position-absolute top-0 start-0 p-1 replace-existing-img" data-id="${img.id}" data-index="${idx}" style="line-height: 1; z-index: 10; font-size: 0.85rem; background: rgba(255, 255, 255, 0.95); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Change/Replace Saved Image"><i class="fas fa-sync-alt"></i></button>
+                <button type="button" class="btn btn-sm btn-link text-danger position-absolute top-0 end-0 p-1 remove-existing-img" data-id="${img.id}" data-index="${idx}" style="line-height: 1; z-index: 10; font-size: 0.9rem; background: rgba(255, 255, 255, 0.95); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Remove Saved Image"><i class="fas fa-times-circle"></i></button>
               </div>
             `;
           $container.append(thumbHtml);
@@ -1102,14 +1119,129 @@
         selectedImages.forEach((file, idx) => {
           const url = URL.createObjectURL(file);
           const thumbHtml = `
-              <div class="position-relative" style="width: 80px; height: 80px;">
-                <img src="${url}" class="img-thumbnail w-100 h-100" style="object-fit: cover;">
-                <button type="button" class="btn btn-sm btn-link text-danger position-absolute top-0 end-0 p-1 remove-new-img" data-index="${idx}" style="line-height: 1; z-index: 10; font-size: 1rem; background: rgba(255, 255, 255, 0.9); border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Remove Image"><i class="fas fa-times-circle"></i></button>
+              <div class="image-preview-item" draggable="true" data-type="new" data-index="${idx}" title="Drag to reorder">
+                <img src="${url}" class="w-100 h-100" style="object-fit: cover; pointer-events: none;">
+                <span class="image-order-badge">#${currentOrderNum++}</span>
+                <button type="button" class="btn btn-sm btn-link text-primary position-absolute top-0 start-0 p-1 replace-new-img" data-index="${idx}" style="line-height: 1; z-index: 10; font-size: 0.85rem; background: rgba(255, 255, 255, 0.95); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Change/Replace Image"><i class="fas fa-sync-alt"></i></button>
+                <button type="button" class="btn btn-sm btn-link text-danger position-absolute top-0 end-0 p-1 remove-new-img" data-index="${idx}" style="line-height: 1; z-index: 10; font-size: 0.9rem; background: rgba(255, 255, 255, 0.95); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Remove Image"><i class="fas fa-times-circle"></i></button>
               </div>
             `;
           $container.append(thumbHtml);
         });
       }
+
+      // --- Drag & Drop Reordering Event Listeners for Image Cards ---
+      $(document).on("dragstart", ".image-preview-item", function (e) {
+        draggedImageType = $(this).data("type");
+        draggedImageIndex = parseInt($(this).data("index"), 10);
+        $(this).addClass("dragging");
+        if (e.originalEvent.dataTransfer) {
+          e.originalEvent.dataTransfer.effectAllowed = "move";
+          e.originalEvent.dataTransfer.setData("text/plain", `${draggedImageType}:${draggedImageIndex}`);
+        }
+      });
+
+      $(document).on("dragover", ".image-preview-item", function (e) {
+        e.preventDefault();
+        if (e.originalEvent.dataTransfer) {
+          e.originalEvent.dataTransfer.dropEffect = "move";
+        }
+      });
+
+      $(document).on("dragenter", ".image-preview-item", function (e) {
+        e.preventDefault();
+        const targetType = $(this).data("type");
+        const targetIndex = parseInt($(this).data("index"), 10);
+        if (draggedImageType !== targetType || draggedImageIndex !== targetIndex) {
+          $(this).addClass("drag-over-target");
+        }
+      });
+
+      $(document).on("dragleave", ".image-preview-item", function () {
+        $(this).removeClass("drag-over-target");
+      });
+
+      $(document).on("drop", ".image-preview-item", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(".image-preview-item").removeClass("drag-over-target dragging");
+
+        const targetType = $(this).data("type");
+        const targetIndex = parseInt($(this).data("index"), 10);
+
+        if (draggedImageIndex === null || draggedImageType === null) return;
+
+        // Reorder within selectedImages (new uploads)
+        if (draggedImageType === "new" && targetType === "new") {
+          if (draggedImageIndex !== targetIndex) {
+            const [movedFile] = selectedImages.splice(draggedImageIndex, 1);
+            selectedImages.splice(targetIndex, 0, movedFile);
+            renderProductImagePreviews();
+          }
+        }
+        // Reorder within existingImages
+        else if (draggedImageType === "existing" && targetType === "existing") {
+          if (draggedImageIndex !== targetIndex) {
+            const [movedImg] = existingImages.splice(draggedImageIndex, 1);
+            existingImages.splice(targetIndex, 0, movedImg);
+            renderProductImagePreviews();
+          }
+        }
+        // Move new image to target position in selectedImages
+        else if (draggedImageType === "new" && targetType === "existing") {
+          const [movedFile] = selectedImages.splice(draggedImageIndex, 1);
+          selectedImages.unshift(movedFile);
+          renderProductImagePreviews();
+        }
+        // Move existing image to end of existingImages
+        else if (draggedImageType === "existing" && targetType === "new") {
+          const [movedImg] = existingImages.splice(draggedImageIndex, 1);
+          existingImages.push(movedImg);
+          renderProductImagePreviews();
+        }
+
+        draggedImageIndex = null;
+        draggedImageType = null;
+      });
+
+      $(document).on("dragend", ".image-preview-item", function () {
+        $(".image-preview-item").removeClass("dragging drag-over-target");
+        draggedImageIndex = null;
+        draggedImageType = null;
+      });
+
+      // --- Drag & Drop File Upload Area Event Handlers ---
+      $(document).on("click", "#imageDropZone", function (e) {
+        if (!$(e.target).is("#prodImage") && !$(e.target).closest("button").length) {
+          $("#prodImage").trigger("click");
+        }
+      });
+
+      $(document).on("dragover dragenter", "#imageDropZone", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).addClass("drag-over");
+      });
+
+      $(document).on("dragleave dragend", "#imageDropZone", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $(this).removeClass("drag-over");
+      });
+
+      $(document).on("drop", "#imageDropZone", function (e) {
+        if (e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files && e.originalEvent.dataTransfer.files.length > 0) {
+          e.preventDefault();
+          e.stopPropagation();
+          $(this).removeClass("drag-over");
+
+          const droppedFiles = Array.from(e.originalEvent.dataTransfer.files).filter(file => file.type.startsWith("image/"));
+          if (droppedFiles.length > 0) {
+            selectedImages = [...selectedImages, ...droppedFiles];
+            renderProductImagePreviews();
+          }
+        }
+      });
 
       $(document).on("click", ".remove-new-img", function (e) {
         e.preventDefault();
@@ -1142,6 +1274,58 @@
             }
           }
         }
+      });
+
+      // --- Single Image Replacement Handlers ---
+      let replaceTargetType = null;
+      let replaceTargetIndex = null;
+      let replaceTargetId = null;
+
+      $(document).on("click", ".replace-existing-img", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        replaceTargetType = "existing";
+        replaceTargetIndex = parseInt($(this).data("index"), 10);
+        replaceTargetId = parseInt($(this).data("id"), 10);
+        $("#replaceSingleImageInput").trigger("click");
+      });
+
+      $(document).on("click", ".replace-new-img", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        replaceTargetType = "new";
+        replaceTargetIndex = parseInt($(this).data("index"), 10);
+        replaceTargetId = null;
+        $("#replaceSingleImageInput").trigger("click");
+      });
+
+      $(document).on("change", "#replaceSingleImageInput", function () {
+        if (!this.files || this.files.length === 0) return;
+        const newFile = this.files[0];
+
+        if (replaceTargetType === "existing") {
+          if (replaceTargetIndex === 0 || replaceTargetId === 0) {
+            removeProductMainImage = true;
+            existingImages.splice(replaceTargetIndex, 1);
+            selectedImages.unshift(newFile);
+          } else {
+            if (replaceTargetId > 0) {
+              deleteProductImageAPI(replaceTargetId, token).catch(err => console.error("Error deleting image:", err));
+            }
+            existingImages.splice(replaceTargetIndex, 1);
+            selectedImages.push(newFile);
+          }
+          showToast("Saved image replaced with new file! Click Save Product to apply.", "success");
+        } else if (replaceTargetType === "new") {
+          selectedImages[replaceTargetIndex] = newFile;
+          showToast("Image file updated!", "success");
+        }
+
+        renderProductImagePreviews();
+        $(this).val("");
+        replaceTargetType = null;
+        replaceTargetIndex = null;
+        replaceTargetId = null;
       });
 
       // Fetch and Render Dynamic Categories in Admin Filter Buttons & Select Dropdown
@@ -1257,47 +1441,68 @@
         paginatedItems.forEach((p) => {
           const detailsObj = p.productDetail || p.ProductDetail || null;
           const detailsStr = detailsObj ? JSON.stringify(detailsObj).replace(/'/g, "&apos;") : "";
+          const safeName = (p.name || "").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+          
+          let rawImg = (p.imageUrl && p.imageUrl.trim()) ? p.imageUrl.trim() : "";
+          if (!rawImg) {
+            const extraImgs = p.images || p.Images || [];
+            if (extraImgs.length > 0) {
+              const firstExtra = extraImgs[0];
+              rawImg = typeof firstExtra === "string" ? firstExtra : (firstExtra?.imageUrl || firstExtra?.ImageUrl || "");
+            }
+          }
+          const productCardImgUrl = rawImg ? (rawImg.startsWith("http") ? rawImg : BASE_URL + rawImg) : "img/product-default.jpg";
+
           const row = `
-               <div class="col-md-6">
-                 <div class="address-card p-3 border rounded position-relative h-100">
-                   <div class="d-flex justify-content-between align-items-start">
-                     <h6 class="fw-bold text-primary mb-2 text-truncate pe-2" style="max-width: 80%;">${p.name} ${p.isfeatureproduct ? '<span class="badge bg-soft-primary text-primary ms-2" style="background: #eef7e8; font-weight: 500;">Featured</span>' : ""}</h6>
-                     <div class="address-actions d-flex gap-2">
-                       <button class="btn btn-sm btn-outline-info edit-details-btn" 
-                        data-product-id="${p.id}"
-                        data-product-name="${p.name}"
-                        data-details='${detailsStr}'>
-                        <i class="fas fa-list-ul"></i>
-                       </button>
-                       <button class="btn btn-sm btn-outline-primary edit-product-btn" 
-                        data-product='${JSON.stringify(p).replace(/'/g, "&apos;")}'>
-                        <i class="fas fa-edit"></i>
-                       </button>
-                       <button class="btn btn-sm btn-outline-danger delete-product-btn" data-id="${p.id}">
-                        <i class="fas fa-trash-alt"></i>
-                       </button>
-                     </div>
-                   </div>
-                   <div class="d-flex align-items-center mt-2 mb-3">
-                      <img src="${p.imageUrl ? (p.imageUrl.startsWith("http") ? p.imageUrl : "https://skindekho.in" + p.imageUrl) : "img/product-default.jpg"}" class="rounded me-3 border" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
-                     <div style="min-width: 0;">
-                       <p class="small mb-1 text-dark"><strong>Category:</strong> <span class="badge bg-light text-dark border">${p.category}</span></p>
-                       <p class="small mb-0 text-dark" style="word-break: break-all;"><strong>SKU:</strong> ${p.sku}</p>
-                     </div>
-                   </div>
-                   <div>
-                     <p class="small mb-1 text-dark">
-                       <strong>Price:</strong> 
-                       ${p.discountPrice && p.discountPrice < p.price
-              ? `<span class="text-success fw-bold">₹${p.discountPrice.toFixed(2)}</span> <del class="text-muted ms-1" style="font-size: 0.9em;">₹${p.price.toFixed(2)}</del>`
+                <div class="col-md-6 mb-3">
+                  <div class="address-card p-3 border rounded position-relative h-100 d-flex flex-column justify-content-between" style="min-width: 0;">
+                    <div style="min-width: 0; width: 100%;">
+                      <div class="d-flex justify-content-between align-items-start gap-2 mb-2" style="min-width: 0;">
+                        <h6 class="fw-bold text-primary mb-0 d-flex align-items-center gap-1 text-truncate" style="min-width: 0; flex: 1;" title="${safeName}">
+                          <span class="text-truncate" style="min-width: 0; flex: 1;" title="${safeName}">${p.name}</span>
+                          ${p.isfeatureproduct ? '<span class="badge bg-soft-primary text-primary flex-shrink-0 ms-1" style="background: #eef7e8; font-weight: 500; font-size: 0.7rem;">Featured</span>' : ""}
+                        </h6>
+                        <div class="address-actions d-flex gap-1 flex-shrink-0">
+                          <button class="btn btn-sm btn-outline-info edit-details-btn" 
+                           data-product-id="${p.id}"
+                           data-product-name="${p.name}"
+                           data-details='${detailsStr}'
+                           title="Edit Additional Details">
+                           <i class="fas fa-list-ul"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-primary edit-product-btn" 
+                           data-product='${JSON.stringify(p).replace(/'/g, "&apos;")}'
+                           title="Edit Product">
+                           <i class="fas fa-edit"></i>
+                          </button>
+                          <button class="btn btn-sm btn-outline-danger delete-product-btn" data-id="${p.id}" title="Delete Product">
+                           <i class="fas fa-trash-alt"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div class="d-flex align-items-center mt-2 mb-3" style="min-width: 0;">
+                        <img src="${productCardImgUrl}" class="rounded me-3 border flex-shrink-0" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
+                        <div style="min-width: 0; flex: 1;">
+                          <p class="small mb-1 text-dark text-truncate"><strong>Category:</strong> <span class="badge bg-light text-dark border text-truncate" style="max-width: 140px; display: inline-block; vertical-align: bottom;" title="${p.category}">${p.category}</span></p>
+                          <p class="small mb-0 text-dark text-truncate" style="word-break: break-all;" title="${p.sku}"><strong>SKU:</strong> ${p.sku}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="border-top pt-2 mt-auto">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <p class="small mb-0 text-dark">
+                          <strong>Price:</strong> 
+                          ${p.discountPrice && p.discountPrice < p.price
+              ? `<span class="text-success fw-bold">₹${p.discountPrice.toFixed(2)}</span> <del class="text-muted ms-1" style="font-size: 0.85em;">₹${p.price.toFixed(2)}</del>`
               : `₹${p.price.toFixed(2)}`
             }
-                     </p>
-                     <p class="small mb-0 text-muted"><strong>Stock:</strong> <span class="${p.stockQuantity <= 5 ? "text-danger fw-bold" : "text-dark"}">${p.stockQuantity} items</span></p>
-                   </div>
-                 </div>
-               </div>
-             `;
+                        </p>
+                        <p class="small mb-0 text-muted"><strong>Stock:</strong> <span class="${p.stockQuantity <= 5 ? "text-danger fw-bold" : "text-dark"}">${p.stockQuantity} items</span></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              `;
           $list.append(row);
         });
 
@@ -1448,9 +1653,18 @@
 
         selectedImages = [];
         removeProductMainImage = false;
-        existingImages = p.images || [];
-        if (existingImages.length === 0 && p.imageUrl) {
-          existingImages = [{ id: 0, imageUrl: p.imageUrl }];
+        existingImages = [];
+        if (p.imageUrl) {
+          existingImages.push({ id: 0, imageUrl: p.imageUrl });
+        }
+        if (p.images && Array.isArray(p.images)) {
+          p.images.forEach((imgObj) => {
+            const imgUrl = typeof imgObj === "string" ? imgObj : imgObj.imageUrl;
+            const imgId = typeof imgObj === "object" ? (imgObj.id || imgObj.Id || 0) : 0;
+            if (imgUrl && imgUrl !== p.imageUrl) {
+              existingImages.push({ id: imgId, imageUrl: imgUrl });
+            }
+          });
         }
         renderProductImagePreviews();
 
@@ -1579,7 +1793,8 @@
         formData.delete("Images");
 
         if (id) {
-          formData.append("RemoveImage", removeProductMainImage ? "true" : "false");
+          const shouldRemoveMain = removeProductMainImage || (selectedImages.length > 0 && existingImages.length === 0);
+          formData.set("RemoveImage", shouldRemoveMain ? "true" : "false");
         }
 
         // For AddProduct: only send Images

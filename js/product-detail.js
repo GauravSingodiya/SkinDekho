@@ -230,7 +230,18 @@ function renderProductDetails(product) {
     $("#breadcrumb-category").text("Product");
   }
 
-  const relativeImgUrl = product.imageUrl || "";
+  const getDisplayProductImage = (p) => {
+    if (p.imageUrl && p.imageUrl.trim()) return p.imageUrl.trim();
+    const imgs = p.images || p.Images || [];
+    if (imgs.length > 0) {
+      const first = imgs[0];
+      const url = typeof first === "string" ? first : (first?.imageUrl || first?.ImageUrl || "");
+      if (url && url.trim()) return url.trim();
+    }
+    return "";
+  };
+
+  const relativeImgUrl = getDisplayProductImage(product);
   const fullImgUrl = relativeImgUrl.startsWith("http")
     ? relativeImgUrl
     : relativeImgUrl
@@ -379,7 +390,18 @@ async function loadRelatedProducts(category, currentId) {
       );
     } else {
       sideRelated.forEach((item) => {
-        const relativeImgUrl = item.imageUrl || "";
+        const getDisplayProductImage = (p) => {
+          if (p.imageUrl && p.imageUrl.trim()) return p.imageUrl.trim();
+          const imgs = p.images || p.Images || [];
+          if (imgs.length > 0) {
+            const first = imgs[0];
+            const url = typeof first === "string" ? first : (first?.imageUrl || first?.ImageUrl || "");
+            if (url && url.trim()) return url.trim();
+          }
+          return "";
+        };
+
+        const relativeImgUrl = getDisplayProductImage(item);
         const fullImgUrl = relativeImgUrl.startsWith("http")
           ? relativeImgUrl
           : relativeImgUrl
@@ -458,7 +480,18 @@ async function loadRelatedProducts(category, currentId) {
       );
     } else {
       bottomRelated.forEach((item) => {
-        const relativeImgUrl = item.imageUrl || "";
+        const getDisplayProductImage = (p) => {
+          if (p.imageUrl && p.imageUrl.trim()) return p.imageUrl.trim();
+          const imgs = p.images || p.Images || [];
+          if (imgs.length > 0) {
+            const first = imgs[0];
+            const url = typeof first === "string" ? first : (first?.imageUrl || first?.ImageUrl || "");
+            if (url && url.trim()) return url.trim();
+          }
+          return "";
+        };
+
+        const relativeImgUrl = getDisplayProductImage(item);
         const fullImgUrl = relativeImgUrl.startsWith("http")
           ? relativeImgUrl
           : relativeImgUrl
