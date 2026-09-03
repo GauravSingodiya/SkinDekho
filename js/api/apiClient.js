@@ -32,7 +32,20 @@ async function apiRequest(endpoint, method = "GET", body = null, token = null) {
     } catch {}
 
     if (!response.ok) {
-      throw new Error(data.message || "API Error");
+      let errMsg = data.message || data.title || response.statusText || `HTTP ${response.status} Error`;
+      if (response.status === 404) {
+        errMsg = `Product or Endpoint Not Found (HTTP 404). Verify if product ID ${endpoint.split('/').pop()} exists or route '${method} ${endpoint}' is deployed.`;
+      } else if (response.status === 401 || response.status === 403) {
+        errMsg = `Admin Authorization Failed (HTTP ${response.status}). Please verify token or log in again as Admin.`;
+      } else if (data.errors && typeof data.errors === "object") {
+        const details = Object.entries(data.errors)
+          .map(([k, v]) => `${k}: ${Array.isArray(v) ? v.join(", ") : v}`)
+          .join(" | ");
+        if (details) {
+          errMsg += ` (${details})`;
+        }
+      }
+      throw new Error(errMsg);
     }
 
     return data;

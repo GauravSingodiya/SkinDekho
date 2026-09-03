@@ -91,6 +91,23 @@
       transform: scale(1.05);
     }
 
+    .product-img-card .slider-nav-btn {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.2s ease;
+      user-select: none;
+    }
+
+    .product-img-card:hover .slider-nav-btn {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .product-img-card .slider-nav-btn:hover {
+      transform: translateY(-50%) scale(1.12) !important;
+      background: #ffffff !important;
+    }
+
     .product-title {
       color: #1b2f24;
       font-weight: 800;
@@ -544,16 +561,22 @@
     <div class="container py-5">
       <div class="row g-4" id="product-detail-content">
         <div class="col-lg-6">
-          <div class="product-img-card">
+          <div class="product-img-card position-relative overflow-hidden shadow-sm border rounded">
+            <button type="button" class="slider-nav-btn prev-btn" id="main-img-prev" style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); z-index: 10; background: rgba(255,255,255,0.9); border: 1px solid #ddd; border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15); cursor: pointer;" title="Previous Image"><i class="fas fa-chevron-left text-dark"></i></button>
             <a id="product-img-zoom" href="img/placeholder.png" data-lightbox="product-gallery">
-              <img id="product-img" src="img/placeholder.png" class="img-fluid" alt="Product Image" />
+              <img id="product-img" src="img/placeholder.png" class="img-fluid w-100" style="object-fit: contain; max-height: 480px;" alt="Product Image" />
             </a>
-            <div class="zoom-icon" id="zoom-trigger">
+            <button type="button" class="slider-nav-btn next-btn" id="main-img-next" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); z-index: 10; background: rgba(255,255,255,0.9); border: 1px solid #ddd; border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15); cursor: pointer;" title="Next Image"><i class="fas fa-chevron-right text-dark"></i></button>
+            <div class="zoom-icon" id="zoom-trigger" title="Zoom Image">
               <i class="fas fa-search-plus"></i>
             </div>
+            <span id="product-img-counter" class="badge bg-dark text-white position-absolute bottom-0 start-0 m-2 px-2 py-1" style="z-index: 10; opacity: 0.85; font-size: 0.75rem;">1 / 1</span>
           </div>
-          <div id="product-thumbnails" class="d-flex gap-2 mt-3 overflow-auto justify-content-start pb-2"
-            style="white-space: nowrap;"></div>
+          <div id="product-thumbnails-container" class="d-flex align-items-center gap-2 mt-3 position-relative">
+            <button type="button" id="thumb-scroll-left" class="btn btn-sm btn-light border rounded-circle shadow-sm flex-shrink-0" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;" title="Scroll Left"><i class="fas fa-chevron-left"></i></button>
+            <div id="product-thumbnails" class="d-flex gap-2 overflow-auto justify-content-start py-1" style="white-space: nowrap; scroll-behavior: smooth; flex: 1; scrollbar-width: none;"></div>
+            <button type="button" id="thumb-scroll-right" class="btn btn-sm btn-light border rounded-circle shadow-sm flex-shrink-0" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;" title="Scroll Right"><i class="fas fa-chevron-right"></i></button>
+          </div>
         </div>
         <div class="col-lg-6">
           <!-- Breadcrumbs inside product detail container -->

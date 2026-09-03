@@ -230,63 +230,210 @@ function renderProductDetails(product) {
     $("#breadcrumb-category").text("Product");
   }
 
-  const getDisplayProductImage = (p) => {
-    if (p.imageUrl && p.imageUrl.trim()) return p.imageUrl.trim();
-    const imgs = p.images || p.Images || [];
-    if (imgs.length > 0) {
-      const first = imgs[0];
-      const url = typeof first === "string" ? first : (first?.imageUrl || first?.ImageUrl || "");
-      if (url && url.trim()) return url.trim();
-    }
-    return "";
+  // --- Product Images & Gallery Slider Logic ---
+  const extractUrl = (item) => {
+    if (!item) return "";
+    if (typeof item === "string") return item.trim().replace(/\\/g, "/");
+    const candidate =
+      item.imageUrl ||
+      item.ImageUrl ||
+      item.url ||
+      item.Url ||
+      item.imagePath ||
+      item.ImagePath ||
+      item.path ||
+      item.Path ||
+      item.fileName ||
+      item.FileName ||
+      item.imageName ||
+      item.ImageName ||
+      item.src ||
+      "";
+    return typeof candidate === "string" ? candidate.trim().replace(/\\/g, "/") : "";
   };
 
-  const relativeImgUrl = getDisplayProductImage(product);
-  const fullImgUrl = relativeImgUrl.startsWith("http")
-    ? relativeImgUrl
-    : relativeImgUrl
-      ? BASE_URL + relativeImgUrl
-      : "img/product-default.jpg";
-  $("#product-img").attr("src", fullImgUrl);
-  $("#product-img-zoom").attr("href", fullImgUrl);
+  const formatUrl = (rawPath) => {
+    if (!rawPath) return "img/MOISTURING_LOTION.png";
+    let cleaned = rawPath.trim().replace(/\\/g, "/");
+    if (!cleaned) return "img/MOISTURING_LOTION.png";
+    if (cleaned.startsWith("http://") || cleaned.startsWith("https://") || cleaned.startsWith("data:")) {
+      return cleaned;
+    }
+    if (!cleaned.includes("/") && !cleaned.startsWith("img/")) {
+      cleaned = "uploads/products/" + cleaned;
+    }
+    const leadingSlash = cleaned.startsWith("/") ? "" : "/";
+    return BASE_URL + leadingSlash + cleaned;
+  };
 
-  // Populate thumbnails
+  let galleryUrls = [];
+
+  // Add primary image if available
+  const primaryRaw = extractUrl(product.imageUrl || product.ImageUrl);
+  if (primaryRaw) {
+    galleryUrls.push(formatUrl(primaryRaw));
+  }
+
+  // Add all images from images array
+  const rawImgs = product.images || product.Images || [];
+  if (Array.isArray(rawImgs) && rawImgs.length > 0) {
+    const sorted = [...rawImgs].sort((a, b) => {
+      const orderA = a.displayOrder ?? a.DisplayOrder ?? 0;
+      const orderB = b.displayOrder ?? b.DisplayOrder ?? 0;
+      return orderA - orderB;
+    });
+
+    sorted.forEach((imgObj) => {
+      const raw = extractUrl(imgObj);
+      if (raw) {
+        const full = formatUrl(raw);
+        if (!galleryUrls.includes(full)) {
+          galleryUrls.push(full);
+        }
+      }
+    });
+  }
+
+  // Fallback if no images found
+  if (galleryUrls.length === 0) {
+    galleryUrls.push("img/MOISTURING_LOTION.png");
+  }
+
+  let currentGalleryIndex = 0;
+
+  const updateGalleryView = (index) => {
+    if (index < 0) index = galleryUrls.length - 1;
+    if (index >= galleryUrls.length) index = 0;
+    currentGalleryIndex = index;
+
+    const activeUrl = galleryUrls[currentGalleryIndex];
+
+    $("#product-img").fadeOut(120, function () {
+      $(this).attr("src", activeUrl).fadeIn(120);
+      $("#product-img-zoom").attr("href", activeUrl);
+    });
+
+    // Update Counter Badge
+    if (galleryUrls.length > 1) {
+      $("#product-img-counter").text(`${currentGalleryIndex + 1} / ${galleryUrls.length}`).show();
+    } else {
+      $("#product-img-counter").hide();
+    }
+
+    // Update Thumbnail Active State
+    $(".thumb-item").each(function (i) {
+      if (i === currentGalleryIndex) {
+        $(this).addClass("active").css("border-color", "#81c408").css("box-shadow", "0 0 6px rgba(129, 196, 8, 0.4)");
+      } else {
+        $(this).removeClass("active").css("border-color", "#ddd").css("box-shadow", "none");
+      }
+    });
+  };
+
+  // Render Thumbnails & Bind Controls
   const $thumbnails = $("#product-thumbnails");
   $thumbnails.empty();
 
-  if (product.images && product.images.length > 0) {
-    const sortedImages = [...product.images].sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0));
+  if (galleryUrls.length > 1) {
+    $("#main-img-prev, #main-img-next, #product-thumbnails-container").show();
 
-    sortedImages.forEach((imgObj) => {
-      const imgUrl = imgObj.imageUrl;
-      const fullThumbUrl = imgUrl.startsWith("http")
-        ? imgUrl
-        : BASE_URL + imgUrl;
-
-      const isCurrentActive = imgUrl === relativeImgUrl;
+    galleryUrls.forEach((imgUrl, i) => {
+      const isCurrentActive = i === 0;
       const thumbHtml = `
-        <div class="thumb-item ${isCurrentActive ? "active" : ""}" style="width: 70px; height: 70px; cursor: pointer; border: 2px solid ${isCurrentActive ? '#81c408' : '#ddd'}; border-radius: 6px; overflow: hidden; transition: all 0.2s; flex-shrink: 0;">
-          <img src="${fullThumbUrl}" class="w-100 h-100" style="object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
+        <div class="thumb-item ${isCurrentActive ? "active" : ""}" data-index="${i}" style="width: 72px; height: 72px; cursor: pointer; border: 2px solid ${isCurrentActive ? '#81c408' : '#ddd'}; border-radius: 8px; overflow: hidden; transition: all 0.2s; flex-shrink: 0;">
+          <img src="${imgUrl}" class="w-100 h-100" style="object-fit: cover;" onerror="this.onerror=null;this.src='img/MOISTURING_LOTION.png'">
         </div>
       `;
 
       const $thumb = $(thumbHtml);
       $thumb.on("click", function () {
-        $(".thumb-item").css("border-color", "#ddd");
-        $(this).css("border-color", "#81c408");
-
-        $("#product-img").fadeOut(150, function () {
-          $(this).attr("src", fullThumbUrl).fadeIn(150);
-          $("#product-img-zoom").attr("href", fullThumbUrl);
-        });
+        const idx = parseInt($(this).attr("data-index"), 10);
+        updateGalleryView(idx);
       });
 
       $thumbnails.append($thumb);
     });
-    $thumbnails.show();
   } else {
-    $thumbnails.hide();
+    $("#main-img-prev, #main-img-next, #product-thumbnails-container").hide();
   }
+
+  // Set initial image view
+  updateGalleryView(0);
+
+  // Next / Prev Navigation Buttons
+  $("#main-img-prev").off("click").on("click", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    updateGalleryView(currentGalleryIndex - 1);
+  });
+
+  $("#main-img-next").off("click").on("click", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    updateGalleryView(currentGalleryIndex + 1);
+  });
+
+  // Thumbnail Horizontal Scroll Buttons
+  $("#thumb-scroll-left").off("click").on("click", function () {
+    $thumbnails.animate({ scrollLeft: "-=180" }, 200);
+  });
+
+  $("#thumb-scroll-right").off("click").on("click", function () {
+    $thumbnails.animate({ scrollLeft: "+=180" }, 200);
+  });
+
+  // Touch & Mouse Drag Swipe Gesture Logic on Main Product Image
+  const $imgCard = $(".product-img-card");
+  let startX = 0;
+  let startY = 0;
+  let isSwiping = false;
+
+  $imgCard.off("touchstart.gallery").on("touchstart.gallery", function (e) {
+    if (galleryUrls.length <= 1) return;
+    const touch = e.originalEvent.touches[0];
+    startX = touch.clientX;
+    startY = touch.clientY;
+    isSwiping = true;
+  });
+
+  $imgCard.off("touchend.gallery").on("touchend.gallery", function (e) {
+    if (!isSwiping || galleryUrls.length <= 1) return;
+    const touch = e.originalEvent.changedTouches[0];
+    const diffX = touch.clientX - startX;
+    const diffY = touch.clientY - startY;
+
+    if (Math.abs(diffX) > 35 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX < 0) {
+        updateGalleryView(currentGalleryIndex + 1);
+      } else {
+        updateGalleryView(currentGalleryIndex - 1);
+      }
+    }
+    isSwiping = false;
+  });
+
+  let isMouseDown = false;
+  $imgCard.off("mousedown.gallery").on("mousedown.gallery", function (e) {
+    if (galleryUrls.length <= 1) return;
+    startX = e.clientX;
+    startY = e.clientY;
+    isMouseDown = true;
+  });
+
+  $(document).off("mouseup.gallery").on("mouseup.gallery", function (e) {
+    if (!isMouseDown || galleryUrls.length <= 1) return;
+    const diffX = e.clientX - startX;
+    const diffY = e.clientY - startY;
+
+    if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX < 0) {
+        updateGalleryView(currentGalleryIndex + 1);
+      } else {
+        updateGalleryView(currentGalleryIndex - 1);
+      }
+    }
+    isMouseDown = false;
+  });
 
   // Description content
   const description = product.description || "No description available.";

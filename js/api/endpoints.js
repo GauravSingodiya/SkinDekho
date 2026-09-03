@@ -24,7 +24,9 @@ export const API = {
     ADD_CATEGORY: "/api/Products/AddCategory",
     UPDATE_CATEGORY: (id) => `/api/Products/UpdateCategory/${id}`,
     DELETE_CATEGORY: (id) => `/api/Products/DeleteCategory/${id}`,
-    DELETE_PRODUCT_IMAGE: (id) => `/api/Products/DeleteProductImage/${id}`,
+    DELETE_PRODUCT_IMAGE: (productId, imageId) => `/api/Products/DeleteProductImage/${productId}/${imageId}`,
+    SET_PRIMARY_IMAGE: (productId, imageId) => `/api/Products/SetPrimaryImage/${productId}/${imageId}`,
+    REORDER_PRODUCT_IMAGES: (productId) => `/api/Products/ReorderProductImages/${productId}`,
   },
 
   CART: {

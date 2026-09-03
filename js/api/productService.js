@@ -17,15 +17,20 @@ export async function addProductAPI(formData, token) {
 
 export async function updateProductAPI(id, formData, token) {
   const bodyLog = Object.fromEntries(formData.entries());
-  const parsedLog = {
-    ...bodyLog,
-    Price: bodyLog.Price ? parseFloat(bodyLog.Price) : null,
-    DiscountPrice: bodyLog.DiscountPrice ? parseFloat(bodyLog.DiscountPrice) : null,
-    StockQuantity: bodyLog.StockQuantity ? parseInt(bodyLog.StockQuantity, 10) : null,
-    Isfeatureproduct: bodyLog.Isfeatureproduct === "true",
-  };
-  console.log("Updating Product Body:", parsedLog);
-  return await apiRequest(API.PRODUCTS.UPDATE(id), "PUT", formData, token);
+  console.log(`Updating Product ID ${id} Body:`, bodyLog);
+
+  formData.set("id", id.toString());
+  formData.set("Id", id.toString());
+
+  try {
+    return await apiRequest(API.PRODUCTS.UPDATE(id), "PUT", formData, token);
+  } catch (err) {
+    if (err.message && (err.message.includes("405") || err.message.includes("Method Not Allowed"))) {
+      console.warn("PUT to UpdateProduct failed with 405 (proxy block), retrying with POST...", err.message);
+      return await apiRequest(API.PRODUCTS.UPDATE(id), "POST", formData, token);
+    }
+    throw err;
+  }
 }
 
 export async function deleteProductAPI(id, token) {
@@ -52,6 +57,18 @@ export async function saveProductDetailsAPI(id, payload, token) {
   return await apiRequest(API.PRODUCTS.SAVE_DETAILS(id), "POST", payload, token);
 }
 
-export async function deleteProductImageAPI(id, token) {
-  return await apiRequest(API.PRODUCTS.DELETE_PRODUCT_IMAGE(id), "DELETE", null, token);
+export async function getProductByIdAPI(id) {
+  return await apiRequest(API.PRODUCTS.GET_BY_ID(id), "GET");
+}
+
+export async function deleteProductImageAPI(productId, imageId, token) {
+  return await apiRequest(API.PRODUCTS.DELETE_PRODUCT_IMAGE(productId, imageId), "DELETE", null, token);
+}
+
+export async function setPrimaryImageAPI(productId, imageId, token) {
+  return await apiRequest(API.PRODUCTS.SET_PRIMARY_IMAGE(productId, imageId), "POST", {}, token);
+}
+
+export async function reorderProductImagesAPI(productId, imageIds, token) {
+  return await apiRequest(API.PRODUCTS.REORDER_PRODUCT_IMAGES(productId), "POST", { imageIds }, token);
 }
