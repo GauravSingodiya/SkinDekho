@@ -448,6 +448,37 @@
                   <label class="form-check-label" for="prodFeatured">Featured Product</label>
                 </div>
               </div>
+
+              <!-- ✅ Variants Section -->
+              <div class="col-12">
+                <label class="form-label fw-semibold">
+                  Variants <small class="text-muted fw-normal">(Add multiple sizes/packs with prices, e.g. 125ml - ₹199)</small>
+                </label>
+                <div id="variantsList" class="d-flex flex-wrap gap-2 mb-2"></div>
+                <div class="p-3 bg-light rounded-3 border mb-2">
+                  <div class="row g-2 align-items-end">
+                    <div class="col-md-4 col-sm-6">
+                      <label class="form-label mb-1" style="font-size:0.8rem; font-weight:600;">Size / Name<sup>*</sup></label>
+                      <input type="text" class="form-control form-control-sm" id="variantNameInput" placeholder="e.g. 125ml or 2x125ml" />
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                      <label class="form-label mb-1" style="font-size:0.8rem; font-weight:600;">Price (₹)<sup>*</sup></label>
+                      <input type="number" class="form-control form-control-sm" id="variantPriceInput" placeholder="e.g. 299" min="0" step="any" />
+                    </div>
+                    <div class="col-md-3 col-sm-6">
+                      <label class="form-label mb-1" style="font-size:0.8rem; font-weight:600;">Discount Price (₹)</label>
+                      <input type="number" class="form-control form-control-sm" id="variantDiscountInput" placeholder="Optional (e.g. 249)" min="0" step="any" />
+                    </div>
+                    <div class="col-md-2 col-sm-6">
+                      <button type="button" class="btn btn-primary btn-sm w-100 fw-semibold" id="addVariantBtn">
+                        <i class="fas fa-plus me-1"></i> Add
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <small class="text-muted">Add each variant size and price. Sent as an array of objects to the API.</small>
+              </div>
+
               <div class="col-md-12 mt-2">
                 <label class="form-label">Product Images<sup>*</sup> <small class="text-muted">(Drag & drop cards to
                     reorder images)</small></label>
@@ -1861,6 +1892,83 @@
         loadAdminProducts();
       });
 
+      // ✅ Variants state (array of objects: { name, price, discountPrice })
+      let productVariants = [];
+
+      function renderVariantTags() {
+        const $list = $("#variantsList");
+        $list.empty();
+        productVariants.forEach((v, i) => {
+          const name = typeof v === "object" ? (v.name || v.Name || "") : v;
+          const price = typeof v === "object" ? (v.price ?? v.Price ?? "") : "";
+          const disc = typeof v === "object" ? (v.discountPrice ?? v.DiscountPrice ?? "") : "";
+          const priceStr = price !== "" ? ` — ₹${price}` : "";
+          const discStr = disc !== "" ? ` <span class="text-success ms-1" style="font-size:0.8rem;">(Offer: ₹${disc})</span>` : "";
+
+          $list.append(`
+            <span class="badge d-inline-flex align-items-center gap-2 px-3 py-2"
+              style="background:#f0f9e8; color:#365314; border:1.5px solid #81c408; border-radius:20px; font-size:0.88rem; font-weight:600;">
+              <span><strong>${name}</strong>${priceStr}${discStr}</span>
+              <button type="button" class="btn-close btn-close-sm ms-1 remove-variant-btn" data-index="${i}"
+                style="font-size:0.6rem; filter: invert(30%) sepia(100%) saturate(500%) hue-rotate(60deg);"
+                aria-label="Remove"></button>
+            </span>
+          `);
+        });
+      }
+
+      $(document).on("click", "#addVariantBtn", function () {
+        const name = $("#variantNameInput").val().trim();
+        const price = $("#variantPriceInput").val().trim();
+        const discountPrice = $("#variantDiscountInput").val().trim();
+
+        if (!name) {
+          showToast("Please enter variant size/name (e.g. 125ml)", "warning");
+          $("#variantNameInput").focus();
+          return;
+        }
+
+        const variantObj = {
+          name: name,
+          price: price !== "" ? parseFloat(price) : null,
+          discountPrice: discountPrice !== "" ? parseFloat(discountPrice) : null,
+        };
+
+        // If price wasn't specified, fallback to main product price input if available
+        if (variantObj.price === null && $("#prodPrice").val()) {
+          variantObj.price = parseFloat($("#prodPrice").val());
+        }
+
+        // Avoid duplicate by name
+        const exists = productVariants.some(
+          (item) => (typeof item === "object" ? item.name : item).toLowerCase() === name.toLowerCase(),
+        );
+        if (exists) {
+          showToast(`Variant "${name}" already added`, "warning");
+          return;
+        }
+
+        productVariants.push(variantObj);
+        renderVariantTags();
+
+        $("#variantNameInput").val("").focus();
+        $("#variantPriceInput").val("");
+        $("#variantDiscountInput").val("");
+      });
+
+      $(document).on("keypress", "#variantNameInput, #variantPriceInput, #variantDiscountInput", function (e) {
+        if (e.which === 13) {
+          e.preventDefault();
+          $("#addVariantBtn").trigger("click");
+        }
+      });
+
+      $(document).on("click", ".remove-variant-btn", function () {
+        const idx = parseInt($(this).data("index"));
+        productVariants.splice(idx, 1);
+        renderVariantTags();
+      });
+
       // Add Product Button
       $("#addNewProductBtn").on("click", function () {
         $("#productForm")[0].reset();
@@ -1868,6 +1976,11 @@
         selectedImages = [];
         existingImages = [];
         removeProductMainImage = false;
+        productVariants = [];
+        $("#variantNameInput").val("");
+        $("#variantPriceInput").val("");
+        $("#variantDiscountInput").val("");
+        renderVariantTags();
         renderProductImagePreviews();
         $("#productModalLabel").text("Add New Product");
         productModal.show();
@@ -1890,6 +2003,70 @@
         selectedImages = [];
         removeProductMainImage = false;
         existingImages = [];
+
+        // ✅ Load variants for edit (supports array of objects or strings, size/Size property)
+        const rawVariants = p.variants || p.Variants || p.variantsJson || p.VariantsJson || [];
+        productVariants = [];
+        if (Array.isArray(rawVariants)) {
+          productVariants = rawVariants.map((item) => {
+            if (typeof item === "string") {
+              try {
+                const parsed = JSON.parse(item);
+                if (typeof parsed === "object" && parsed !== null) {
+                  const sizeVal = parsed.size || parsed.Size || parsed.name || parsed.Name || "";
+                  return {
+                    id: parsed.id ?? parsed.Id ?? null,
+                    size: sizeVal,
+                    name: sizeVal,
+                    price: parsed.price ?? parsed.Price ?? p.price,
+                    discountPrice: parsed.discountPrice ?? parsed.DiscountPrice ?? p.discountPrice,
+                    stockQuantity: parsed.stockQuantity ?? parsed.StockQuantity ?? p.stockQuantity,
+                    sku: parsed.sku ?? parsed.Sku ?? "",
+                  };
+                }
+              } catch (e) {}
+              return { size: item, name: item, price: p.price, discountPrice: p.discountPrice, stockQuantity: p.stockQuantity };
+            }
+            const sizeVal = item.size || item.Size || item.name || item.Name || "";
+            return {
+              id: item.id ?? item.Id ?? null,
+              size: sizeVal,
+              name: sizeVal,
+              price: item.price ?? item.Price ?? p.price,
+              discountPrice: item.discountPrice ?? item.DiscountPrice ?? p.discountPrice,
+              stockQuantity: item.stockQuantity ?? item.StockQuantity ?? p.stockQuantity,
+              sku: item.sku ?? item.Sku ?? "",
+            };
+          });
+        } else if (typeof rawVariants === "string" && rawVariants.trim()) {
+          try {
+            const parsed = JSON.parse(rawVariants);
+            if (Array.isArray(parsed)) {
+              productVariants = parsed.map((item) => {
+                if (typeof item === "string") {
+                  return { size: item, name: item, price: p.price, discountPrice: p.discountPrice, stockQuantity: p.stockQuantity };
+                }
+                const sizeVal = item.size || item.Size || item.name || item.Name || "";
+                return {
+                  id: item.id ?? item.Id ?? null,
+                  size: sizeVal,
+                  name: sizeVal,
+                  price: item.price ?? item.Price ?? p.price,
+                  discountPrice: item.discountPrice ?? item.DiscountPrice ?? p.discountPrice,
+                  stockQuantity: item.stockQuantity ?? item.StockQuantity ?? p.stockQuantity,
+                  sku: item.sku ?? item.Sku ?? "",
+                };
+              });
+            }
+          } catch (e) {
+            productVariants = rawVariants
+              .split(",")
+              .map((v) => v.trim())
+              .filter(Boolean)
+              .map((name) => ({ size: name, name: name, price: p.price, discountPrice: p.discountPrice, stockQuantity: p.stockQuantity }));
+          }
+        }
+        renderVariantTags();
 
         try {
           const res = await getProductByIdAPI(p.id);
@@ -2047,6 +2224,64 @@
           }
           selectedImages.forEach((file) => {
             formData.append("Images", file);
+          });
+        }
+
+        // ✅ Append variants matching AddProductDto & ProductVariantDto
+        formData.delete("Variants");
+        formData.delete("variants");
+        formData.delete("VariantsJson");
+        formData.delete("variantsJson");
+
+        if (productVariants.length > 0) {
+          const defaultStock = parseInt($("#prodStock").val()) || 10;
+          const formattedVariants = productVariants.map((v) => {
+            const size = (typeof v === "object" ? (v.size || v.Size || v.name || v.Name || "") : v).toString().trim();
+            const price = typeof v === "object" ? (v.price ?? v.Price ?? 0) : 0;
+            const disc = typeof v === "object" ? (v.discountPrice ?? v.DiscountPrice ?? null) : null;
+            const stock = typeof v === "object" ? (v.stockQuantity ?? v.StockQuantity ?? defaultStock) : defaultStock;
+            const sku = typeof v === "object" ? (v.sku ?? v.Sku ?? null) : null;
+            const id = typeof v === "object" ? (v.id ?? v.Id ?? null) : null;
+
+            return {
+              Id: id,
+              id: id,
+              Size: size,
+              size: size,
+              Price: parseFloat(price) || 0,
+              price: parseFloat(price) || 0,
+              DiscountPrice: (disc !== null && disc !== "" && disc !== undefined) ? parseFloat(disc) : null,
+              discountPrice: (disc !== null && disc !== "" && disc !== undefined) ? parseFloat(disc) : null,
+              StockQuantity: parseInt(stock) || defaultStock,
+              stockQuantity: parseInt(stock) || defaultStock,
+              Sku: sku || null,
+              sku: sku || null,
+            };
+          });
+
+          // 1. Send VariantsJson (as explicit string property in AddProductDto / UpdateProductDto)
+          const variantsJson = JSON.stringify(formattedVariants);
+          formData.set("VariantsJson", variantsJson);
+          formData.set("variantsJson", variantsJson);
+
+          // 2. Also send indexed keys for public List<ProductVariantDto>? Variants
+          formattedVariants.forEach((v, idx) => {
+            if (v.Id) {
+              formData.append(`Variants[${idx}].Id`, v.Id.toString());
+            }
+            formData.append(`Variants[${idx}].Size`, v.Size);
+            formData.append(`Variants[${idx}].size`, v.Size);
+            formData.append(`Variants[${idx}].Price`, v.Price.toString());
+            formData.append(`Variants[${idx}].price`, v.Price.toString());
+            if (v.DiscountPrice !== null) {
+              formData.append(`Variants[${idx}].DiscountPrice`, v.DiscountPrice.toString());
+              formData.append(`Variants[${idx}].discountPrice`, v.DiscountPrice.toString());
+            }
+            formData.append(`Variants[${idx}].StockQuantity`, v.StockQuantity.toString());
+            formData.append(`Variants[${idx}].stockQuantity`, v.StockQuantity.toString());
+            if (v.Sku) {
+              formData.append(`Variants[${idx}].Sku`, v.Sku);
+            }
           });
         }
 

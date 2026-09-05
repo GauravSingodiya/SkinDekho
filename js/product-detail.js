@@ -3,6 +3,11 @@ import { addToCartAPI } from "./api/cartService.js";
 import { showToast, syncCartBadge } from "./main.js";
 import { BASE_URL } from "./api/config.js";
 
+// State for current product and selected variant
+let currentProduct = null;
+let currentSelectedVariant = null;
+let currentParsedVariants = [];
+
 $(document).ready(async function () {
   const urlParams = new URLSearchParams(window.location.search);
   const productId = urlParams.get("id");
@@ -21,6 +26,7 @@ $(document).ready(async function () {
 
   try {
     const product = await getProductById(productId);
+    console.log("🧴 Product Detail API Response:", product);
     if (!product) {
       $("#product-name").text("Product Not Found");
       $("#product-description").text(
@@ -60,35 +66,84 @@ $(document).ready(async function () {
 
   // Add to cart on detail page
   $("#add-to-cart-detail").on("click", async function () {
+    const qty = parseInt($("#quantity").val()) || 1;
     const token = sessionStorage.getItem("token");
-    if (!token) {
-      showToast(
-        "Please login to add items to cart",
-        "error",
-        "Authentication Required",
-      );
-      $("#authModal").modal("show");
-      return;
-    }
 
     const $btn = $(this);
     const originalText = $btn.text();
     $btn.prop("disabled", true).text("Adding...");
 
     try {
-      const res = await addToCartAPI(
-        productId,
-        parseInt($("#quantity").val()),
-        token,
-      );
-      if (res.success) {
+      // Save selected variant to cartVariants in localStorage so cart and checkout always display it accurately
+      if (currentSelectedVariant) {
+        const cartVariants = JSON.parse(localStorage.getItem("cartVariants") || "{}");
+        const vSize = currentSelectedVariant.size || currentSelectedVariant.Size || currentSelectedVariant.name || currentSelectedVariant.Name || "";
+        const vRegPrice = currentSelectedVariant.price ?? currentSelectedVariant.Price ?? null;
+        const vDiscPrice = currentSelectedVariant.discountPrice ?? currentSelectedVariant.DiscountPrice ?? null;
+        const vEffPrice = (vDiscPrice !== null && vDiscPrice !== "" && vDiscPrice !== undefined && (!vRegPrice || parseFloat(vDiscPrice) < parseFloat(vRegPrice)))
+          ? parseFloat(vDiscPrice)
+          : (vRegPrice ? parseFloat(vRegPrice) : null);
+
+        cartVariants[productId] = {
+          productId: productId,
+          variantId: currentSelectedVariant.id ?? currentSelectedVariant.Id ?? null,
+          size: vSize,
+          name: vSize,
+          price: vEffPrice,
+          regularPrice: vRegPrice,
+          discountPrice: vDiscPrice,
+          productName: currentProduct ? currentProduct.name : $("#product-name").text(),
+        };
+        localStorage.setItem("cartVariants", JSON.stringify(cartVariants));
+      }
+
+      if (token) {
+        const res = await addToCartAPI(
+          productId,
+          qty,
+          token,
+          currentSelectedVariant,
+        );
+        if (res.success) {
+          const vText = currentSelectedVariant ? ` (${currentSelectedVariant.size || currentSelectedVariant.name})` : "";
+          showToast(
+            `<strong>${$("#product-name").text()}${vText}</strong> added to cart!`,
+            "success",
+          );
+          syncCartBadge();
+        } else {
+          throw new Error(res.message || "Failed to add to cart");
+        }
+      } else {
+        // Guest cart in localStorage
+        const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+        const effectivePrice = currentSelectedVariant
+          ? (currentSelectedVariant.discountPrice || currentSelectedVariant.price || (currentProduct ? (currentProduct.discountPrice || currentProduct.price) : 0))
+          : (currentProduct ? (currentProduct.discountPrice || currentProduct.price) : 0);
+
+        const vName = currentSelectedVariant ? (currentSelectedVariant.size || currentSelectedVariant.name) : null;
+        const itemKey = vName ? `${productId}_${vName}` : productId;
+
+        const existing = guestCart.find((item) => (item.variant ? `${item.id}_${item.variant}` : item.id) == itemKey);
+        if (existing) {
+          existing.quantity += qty;
+        } else {
+          guestCart.push({
+            id: productId,
+            name: (currentProduct ? currentProduct.name : $("#product-name").text()) + (vName ? ` (${vName})` : ""),
+            price: effectivePrice,
+            variant: vName,
+            variantDetails: currentSelectedVariant || null,
+            imageUrl: currentProduct ? (currentProduct.imageUrl || "") : "",
+            quantity: qty,
+          });
+        }
+        localStorage.setItem("guestCart", JSON.stringify(guestCart));
+        syncCartBadge();
         showToast(
-          `<strong>${$("#product-name").text()}</strong> added to cart!`,
+          `<strong>${$("#product-name").text()}${vName ? ` (${vName})` : ""}</strong> added to cart. <a href="cart.html" class="text-white fw-bold">View Cart</a>`,
           "success",
         );
-        syncCartBadge();
-      } else {
-        throw new Error(res.message || "Failed to add to cart");
       }
     } catch (err) {
       showToast(err.message || "Failed to add to cart", "error");
@@ -102,7 +157,7 @@ $(document).ready(async function () {
     const token = sessionStorage.getItem("token");
     if (!token) {
       showToast(
-        "Please login to buy items",
+        "Please login to continue to checkout",
         "error",
         "Authentication Required",
       );
@@ -110,15 +165,39 @@ $(document).ready(async function () {
       return;
     }
 
+    const qty = parseInt($("#quantity").val()) || 1;
     const $btn = $(this);
     const originalText = $btn.text();
     $btn.prop("disabled", true).text("Processing...");
 
     try {
+      if (currentSelectedVariant) {
+        const cartVariants = JSON.parse(localStorage.getItem("cartVariants") || "{}");
+        const vSize = currentSelectedVariant.size || currentSelectedVariant.Size || currentSelectedVariant.name || currentSelectedVariant.Name || "";
+        const vRegPrice = currentSelectedVariant.price ?? currentSelectedVariant.Price ?? null;
+        const vDiscPrice = currentSelectedVariant.discountPrice ?? currentSelectedVariant.DiscountPrice ?? null;
+        const vEffPrice = (vDiscPrice !== null && vDiscPrice !== "" && vDiscPrice !== undefined && (!vRegPrice || parseFloat(vDiscPrice) < parseFloat(vRegPrice)))
+          ? parseFloat(vDiscPrice)
+          : (vRegPrice ? parseFloat(vRegPrice) : null);
+
+        cartVariants[productId] = {
+          productId: productId,
+          variantId: currentSelectedVariant.id ?? currentSelectedVariant.Id ?? null,
+          size: vSize,
+          name: vSize,
+          price: vEffPrice,
+          regularPrice: vRegPrice,
+          discountPrice: vDiscPrice,
+          productName: currentProduct ? currentProduct.name : $("#product-name").text(),
+        };
+        localStorage.setItem("cartVariants", JSON.stringify(cartVariants));
+      }
+
       const res = await addToCartAPI(
         productId,
-        parseInt($("#quantity").val()),
+        qty,
         token,
+        currentSelectedVariant,
       );
       if (res.success) {
         window.location.href = "chackout.html";
@@ -222,6 +301,7 @@ $(document).ready(async function () {
 });
 
 function renderProductDetails(product) {
+  currentProduct = product;
   $("#product-name").text(product.name);
   if (product.category) {
     $("#breadcrumb-category")
@@ -510,14 +590,186 @@ function renderProductDetails(product) {
     $benefitsList.append("<li>Provides general skincare and hydration.</li>");
   }
 
-  // Update WhatsApp link
-  const whatsappMessage = encodeURIComponent(
-    `Hi SkinDekho! I'm interested in *${product.name}* (Price: ₹${price}). Can I get more details?\nLink: ${window.location.href}`,
-  );
-  $("#whatsapp-inquiry").attr(
-    "href",
-    `https://wa.me/919461972759?text=${whatsappMessage}`,
-  );
+  // Helper to dynamically update displayed price based on selected variant
+  function updateDisplayedPrice(variant = null) {
+    if (!currentProduct) return;
+
+    let basePrice = currentProduct.price;
+    let discountPrice = currentProduct.discountPrice;
+
+    if (variant && variant.price !== null && variant.price !== undefined && variant.price !== "") {
+      basePrice = parseFloat(variant.price);
+      discountPrice = (variant.discountPrice !== null && variant.discountPrice !== undefined && variant.discountPrice !== "")
+        ? parseFloat(variant.discountPrice)
+        : null;
+    }
+
+    const effectivePrice = (discountPrice !== null && discountPrice < basePrice) ? discountPrice : basePrice;
+    $("#product-price").text(`₹${effectivePrice}`);
+
+    if (discountPrice !== null && discountPrice < basePrice) {
+      $("#product-old-price").text(`₹${basePrice}`).show();
+      const savePercent = Math.round(((basePrice - discountPrice) / basePrice) * 100);
+      $("#product-save-badge").text(`Save ${savePercent}%`).removeClass("d-none").show();
+    } else {
+      $("#product-old-price").hide();
+      $("#product-save-badge").addClass("d-none").hide();
+    }
+
+    // Update WhatsApp link with variant and current price
+    const variantText = variant && variant.name ? ` (Variant: ${variant.name})` : "";
+    const whatsappMessage = encodeURIComponent(
+      `Hi SkinDekho! I'm interested in *${currentProduct.name}*${variantText} (Price: ₹${effectivePrice}). Can I get more details?\nLink: ${window.location.href}`,
+    );
+    $("#whatsapp-inquiry").attr(
+      "href",
+      `https://wa.me/919461972759?text=${whatsappMessage}`,
+    );
+  }
+
+  // ✅ Parse & Render Variants (Size/Pack selector buttons with prices)
+  const rawVariants = product.variants || product.Variants || product.variantsJson || product.VariantsJson || [];
+  currentParsedVariants = [];
+
+  if (Array.isArray(rawVariants)) {
+    currentParsedVariants = rawVariants.map((item) => {
+      if (typeof item === "string") {
+        try {
+          const parsed = JSON.parse(item);
+          if (typeof parsed === "object" && parsed !== null) {
+            const sizeVal = parsed.size || parsed.Size || parsed.name || parsed.Name || "";
+            return {
+              id: parsed.id ?? parsed.Id ?? null,
+              size: sizeVal,
+              name: sizeVal,
+              price: parsed.price ?? parsed.Price ?? product.price,
+              discountPrice: parsed.discountPrice ?? parsed.DiscountPrice ?? product.discountPrice,
+              stockQuantity: parsed.stockQuantity ?? parsed.StockQuantity ?? product.stockQuantity,
+              sku: parsed.sku ?? parsed.Sku ?? "",
+            };
+          }
+        } catch (e) {}
+        return { size: item, name: item, price: product.price, discountPrice: product.discountPrice };
+      }
+      const sizeVal = item.size || item.Size || item.name || item.Name || "";
+      return {
+        id: item.id ?? item.Id ?? null,
+        size: sizeVal,
+        name: sizeVal,
+        price: item.price ?? item.Price ?? product.price,
+        discountPrice: item.discountPrice ?? item.DiscountPrice ?? product.discountPrice,
+        stockQuantity: item.stockQuantity ?? item.StockQuantity ?? product.stockQuantity,
+        sku: item.sku ?? item.Sku ?? "",
+      };
+    });
+  } else if (typeof rawVariants === "string" && rawVariants.trim()) {
+    try {
+      const parsed = JSON.parse(rawVariants);
+      if (Array.isArray(parsed)) {
+        currentParsedVariants = parsed.map((item) => {
+          if (typeof item === "string") {
+            return { size: item, name: item, price: product.price, discountPrice: product.discountPrice };
+          }
+          const sizeVal = item.size || item.Size || item.name || item.Name || "";
+          return {
+            id: item.id ?? item.Id ?? null,
+            size: sizeVal,
+            name: sizeVal,
+            price: item.price ?? item.Price ?? product.price,
+            discountPrice: item.discountPrice ?? item.DiscountPrice ?? product.discountPrice,
+            stockQuantity: item.stockQuantity ?? item.StockQuantity ?? product.stockQuantity,
+            sku: item.sku ?? item.Sku ?? "",
+          };
+        });
+      }
+    } catch (e) {
+      currentParsedVariants = rawVariants
+        .split(",")
+        .map((v) => v.trim())
+        .filter(Boolean)
+        .map((name) => ({ size: name, name: name, price: product.price, discountPrice: product.discountPrice }));
+    }
+  }
+
+  const $variantsContainer = $("#product-variants-container");
+
+  if ($variantsContainer.length && currentParsedVariants.length > 0) {
+    $variantsContainer.removeClass("d-none");
+    const $btns = $("#product-variants-btns");
+    $btns.empty();
+
+    // Default select first variant
+    currentSelectedVariant = currentParsedVariants[0];
+    updateDisplayedPrice(currentSelectedVariant);
+
+    currentParsedVariants.forEach((v, i) => {
+      const isFirst = i === 0;
+      const vName = typeof v === "object" ? (v.name || v.Name || "") : v;
+      const vPrice = typeof v === "object" ? (v.price ?? v.Price ?? "") : "";
+      const vDisc = typeof v === "object" ? (v.discountPrice ?? v.DiscountPrice ?? "") : "";
+
+      let saveBadgeHtml = "";
+      if (vDisc && vPrice && parseFloat(vDisc) < parseFloat(vPrice)) {
+        saveBadgeHtml = `<span style="font-size:0.68rem; background:#28a745; color:#fff; padding:1px 6px; border-radius:8px; margin-top:2px; font-weight:600;">Save More</span>`;
+      } else if (i > 0) {
+        saveBadgeHtml = `<span style="font-size:0.68rem; background:#28a745; color:#fff; padding:1px 6px; border-radius:8px; margin-top:2px; font-weight:600;">Save More</span>`;
+      }
+
+      $btns.append(`
+        <button type="button"
+          class="variant-btn d-inline-flex flex-column align-items-center justify-content-center ${isFirst ? "active" : ""}"
+          data-index="${i}"
+          style="
+            min-width: 90px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: 2px solid ${isFirst ? "#7c5cfc" : "#e0e0e0"};
+            background: ${isFirst ? "#f3f0ff" : "#ffffff"};
+            color: ${isFirst ? "#5a32a3" : "#333333"};
+            font-weight: 600;
+            font-size: 0.92rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: ${isFirst ? "0 2px 8px rgba(124, 92, 252, 0.15)" : "none"};
+          ">
+          <span>${vName}</span>
+          ${saveBadgeHtml}
+        </button>
+      `);
+    });
+
+    // Click handler to select variant and update price
+    $(document).off("click.variant").on("click.variant", ".variant-btn", function () {
+      const idx = parseInt($(this).data("index"), 10);
+      currentSelectedVariant = currentParsedVariants[idx] || null;
+
+      $(".variant-btn").each(function () {
+        $(this).css({
+          background: "#ffffff",
+          color: "#333333",
+          "border-color": "#e0e0e0",
+          "box-shadow": "none",
+        }).removeClass("active");
+      });
+
+      $(this).css({
+        background: "#f3f0ff",
+        color: "#5a32a3",
+        "border-color": "#7c5cfc",
+        "box-shadow": "0 2px 8px rgba(124, 92, 252, 0.15)",
+      }).addClass("active");
+
+      // Update price according to selected variant!
+      updateDisplayedPrice(currentSelectedVariant);
+    });
+
+  } else {
+    currentSelectedVariant = null;
+    if ($variantsContainer.length) {
+      $variantsContainer.addClass("d-none");
+    }
+    updateDisplayedPrice(null);
+  }
 }
 
 async function loadRelatedProducts(category, currentId) {

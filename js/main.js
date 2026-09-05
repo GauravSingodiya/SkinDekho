@@ -88,8 +88,8 @@ export function showConfirm(title, message) {
 
     const $modalEl = $(`#${modalId}`);
     const modalInstance = new bootstrap.Modal($modalEl[0], {
-      backdrop: 'static',
-      keyboard: false
+      backdrop: "static",
+      keyboard: false,
     });
 
     modalInstance.show();
@@ -420,7 +420,12 @@ export function showConfirm(title, message) {
   ========================== */
   $(document).on("click", ".footer-item a", function (e) {
     const linkText = $(this).text().trim();
-    const loginRequiredLinks = ["My Account", "Shop details", "Shopping Cart", "Order History"];
+    const loginRequiredLinks = [
+      "My Account",
+      "Shop details",
+      "Shopping Cart",
+      "Order History",
+    ];
 
     if (loginRequiredLinks.includes(linkText)) {
       const token = sessionStorage.getItem("token");
@@ -459,7 +464,7 @@ async function loadProducts(category = "") {
       const fullImgUrl = relativeImgUrl.startsWith("http")
         ? relativeImgUrl
         : relativeImgUrl
-          ? (BASE_URL + relativeImgUrl)
+          ? BASE_URL + relativeImgUrl
           : "img/product-default.jpg";
 
       const productCard = `
@@ -514,22 +519,58 @@ async function loadProducts(category = "") {
   }
 }
 
-
-
 // $(document).ready(function () {
 //   loadProducts(); // loads all products
 // });
 
 let allProducts = [];
+
+// ✅ Central filter state - tracks all active filters
+const activeFilters = {
+  category: "",
+  priceUnder: "",
+  priceSort: "",
+  productName: "",
+};
+
+function applyFilters() {
+  // ✅ Only send category, productName to API (priceUnder & priceSort handled in JS)
+  const filters = {};
+  if (activeFilters.category) filters.category = activeFilters.category;
+  if (activeFilters.productName)
+    filters.productName = activeFilters.productName;
+  getFilterProducts(filters);
+}
 let currentPage = 1;
 const PRODUCTS_PER_PAGE = 12;
 
 async function getFilterProducts(filters = {}) {
   try {
     const res = await getProductsByFilter(filters);
-    allProducts = res.result || [];
+    let products = res.result || [];
+
+    // ✅ Frontend price filter on discountPrice (because API filters on 'price', not 'discountPrice')
+    const maxPrice = activeFilters.priceUnder
+      ? Number(activeFilters.priceUnder)
+      : null;
+    if (maxPrice && maxPrice > 0) {
+      products = products.filter((item) => {
+        const displayPrice = item.discountPrice ?? item.price;
+        return Number(displayPrice) <= maxPrice;
+      });
+    }
+
+    // ✅ Frontend price sort on discountPrice
+    if (activeFilters.priceSort) {
+      products = [...products].sort((a, b) => {
+        const pa = Number(a.discountPrice ?? a.price);
+        const pb = Number(b.discountPrice ?? b.price);
+        return activeFilters.priceSort == 1 ? pa - pb : pb - pa;
+      });
+    }
+
+    allProducts = products;
     currentPage = 1;
-    console.log("shop res::::", res);
 
     renderPaginatedProducts();
     renderPagination();
@@ -584,7 +625,7 @@ function renderPaginatedProducts() {
     const fullImgUrl = relativeImgUrl.startsWith("http")
       ? relativeImgUrl
       : relativeImgUrl
-        ? (BASE_URL + relativeImgUrl)
+        ? BASE_URL + relativeImgUrl
         : "img/product-default.jpg";
 
     const whatsappMessage = encodeURIComponent(
@@ -748,8 +789,6 @@ $(document).on("click", "#pagination a", function (e) {
 //   }
 // }
 
-
-
 // $("#searchInput").on("input", function () {
 //   getFilterProducts({
 //     productName: $(this).val().trim(),
@@ -769,9 +808,8 @@ function handleSearch(value) {
   }
 
   searchDebounceTimer = setTimeout(() => {
-    getFilterProducts({
-      productName: query,
-    });
+    activeFilters.productName = query;
+    applyFilters();
   }, 300);
 }
 
@@ -781,20 +819,25 @@ $(document).on("input", "#shopSearchInput", function () {
 });
 
 // Click handler for search icon inside shop input box
-$(document).on("click", "#shopSearchIconBtn, #shopSearchIconBtn *", function (e) {
-  e.preventDefault();
-  clearTimeout(searchDebounceTimer);
-  const query = $("#shopSearchInput").val()?.trim() || "";
-  $("#categoryTabs a").removeClass("active");
-  $("#categoryTabs a[data-category='']").addClass("active");
-  if (query.length > 0) {
-    $("#clearShopSearchBtn").removeClass("d-none");
-    getFilterProducts({ productName: query });
-  } else {
-    $("#clearShopSearchBtn").addClass("d-none");
-    getFilterProducts({});
-  }
-});
+$(document).on(
+  "click",
+  "#shopSearchIconBtn, #shopSearchIconBtn *",
+  function (e) {
+    e.preventDefault();
+    clearTimeout(searchDebounceTimer);
+    const query = $("#shopSearchInput").val()?.trim() || "";
+    $("#categoryTabs a").removeClass("active");
+    $("#categoryTabs a[data-category='']").addClass("active");
+    activeFilters.category = "";
+    activeFilters.productName = query;
+    if (query.length > 0) {
+      $("#clearShopSearchBtn").removeClass("d-none");
+    } else {
+      $("#clearShopSearchBtn").addClass("d-none");
+    }
+    applyFilters();
+  },
+);
 
 // Trigger search when pressing Enter key in shop search input
 $(document).on("keypress", "#shopSearchInput", function (e) {
@@ -804,13 +847,14 @@ $(document).on("keypress", "#shopSearchInput", function (e) {
     const query = $(this).val().trim();
     $("#categoryTabs a").removeClass("active");
     $("#categoryTabs a[data-category='']").addClass("active");
+    activeFilters.category = "";
+    activeFilters.productName = query;
     if (query.length > 0) {
       $("#clearShopSearchBtn").removeClass("d-none");
-      getFilterProducts({ productName: query });
     } else {
       $("#clearShopSearchBtn").addClass("d-none");
-      getFilterProducts({});
     }
+    applyFilters();
   }
 });
 
@@ -820,7 +864,9 @@ $(document).on("click", "#clearShopSearchBtn", function () {
   $(this).addClass("d-none");
   $("#categoryTabs a").removeClass("active");
   $("#categoryTabs a[data-category='']").addClass("active");
-  getFilterProducts({});
+  activeFilters.productName = "";
+  activeFilters.category = "";
+  applyFilters();
 });
 
 // Reset all filters button
@@ -829,7 +875,16 @@ $(document).on("click", "#clearAllFiltersBtn", function () {
   $("#clearShopSearchBtn").addClass("d-none");
   $("#categoryTabs a").removeClass("active");
   $("#categoryTabs a[data-category='']").addClass("active");
-  getFilterProducts({});
+  // Reset price slider to max
+  const maxVal = parseInt($("#rangeInput").attr("max") || "500", 10);
+  $("#rangeInput").val(maxVal);
+  $("#amount").val(maxVal + "+");
+  // Reset all active filters
+  activeFilters.category = "";
+  activeFilters.priceUnder = "";
+  activeFilters.priceSort = "";
+  activeFilters.productName = "";
+  applyFilters();
 });
 
 // Toggle extra mobile filters (Categories, Price slider, Featured)
@@ -840,17 +895,23 @@ $(document).on("click", "#toggleMobileFiltersBtn", function () {
   if (isHidden) {
     $filters.removeClass("d-none").addClass("d-block");
     $(this).html('<i class="fas fa-times me-2"></i>Hide Filters');
-    $(this).addClass("btn-primary text-white").removeClass("btn-outline-primary");
+    $(this)
+      .addClass("btn-primary text-white")
+      .removeClass("btn-outline-primary");
   } else {
     $filters.removeClass("d-block").addClass("d-none");
     $(this).html('<i class="fas fa-sliders-h me-2"></i>Filters');
-    $(this).addClass("btn-outline-primary").removeClass("btn-primary text-white");
+    $(this)
+      .addClass("btn-outline-primary")
+      .removeClass("btn-primary text-white");
   }
 });
 
 // Modal search handling (Input & Enter Key)
 $(document).on("input", "#modalSearchInput", function () {
-  const isShopPage = $("body").hasClass("shop-page") || window.location.pathname.includes("shop.html");
+  const isShopPage =
+    $("body").hasClass("shop-page") ||
+    window.location.pathname.includes("shop.html");
   if (isShopPage) {
     $("#shopSearchInput").val(this.value);
     handleSearch(this.value);
@@ -861,7 +922,9 @@ $(document).on("keypress", "#modalSearchInput", function (e) {
   if (e.which === 13) {
     e.preventDefault();
     const query = $(this).val().trim();
-    const isShopPage = $("body").hasClass("shop-page") || window.location.pathname.includes("shop.html");
+    const isShopPage =
+      $("body").hasClass("shop-page") ||
+      window.location.pathname.includes("shop.html");
     if (isShopPage) {
       $("#shopSearchInput").val(query);
       handleSearch(query);
@@ -877,7 +940,9 @@ $(document).on("click", "#search-icon-1", function () {
   const modalVal = $("#modalSearchInput").val()?.trim();
   const shopVal = $("#shopSearchInput").val()?.trim();
   const query = modalVal || shopVal || "";
-  const isShopPage = $("body").hasClass("shop-page") || window.location.pathname.includes("shop.html");
+  const isShopPage =
+    $("body").hasClass("shop-page") ||
+    window.location.pathname.includes("shop.html");
 
   if (isShopPage) {
     if (modalVal) {
@@ -893,10 +958,21 @@ $(document).on("click", "#search-icon-1", function () {
   }
 });
 
-$("#rangeInput").on("input", function () {
-  getFilterProducts({
-    priceUnder: this.value,
-  });
+// ✅ Price slider — works with all active filters combined
+$(document).on("input", "#rangeInput", function () {
+  const val = parseInt(this.value, 10);
+  const maxVal = parseInt($(this).attr("max") || "500", 10);
+
+  // If slider is at max, treat as "no price filter" (show all)
+  if (val >= maxVal) {
+    activeFilters.priceUnder = "";
+    $("#amount").val(maxVal + "+");
+  } else {
+    activeFilters.priceUnder = val;
+    $("#amount").val(val);
+  }
+
+  applyFilters();
 });
 
 /* ==========================
@@ -929,13 +1005,9 @@ $(document).on("click", function (e) {
 
 $("#fruits").on("change", function () {
   const value = $(this).val();
-
-  getFilterProducts({
-    priceSort: value === "low" ? 1 : value === "high" ? 2 : "",
-  });
+  activeFilters.priceSort = value === "low" ? 1 : value === "high" ? 2 : "";
+  applyFilters();
 });
-
-
 
 /**
  * 🧴 Custom Icon Mapping for SkinDekho Categories
@@ -1006,7 +1078,7 @@ const pastelBackgrounds = [
   "#d8f3f3", // Light Aqua
   "#ffebd6", // Light Orange
   "#f0e6ff", // Light Purple
-  "#ffe5d9"  // Soft Coral
+  "#ffe5d9", // Soft Coral
 ];
 
 async function loadNavbarCategories() {
@@ -1043,7 +1115,9 @@ async function loadHomeCategories() {
     $container.empty();
 
     if (categories.length === 0) {
-      $container.html('<div class="col-12 text-center py-4 text-muted">No categories found.</div>');
+      $container.html(
+        '<div class="col-12 text-center py-4 text-muted">No categories found.</div>',
+      );
       return;
     }
 
@@ -1055,7 +1129,7 @@ async function loadHomeCategories() {
       const fullImgUrl = relativeImgUrl.startsWith("http")
         ? relativeImgUrl
         : relativeImgUrl
-          ? (BASE_URL + relativeImgUrl)
+          ? BASE_URL + relativeImgUrl
           : "img/product-default.jpg"; // fallback
 
       const cardHtml = `
@@ -1072,21 +1146,32 @@ async function loadHomeCategories() {
     });
 
     // Attach horizontal scroll controls
-    $(document).off("click", ".category-next-btn").on("click", ".category-next-btn", function () {
-      const $wrapper = $(".category-carousel-wrapper");
-      const scrollAmount = $wrapper.width() * 0.75;
-      $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() + scrollAmount }, 400);
-    });
+    $(document)
+      .off("click", ".category-next-btn")
+      .on("click", ".category-next-btn", function () {
+        const $wrapper = $(".category-carousel-wrapper");
+        const scrollAmount = $wrapper.width() * 0.75;
+        $wrapper.animate(
+          { scrollLeft: $wrapper.scrollLeft() + scrollAmount },
+          400,
+        );
+      });
 
-    $(document).off("click", ".category-prev-btn").on("click", ".category-prev-btn", function () {
-      const $wrapper = $(".category-carousel-wrapper");
-      const scrollAmount = $wrapper.width() * 0.75;
-      $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() - scrollAmount }, 400);
-    });
-
+    $(document)
+      .off("click", ".category-prev-btn")
+      .on("click", ".category-prev-btn", function () {
+        const $wrapper = $(".category-carousel-wrapper");
+        const scrollAmount = $wrapper.width() * 0.75;
+        $wrapper.animate(
+          { scrollLeft: $wrapper.scrollLeft() - scrollAmount },
+          400,
+        );
+      });
   } catch (err) {
     console.error("Failed to load home page categories", err);
-    $container.html('<div class="col-12 text-center py-4 text-danger">Failed to load categories.</div>');
+    $container.html(
+      '<div class="col-12 text-center py-4 text-danger">Failed to load categories.</div>',
+    );
   }
 }
 
@@ -1100,7 +1185,9 @@ async function loadLatestProducts() {
     $container.empty();
 
     if (products.length === 0) {
-      $container.html('<div class="col-12 text-center py-4 text-muted">No latest products found.</div>');
+      $container.html(
+        '<div class="col-12 text-center py-4 text-muted">No latest products found.</div>',
+      );
       return;
     }
 
@@ -1111,7 +1198,7 @@ async function loadLatestProducts() {
       const fullImgUrl = relativeImgUrl.startsWith("http")
         ? relativeImgUrl
         : relativeImgUrl
-          ? (BASE_URL + relativeImgUrl)
+          ? BASE_URL + relativeImgUrl
           : "img/product-default.jpg"; // fallback
 
       const productCard = `
@@ -1162,21 +1249,32 @@ async function loadLatestProducts() {
     });
 
     // Attach horizontal scroll controls
-    $(document).off("click", ".latest-next-btn").on("click", ".latest-next-btn", function () {
-      const $wrapper = $(".latest-carousel-wrapper");
-      const scrollAmount = $wrapper.width() * 0.75;
-      $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() + scrollAmount }, 400);
-    });
+    $(document)
+      .off("click", ".latest-next-btn")
+      .on("click", ".latest-next-btn", function () {
+        const $wrapper = $(".latest-carousel-wrapper");
+        const scrollAmount = $wrapper.width() * 0.75;
+        $wrapper.animate(
+          { scrollLeft: $wrapper.scrollLeft() + scrollAmount },
+          400,
+        );
+      });
 
-    $(document).off("click", ".latest-prev-btn").on("click", ".latest-prev-btn", function () {
-      const $wrapper = $(".latest-carousel-wrapper");
-      const scrollAmount = $wrapper.width() * 0.75;
-      $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() - scrollAmount }, 400);
-    });
-
+    $(document)
+      .off("click", ".latest-prev-btn")
+      .on("click", ".latest-prev-btn", function () {
+        const $wrapper = $(".latest-carousel-wrapper");
+        const scrollAmount = $wrapper.width() * 0.75;
+        $wrapper.animate(
+          { scrollLeft: $wrapper.scrollLeft() - scrollAmount },
+          400,
+        );
+      });
   } catch (err) {
     console.error("Failed to load latest products", err);
-    $container.html('<div class="col-12 text-center py-4 text-danger">Failed to load latest products.</div>');
+    $container.html(
+      '<div class="col-12 text-center py-4 text-danger">Failed to load latest products.</div>',
+    );
   }
 }
 
@@ -1197,7 +1295,17 @@ $(document).on("click", "#categoryTabs a", function (e) {
 
   const category = $(this).data("category") || "";
 
-  getFilterProducts({ category });
+  // ✅ Update central filter state & reset price slider
+  activeFilters.category = category;
+  activeFilters.priceUnder = ""; // reset price filter on category change
+
+  // ✅ Reset slider UI to max (show all)
+  const $slider = $("#rangeInput");
+  const maxVal = parseInt($slider.attr("max") || "500", 10);
+  $slider.val(maxVal);
+  $("#amount").val(maxVal + "+");
+
+  applyFilters();
 });
 
 // $(document).ready(function () {
@@ -1214,7 +1322,9 @@ async function loadHomeFeaturedProducts() {
     $container.empty();
 
     if (products.length === 0) {
-      $container.html('<div class="col-12 text-center py-4 text-muted">No featured products found.</div>');
+      $container.html(
+        '<div class="col-12 text-center py-4 text-muted">No featured products found.</div>',
+      );
       return;
     }
 
@@ -1225,7 +1335,7 @@ async function loadHomeFeaturedProducts() {
       const fullImgUrl = relativeImgUrl.startsWith("http")
         ? relativeImgUrl
         : relativeImgUrl
-          ? (BASE_URL + relativeImgUrl)
+          ? BASE_URL + relativeImgUrl
           : "img/product-default.jpg"; // fallback
 
       const productCard = `
@@ -1276,21 +1386,32 @@ async function loadHomeFeaturedProducts() {
     });
 
     // Attach horizontal scroll controls
-    $(document).off("click", ".featured-next-btn").on("click", ".featured-next-btn", function () {
-      const $wrapper = $(".featured-carousel-wrapper");
-      const scrollAmount = $wrapper.width() * 0.75;
-      $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() + scrollAmount }, 400);
-    });
+    $(document)
+      .off("click", ".featured-next-btn")
+      .on("click", ".featured-next-btn", function () {
+        const $wrapper = $(".featured-carousel-wrapper");
+        const scrollAmount = $wrapper.width() * 0.75;
+        $wrapper.animate(
+          { scrollLeft: $wrapper.scrollLeft() + scrollAmount },
+          400,
+        );
+      });
 
-    $(document).off("click", ".featured-prev-btn").on("click", ".featured-prev-btn", function () {
-      const $wrapper = $(".featured-carousel-wrapper");
-      const scrollAmount = $wrapper.width() * 0.75;
-      $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() - scrollAmount }, 400);
-    });
-
+    $(document)
+      .off("click", ".featured-prev-btn")
+      .on("click", ".featured-prev-btn", function () {
+        const $wrapper = $(".featured-carousel-wrapper");
+        const scrollAmount = $wrapper.width() * 0.75;
+        $wrapper.animate(
+          { scrollLeft: $wrapper.scrollLeft() - scrollAmount },
+          400,
+        );
+      });
   } catch (err) {
     console.error("Failed to load home page featured products", err);
-    $container.html('<div class="col-12 text-center py-4 text-danger">Failed to load featured products.</div>');
+    $container.html(
+      '<div class="col-12 text-center py-4 text-danger">Failed to load featured products.</div>',
+    );
   }
 }
 
@@ -1336,10 +1457,11 @@ function renderFeaturedProducts() {
 
           <div class="d-flex mb-2">
             <h5 class="fw-bold me-2">₹${item.discountPrice ?? item.price}</h5>
-            ${item.discountPrice
-        ? `<h5 class="text-danger text-decoration-line-through">₹${item.price}</h5>`
-        : ""
-      }
+            ${
+              item.discountPrice
+                ? `<h5 class="text-danger text-decoration-line-through">₹${item.price}</h5>`
+                : ""
+            }
           </div>
         </div>
       </div>
@@ -1388,15 +1510,22 @@ $(document).ready(function () {
     $("body").hasClass("shop-page") ||
     window.location.pathname.includes("shop.html")
   ) {
+    // ✅ Init price slider to max (show all products)
+    const sliderMax = parseInt($("#rangeInput").attr("max") || "500", 10);
+    $("#rangeInput").val(sliderMax);
+    $("#amount").val(sliderMax + "+");
+
     // 1. Trigger product fetching immediately (with search query or category filter)
     if (searchParam && searchParam.trim()) {
       $("#shopSearchInput").val(searchParam.trim());
       $("#clearShopSearchBtn").removeClass("d-none");
-      getFilterProducts({ productName: searchParam.trim() });
+      activeFilters.productName = searchParam.trim();
+      applyFilters();
     } else if (categoryParam && categoryParam.trim()) {
-      getFilterProducts({ category: categoryParam.trim() });
+      activeFilters.category = categoryParam.trim();
+      applyFilters();
     } else {
-      getFilterProducts();
+      applyFilters();
     }
 
     // 2. Load categories list asynchronously and highlight active tab
@@ -1430,17 +1559,10 @@ $(document).on("click", ".add-to-cart-btn", async function (e) {
   e.preventDefault();
 
   const productId = $(this).data("id");
+  const productName = $(this).data("name") || "Product";
+  const productPrice = $(this).data("price");
+  const productImg = $(this).data("img") || "";
   const token = sessionStorage.getItem("token");
-
-  if (!token) {
-    showToast(
-      "Please login to add items to cart",
-      "error",
-      "Authentication Required",
-    );
-    $("#authModal").modal("show");
-    return;
-  }
 
   const $btn = $(this);
   const originalHtml = $btn.html();
@@ -1451,19 +1573,45 @@ $(document).on("click", ".add-to-cart-btn", async function (e) {
     );
 
   try {
-    const res = await addToCartAPI(productId, 1, token);
-    console.log("Add to cart success:", res);
+    if (token) {
+      // ✅ Logged in — use API
+      const res = await addToCartAPI(productId, 1, token);
+      if (res.success) {
+        showToast(
+          `<strong>${productName}</strong> has been added to your cart.`,
+          "success",
+          "Added to Cart",
+        );
+        syncCartBadge();
+      } else {
+        throw new Error(res.message || "Failed to add to cart");
+      }
+    } else {
+      // ✅ Guest — save to localStorage, login required only at checkout
+      const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+      const existing = guestCart.find((item) => item.id == productId);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        guestCart.push({
+          id: productId,
+          name: productName,
+          price: productPrice,
+          imageUrl: productImg,
+          quantity: 1,
+        });
+      }
+      localStorage.setItem("guestCart", JSON.stringify(guestCart));
 
-    if (res.success) {
-      const productName = $btn.data("name") || "Product";
+      // Update cart badge
+      const totalItems = guestCart.reduce((sum, item) => sum + item.quantity, 0);
+      $(".fa-shopping-bag").next("span").text(totalItems);
+
       showToast(
-        `<strong>${productName}</strong> has been added to your cart.`,
+        `<strong>${productName}</strong> added to cart. <a href="cart.html" class="text-white fw-bold">View Cart</a>`,
         "success",
         "Added to Cart",
       );
-      syncCartBadge();
-    } else {
-      throw new Error(res.message || "Failed to add to cart");
     }
   } catch (err) {
     console.error("Add to Cart Error:", err);
@@ -1476,7 +1624,10 @@ $(document).on("click", ".add-to-cart-btn", async function (e) {
 export async function syncCartBadge() {
   const token = sessionStorage.getItem("token");
   if (!token) {
-    $(".fa-shopping-bag").next("span").text("0");
+    // ✅ Show guest cart count from localStorage
+    const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+    const guestTotal = guestCart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+    $(".fa-shopping-bag").next("span").text(guestTotal);
     return;
   }
 
