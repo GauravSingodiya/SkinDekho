@@ -437,6 +437,71 @@ export function showConfirm(title, message) {
   });
 })(jQuery);
 
+function renderClinikallyProductCard(item, colClass = "") {
+  const relativeImgUrl = item.imageUrl || "";
+  const fullImgUrl = relativeImgUrl.startsWith("http")
+    ? relativeImgUrl
+    : relativeImgUrl
+      ? BASE_URL + relativeImgUrl
+      : "img/product-default.jpg";
+
+  const currentPrice = item.discountPrice ?? item.price;
+  const mrp = item.discountPrice ? item.price : Math.round(item.price * 1.2);
+  const discountPct = Math.round(((mrp - currentPrice) / mrp) * 100);
+  const showDiscount = discountPct > 0;
+
+  const whatsappMessage = encodeURIComponent(
+    `🧴 *${item.name}*\n💰 Price: ₹${currentPrice}`,
+  );
+
+  return `
+    <div class="${colClass}">
+      <div class="rounded position-relative fruite-item h-100">
+        <div class="fruite-img position-relative">
+          <a href="product-detail.html?id=${item.id}" class="d-flex align-items-center justify-content-center w-100 h-100">
+            <img src="${fullImgUrl}" class="img-fluid rounded-top" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" alt="${item.name}" />
+          </a>
+          ${item.category ? `<span class="badge bg-secondary position-absolute product-card-category-badge">${item.category}</span>` : ""}
+        </div>
+
+        <div class="p-4 border border-secondary border-top-0 rounded-bottom d-flex flex-column">
+          <div class="product-rating d-flex align-items-center mb-1">
+            <i class="fas fa-star text-warning" style="font-size: 0.68rem;"></i>
+            <span class="text-dark fw-bold ms-1" style="font-size: 0.72rem;">4.6</span>
+            <span class="text-muted ms-1" style="font-size: 0.68rem;">(42)</span>
+          </div>
+
+          <h4 class="mb-1"><a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a></h4>
+          <p class="text-muted small product-desc d-none d-md-block mb-2">${item.description || ""}</p>
+
+          <div class="d-flex align-items-baseline mb-2">
+            <span class="text-dark fw-bold fs-6">₹${currentPrice}</span>
+            ${mrp > currentPrice ? `<span class="text-muted text-decoration-line-through ms-2" style="font-size: 0.75rem;">₹${mrp}</span>` : ""}
+          </div>
+
+          <div class="d-flex align-items-center gap-1 mt-auto">
+            <a href="javascript:void(0)" 
+               class="btn btn-outline-primary rounded-pill px-2 py-1 add-to-cart-btn flex-grow-1"
+               data-id="${item.id}"
+               data-name="${item.name}"
+               data-price="${currentPrice}"
+               data-img="${fullImgUrl}">
+              <i class="fa fa-shopping-bag me-1"></i>Add to cart
+            </a>
+
+            <a href="https://wa.me/919461972759?text=${whatsappMessage}"
+               target="_blank"
+               class="whatsapp-btn ms-1"
+               title="Chat on WhatsApp">
+              <i class="fab fa-whatsapp"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 async function loadProducts(category = "") {
   try {
     const res = await getAllProducts(category);
@@ -452,67 +517,14 @@ async function loadProducts(category = "") {
     }
 
     const colClass = isShopPage
-      ? "col-md-6 col-lg-4 col-xl-4" // SHOP: 3 items/row on large and xl
-      : "col-md-6 col-lg-3 col-xl-3"; // HOME: 4 items/row on large+
+      ? "col-6 col-md-6 col-lg-4 col-xl-4" // 2 items per row on mobile!
+      : "col-6 col-md-6 col-lg-3 col-xl-3";
 
     $productList.empty();
 
     products.forEach((item) => {
       if (!item.name || item.name === "string") return;
-
-      const relativeImgUrl = item.imageUrl || "";
-      const fullImgUrl = relativeImgUrl.startsWith("http")
-        ? relativeImgUrl
-        : relativeImgUrl
-          ? BASE_URL + relativeImgUrl
-          : "img/product-default.jpg";
-
-      const productCard = `
-        <div class="${colClass}">
-          <div class="rounded position-relative fruite-item h-100">
-            <div class="fruite-img">
-              <a href="product-detail.html?id=${item.id}">
-                <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
-              </a>
-            </div>
-
-            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                 style="top:10px; left:10px">
-              ${item.category}
-            </div>
-
-            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-              <h4><a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a></h4>
-              <p class="text-muted small product-desc">${item.description}</p>
-
-              <div class="d-flex justify-content-between align-items-center">
-                <p class="text-dark fs-5 fw-bold mb-0">
-                  ₹${item.discountPrice ?? item.price}
-                </p>
-
-                <div class="d-flex gap-2">
-                  <a href="javascript:void(0)" 
-                     class="btn border border-secondary rounded-pill px-2 text-primary add-to-cart-btn"
-                     data-id="${item.id}"
-                     data-name="${item.name}"
-                     data-price="${item.discountPrice ?? item.price}"
-                     data-img="${fullImgUrl}">
-                    <i class="fa fa-shopping-bag me-2"></i>Add to cart
-                  </a>
-
-                  <a href="https://wa.me/919461972759?text=${encodeURIComponent(item.name)}"
-                     target="_blank"
-                     class="border-primary rounded-pill px-2 text-primary whatsapp-btn">
-                    <i class="fab fa-whatsapp fs-2"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-
-      $productList.append(productCard);
+      $productList.append(renderClinikallyProductCard(item, colClass));
     });
   } catch (err) {
     console.error("Failed to load products", err);
@@ -615,69 +627,12 @@ function renderPaginatedProducts() {
     window.location.pathname.includes("shop.html");
 
   const colClass = isShopPage
-    ? "col-md-6 col-lg-4 col-xl-4" // SHOP: 3 items/row on large and xl
-    : "col-md-6 col-lg-3 col-xl-3"; // HOME: 4 items/row on large+
+    ? "col-6 col-md-6 col-lg-4 col-xl-4" // 2 items per row on mobile!
+    : "col-6 col-md-6 col-lg-3 col-xl-3";
 
   productsToShow.forEach((item) => {
     if (!item.name || item.name === "string") return;
-
-    const relativeImgUrl = item.imageUrl || "";
-    const fullImgUrl = relativeImgUrl.startsWith("http")
-      ? relativeImgUrl
-      : relativeImgUrl
-        ? BASE_URL + relativeImgUrl
-        : "img/product-default.jpg";
-
-    const whatsappMessage = encodeURIComponent(
-      `🧴 *${item.name}*\n💰 Price: ₹${item.discountPrice ?? item.price}`,
-    );
-
-    const productCard = `
-      <div class="${colClass}">
-        <div class="rounded position-relative fruite-item h-100">
-          <div class="fruite-img">
-            <a href="product-detail.html?id=${item.id}">
-              <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
-            </a>
-          </div>
-
-          <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-               style="top:10px; left:10px">
-            ${item.category}
-          </div>
-
-          <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-            <h4><a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a></h4>
-            <p class="text-muted small product-desc">${item.description}</p>
-
-            <div class="d-flex justify-content-between align-items-center">
-              <p class="text-dark fs-5 fw-bold mb-0">
-                ₹${item.discountPrice ?? item.price}
-              </p>
-
-              <div class="d-flex gap-2">
-                <a href="javascript:void(0)" 
-                   class="btn border border-secondary rounded-pill px-2 text-primary add-to-cart-btn"
-                   data-id="${item.id}"
-                   data-name="${item.name}"
-                   data-price="${item.discountPrice ?? item.price}"
-                   data-img="${fullImgUrl}">
-                  <i class="fa fa-shopping-bag me-2"></i>Add to cart
-                </a>
-
-                <a href="https://wa.me/919461972759?text=${whatsappMessage}"
-                   target="_blank"
-                   class="border-primary rounded-pill px-1 text-primary whatsapp-btn">
-                  <i class="fab fa-whatsapp fs-2"></i>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    $productList.append(productCard);
+    $productList.append(renderClinikallyProductCard(item, colClass));
   });
 }
 function renderPagination() {
@@ -1193,83 +1148,10 @@ async function loadLatestProducts() {
 
     products.forEach((item) => {
       if (!item.name || item.name === "string") return;
-
-      const relativeImgUrl = item.imageUrl || "";
-      const fullImgUrl = relativeImgUrl.startsWith("http")
-        ? relativeImgUrl
-        : relativeImgUrl
-          ? BASE_URL + relativeImgUrl
-          : "img/product-default.jpg"; // fallback
-
-      const productCard = `
-        <div class="latest-product-card">
-          <div class="rounded position-relative fruite-item h-100">
-            <div class="fruite-img">
-              <a href="product-detail.html?id=${item.id}">
-                <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
-              </a>
-            </div>
-
-            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                 style="top:10px; left:10px">
-              ${item.category || "skincare"}
-            </div>
-
-            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-              <h4><a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a></h4>
-              <p class="text-muted small product-desc">${item.description || ""}</p>
-
-              <div class="d-flex justify-content-between align-items-center">
-                <p class="text-dark fs-5 fw-bold mb-0">
-                  ₹${item.discountPrice ?? item.price}
-                </p>
-
-                <div class="d-flex gap-2">
-                  <a href="javascript:void(0)" 
-                     class="btn border border-secondary rounded-pill px-2 text-primary add-to-cart-btn"
-                     data-id="${item.id}"
-                     data-name="${item.name}"
-                     data-price="${item.discountPrice ?? item.price}"
-                     data-img="${fullImgUrl}">
-                    <i class="fa fa-shopping-bag me-2"></i>Add to cart
-                  </a>
-
-                  <a href="https://wa.me/919461972759?text=${encodeURIComponent(item.name)}"
-                     target="_blank"
-                     class="border-primary rounded-pill px-2 text-primary whatsapp-btn">
-                    <i class="fab fa-whatsapp fs-2"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-      $container.append(productCard);
+      $container.append(
+        renderClinikallyProductCard(item, "latest-product-card"),
+      );
     });
-
-    // Attach horizontal scroll controls
-    $(document)
-      .off("click", ".latest-next-btn")
-      .on("click", ".latest-next-btn", function () {
-        const $wrapper = $(".latest-carousel-wrapper");
-        const scrollAmount = $wrapper.width() * 0.75;
-        $wrapper.animate(
-          { scrollLeft: $wrapper.scrollLeft() + scrollAmount },
-          400,
-        );
-      });
-
-    $(document)
-      .off("click", ".latest-prev-btn")
-      .on("click", ".latest-prev-btn", function () {
-        const $wrapper = $(".latest-carousel-wrapper");
-        const scrollAmount = $wrapper.width() * 0.75;
-        $wrapper.animate(
-          { scrollLeft: $wrapper.scrollLeft() - scrollAmount },
-          400,
-        );
-      });
   } catch (err) {
     console.error("Failed to load latest products", err);
     $container.html(
@@ -1308,10 +1190,6 @@ $(document).on("click", "#categoryTabs a", function (e) {
   applyFilters();
 });
 
-// $(document).ready(function () {
-//   loadCategories(); // 👈 categories from API
-//   getFilterProducts(); // 👈 all products
-// });
 async function loadHomeFeaturedProducts() {
   const $container = $("#featuredProductsHomeList");
   if ($container.length === 0) return;
@@ -1330,59 +1208,9 @@ async function loadHomeFeaturedProducts() {
 
     products.forEach((item) => {
       if (!item.name || item.name === "string") return;
-
-      const relativeImgUrl = item.imageUrl || "";
-      const fullImgUrl = relativeImgUrl.startsWith("http")
-        ? relativeImgUrl
-        : relativeImgUrl
-          ? BASE_URL + relativeImgUrl
-          : "img/product-default.jpg"; // fallback
-
-      const productCard = `
-        <div class="featured-product-card">
-          <div class="rounded position-relative fruite-item h-100">
-            <div class="fruite-img">
-              <a href="product-detail.html?id=${item.id}">
-                <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
-              </a>
-            </div>
-
-            <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-                 style="top:10px; left:10px">
-              ${item.category || "skincare"}
-            </div>
-
-            <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-              <h4><a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a></h4>
-              <p class="text-muted small product-desc">${item.description || ""}</p>
-
-              <div class="d-flex justify-content-between align-items-center">
-                <p class="text-dark fs-5 fw-bold mb-0">
-                  ₹${item.discountPrice ?? item.price}
-                </p>
-
-                <div class="d-flex gap-2">
-                  <a href="javascript:void(0)" 
-                     class="btn border border-secondary rounded-pill px-2 text-primary add-to-cart-btn"
-                     data-id="${item.id}"
-                     data-name="${item.name}"
-                     data-price="${item.discountPrice ?? item.price}"
-                     data-img="${fullImgUrl}">
-                    <i class="fa fa-shopping-bag me-2"></i>Add to cart
-                  </a>
-
-                  <a href="https://wa.me/919461972759?text=${encodeURIComponent(item.name)}"
-                     target="_blank"
-                     class="border-primary rounded-pill px-2 text-primary whatsapp-btn">
-                    <i class="fab fa-whatsapp fs-2"></i>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-      $container.append(productCard);
+      $container.append(
+        renderClinikallyProductCard(item, "featured-product-card"),
+      );
     });
 
     // Attach horizontal scroll controls
@@ -1604,7 +1432,10 @@ $(document).on("click", ".add-to-cart-btn", async function (e) {
       localStorage.setItem("guestCart", JSON.stringify(guestCart));
 
       // Update cart badge
-      const totalItems = guestCart.reduce((sum, item) => sum + item.quantity, 0);
+      const totalItems = guestCart.reduce(
+        (sum, item) => sum + item.quantity,
+        0,
+      );
       $(".fa-shopping-bag").next("span").text(totalItems);
 
       showToast(
@@ -1626,8 +1457,12 @@ export async function syncCartBadge() {
   if (!token) {
     // ✅ Show guest cart count from localStorage
     const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
-    const guestTotal = guestCart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+    const guestTotal = guestCart.reduce(
+      (sum, item) => sum + (item.quantity || 1),
+      0,
+    );
     $(".fa-shopping-bag").next("span").text(guestTotal);
+    $(".mobile-cart-badge, .cart-count-badge").text(guestTotal);
     return;
   }
 
@@ -1639,6 +1474,7 @@ export async function syncCartBadge() {
       : 0;
 
     $(".fa-shopping-bag").next("span").text(totalItems);
+    $(".mobile-cart-badge, .cart-count-badge").text(totalItems);
   } catch (err) {
     console.error("Failed to sync cart badge", err);
   }
@@ -1649,6 +1485,7 @@ function updateCartBadge() {
   const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   $(".fa-shopping-bag").next("span").text(totalItems);
+  $(".mobile-cart-badge, .cart-count-badge").text(totalItems);
 }
 
 /* ==========================
