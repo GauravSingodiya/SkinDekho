@@ -626,34 +626,22 @@
 /*** Hero Header end ***/
 
 /*** featurs Start ***/
-.featurs .featurs-item .featurs-icon,
-.featurs-item .featurs-icon {
+.featurs .featurs-item .featurs-icon {
   position: relative;
   width: 120px;
   height: 120px;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
 }
 
-.featurs .featurs-item .featurs-icon i,
-.featurs-item .featurs-icon i {
-  position: relative !important;
-  z-index: 3 !important;
-  color: #ffffff !important;
-}
-
-.featurs .featurs-item .featurs-icon::after,
-.featurs-item .featurs-icon::after {
+.featurs .featurs-item .featurs-icon::after {
   content: "";
   width: 35px;
   height: 35px;
   background: var(--bs-secondary);
   position: absolute;
   bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%) rotate(45deg);
-  z-index: 1;
+  transform: translate(-50%);
+  transform: rotate(45deg);
+  background: var(--bs-secondary);
 }
 
 /*** featurs End ***/
@@ -727,28 +715,14 @@
   transform: scale(1.3);
 }
 
-.whatsapp-btn {
-  border: none !important;
-  background: transparent !important;
-  padding: 0 !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  text-decoration: none !important;
-  cursor: pointer;
-  line-height: 1;
-}
-
 .whatsapp-btn i {
-  font-size: 1.85rem !important;
-  color: #25D366 !important;
-  transition: transform 0.2s ease, color 0.2s ease;
-  line-height: 1;
+  font-size: 32px;
+  transition: 0.3s;
 }
 
 .whatsapp-btn:hover i {
-  transform: scale(1.12);
-  color: #128C7E !important;
+  transform: scale(1.2);
+  color: var(--bs-primary);
 }
 
 /*** Fruits End ***/
@@ -1168,8 +1142,10 @@
 }
 
 .category-card {
-  flex: 0 0 76px;
-  max-width: 76px;
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+  flex: 0 0 calc(100% / 2 - 12px);
+  max-width: calc(100% / 2 - 12px);
   text-align: center;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -1180,15 +1156,15 @@
 
 @media (min-width: 576px) {
   .category-card {
-    flex: 0 0 calc(100% / 4 - 16px);
-    max-width: calc(100% / 4 - 16px);
+    flex: 0 0 calc(100% / 3 - 16px);
+    max-width: calc(100% / 3 - 16px);
   }
 }
 
 @media (min-width: 768px) {
   .category-card {
-    flex: 0 0 calc(100% / 6 - 20px);
-    max-width: calc(100% / 6 - 20px);
+    flex: 0 0 calc(100% / 5 - 20px);
+    max-width: calc(100% / 5 - 20px);
   }
 }
 
@@ -1308,10 +1284,10 @@
 
 .latest-product-card,
 .featured-product-card {
-  flex: 0 0 calc(50% - 6px);
-  /* 2 cards side-by-side on mobile (Clinikally style) */
-  max-width: calc(50% - 6px);
-  min-width: 145px;
+  scroll-snap-align: start;
+  scroll-snap-stop: normal;
+  flex: 0 0 calc(100% - 10px);
+  max-width: calc(100% - 10px);
   transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
@@ -1392,29 +1368,15 @@
 }
 
 /* ==========================================================================
-   📱 Mobile Screen Optimization (Clinikally-Grade Mobile Experience)
+   📱 Mobile Screen Optimization (Small Icons & 2-per-line Grid)
    ========================================================================== */
-@media (max-width: 767.98px) {
+@media (max-width: 767px) {
 
-  /* Body bottom padding to prevent sticky bottom nav overlap */
-  body {
-    padding-bottom: 62px !important;
-  }
-
-  /* Fixed Top Navbar & Announcement */
-  .fixed-top .navbar {
-    padding-top: 0.35rem !important;
-    padding-bottom: 0.35rem !important;
-  }
-
-  .navbar-brand img {
-    height: 36px !important;
-  }
-
+  /* Smaller header navbar icons on mobile */
   .navbar .fa-2x,
   .user-icon-link .fa-2x,
   .fa-shopping-bag.fa-2x {
-    font-size: 1.2rem !important;
+    font-size: 1.25rem !important;
   }
 
   .navbar .position-relative span.position-absolute {
@@ -1427,512 +1389,55 @@
     padding: 0 4px !important;
   }
 
-  /* 🌟 Hero Header (Compact Banner Height ~190px, Scaled Typography) */
-  .hero-header {
-    margin-top: 118px !important;
-    margin-bottom: 1.25rem !important;
-    padding-top: 0.75rem !important;
-    padding-bottom: 0.75rem !important;
-  }
-
-  .hero-header .container {
-    padding-top: 0.25rem !important;
-    padding-bottom: 0.25rem !important;
-  }
-
-  .hero-header .row.g-5 {
-    --bs-gutter-y: 1rem;
-    --bs-gutter-x: 0.75rem;
-  }
-
-  .hero-header h4.text-secondary {
-    font-size: 0.78rem !important;
-    color: var(--bs-secondary) !important;
-    margin-bottom: 0.25rem !important;
-    letter-spacing: 0.3px;
-    font-weight: 700;
-  }
-
-  .hero-header h1.display-3 {
-    font-size: 1.35rem !important;
-    line-height: 1.25 !important;
-    margin-bottom: 0.75rem !important;
-    font-weight: 800;
-    color: var(--bs-primary);
-  }
-
-  .hero-shop-btn {
-    padding: 8px 18px !important;
-    font-size: 0.82rem !important;
-    border-radius: 30px !important;
-    box-shadow: 0 4px 12px rgba(129, 196, 8, 0.25) !important;
-    margin-bottom: 0.75rem !important;
-  }
-
-  .hero-header .carousel {
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  .hero-header .carousel-item {
-    max-height: 180px;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  .hero-header .carousel-item img {
-    height: 180px !important;
-    width: 100% !important;
-    object-fit: cover !important;
-    border-radius: 12px;
-  }
-
-  .hero-header .carousel-control-prev,
-  .hero-header .carousel-control-next {
-    width: 26px !important;
-    height: 26px !important;
-    background: rgba(129, 196, 8, 0.8) !important;
-  }
-
-  .hero-header .carousel-control-prev-icon,
-  .hero-header .carousel-control-next-icon {
-    width: 11px;
-    height: 11px;
-  }
-
-  .hero-header .carousel-control-prev {
-    left: 6px !important;
-    margin-left: 0 !important;
-  }
-
-  .hero-header .carousel-control-next {
-    right: 6px !important;
-    margin-right: 0 !important;
-  }
-
-  /* Back to Top button on mobile positioned above sticky nav */
-  .back-to-top {
-    bottom: 68px !important;
-    right: 15px !important;
-    width: 36px !important;
-    height: 36px !important;
-    font-size: 12px !important;
-    z-index: 1000 !important;
-  }
-
-  /* 🏷️ Section Headings & Carousel Nav Buttons */
-  .category-section h1,
-  .featured-products-section h1,
-  .latest-products-section h1 {
-    font-size: 1.05rem !important;
-    font-weight: 700 !important;
-    color: #1e293b;
-  }
-
-  .category-section .d-flex.justify-content-between,
-  .featured-products-section .d-flex.justify-content-between,
-  .latest-products-section .d-flex.justify-content-between {
-    margin-bottom: 0.5rem !important;
-  }
-
-  .category-nav-buttons button,
-  .featured-nav-buttons button,
-  .latest-nav-buttons button {
-    width: 30px !important;
-    height: 30px !important;
-    border-radius: 50% !important;
-  }
-
-  .category-nav-buttons button i,
-  .featured-nav-buttons button i,
-  .latest-nav-buttons button i {
-    font-size: 11px !important;
-  }
-
-  .category-section,
-  .featured-products-section,
-  .latest-products-section {
-    padding-top: 0.35rem !important;
-    padding-bottom: 0.5rem !important;
-  }
-
-  .category-section .container,
-  .featured-products-section .container,
-  .latest-products-section .container {
-    padding-top: 0.25rem !important;
-    padding-bottom: 0.25rem !important;
-  }
-
-  /* 🗂️ Categories (4 per view / compact ~70px rounded cards) */
-  .category-carousel-track {
-    gap: 10px !important;
-  }
-
-  .category-carousel-wrapper {
-    padding: 6px 2px !important;
-  }
-
-  .category-card {
-    flex: 0 0 74px !important;
-    max-width: 74px !important;
-  }
-
-  .category-card-img-wrapper {
-    width: 66px !important;
-    height: 66px !important;
-    border-radius: 16px !important;
-    margin-bottom: 4px !important;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
-  }
-
-  .category-card-img-inner {
-    width: 82% !important;
-    height: 82% !important;
-    border-radius: 12px !important;
-  }
-
-  .category-card img {
-    width: 70% !important;
-    height: 70% !important;
-  }
-
-  .category-card-title {
-    font-size: 0.72rem !important;
-    line-height: 1.15 !important;
-    margin-top: 2px !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 74px;
-    font-weight: 500;
-  }
-
-  /* 🛍️ Product Cards (2 per row / Clinikally-Style Side-by-Side) */
-  .latest-carousel-track,
-  .featured-carousel-track {
-    gap: 10px !important;
-  }
-
-  .latest-carousel-wrapper,
-  .featured-carousel-wrapper {
-    padding: 8px 2px !important;
-  }
-
-  .latest-product-card,
-  .featured-product-card,
-  .best-used-product-card {
-    flex: 0 0 calc(50% - 5px) !important;
-    max-width: calc(50% - 5px) !important;
-    min-width: 145px !important;
-  }
-
-  .floating-widget-container {
-    display: none !important;
-  }
-
-  .fruite-item {
-    margin-bottom: 10px !important;
-    border-radius: 12px !important;
-    border: 1px solid #eef2ed !important;
-    background: #ffffff;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
-    overflow: hidden;
-  }
-
-  .fruite-item .fruite-img {
-    height: 130px !important;
-    padding: 8px !important;
-    background: #f8faf7;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .fruite-item .fruite-img img {
-    max-height: 114px !important;
-    width: auto !important;
-    max-width: 100% !important;
-    object-fit: contain !important;
-  }
-
-  .fruite-item .p-4 {
-    padding: 8px 8px !important;
-  }
-
-  .fruite-item .p-4 h4 {
-    min-height: 2.1rem !important;
-    font-size: 0.78rem !important;
-    line-height: 1.25 !important;
-    margin-bottom: 3px !important;
-    font-weight: 600;
-  }
-
-  .fruite-item .p-4 h4 a {
-    color: #1e293b !important;
-    text-decoration: none;
-  }
-
-  /* Hide raw markdown description paragraphs on mobile product cards */
-  .product-desc {
-    display: none !important;
-  }
-
-  .fruite-item .position-absolute.bg-secondary,
-  .fruite-item .badge-tag {
-    font-size: 0.6rem !important;
-    padding: 2px 5px !important;
-    top: 6px !important;
-    left: 6px !important;
-    border-radius: 4px !important;
-    font-weight: 600;
-  }
-
-  .fruite-item .product-rating {
-    font-size: 0.68rem;
-    margin-bottom: 3px;
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
-
-  .fruite-item .p-4 .text-dark.fs-5 {
-    font-size: 0.85rem !important;
-    font-weight: 700 !important;
-    line-height: 1.2;
-    margin-bottom: 4px !important;
-  }
-
-  .fruite-item .add-to-cart-btn {
-    font-size: 0.68rem !important;
-    padding: 5px 6px !important;
-    border-radius: 50px !important;
-    font-weight: 600;
-    white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex-grow: 1;
-  }
-
-  .fruite-item .add-to-cart-btn i {
-    font-size: 0.68rem;
-    margin-right: 3px !important;
-  }
-
-  .fruite-item .whatsapp-btn {
-    border: none !important;
-    background: transparent !important;
-    padding: 0 !important;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .fruite-item .whatsapp-btn i {
-    font-size: 1.55rem !important;
-    color: #25D366 !important;
-  }
-
-  /* 🌿 Banner Section (Science Meets Skincare) */
-  .banner-section {
-    padding: 22px 0 !important;
-    margin: 1.25rem 0 !important;
-  }
-
-  .banner-section .row.g-5 {
-    --bs-gutter-y: 1rem;
-  }
-
-  .banner-title {
-    font-size: 1.25rem !important;
-    line-height: 1.25 !important;
-    margin-bottom: 0.25rem !important;
-  }
-
-  .banner-subtitle {
-    font-size: 0.9rem !important;
-    margin-bottom: 0.5rem !important;
-  }
-
-  .banner-text {
-    font-size: 0.78rem !important;
-    line-height: 1.45 !important;
-    margin-bottom: 0.75rem !important;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .banner-btn {
-    padding: 7px 18px !important;
-    font-size: 0.8rem !important;
-  }
-
-  .banner-image {
-    max-height: 170px !important;
-    object-fit: contain;
-  }
-
-  .banner-badge-glass {
-    width: 62px !important;
-    height: 62px !important;
-    top: -12px !important;
-    left: 8% !important;
-    border-width: 2px !important;
-  }
-
-  .banner-badge-glass span.h2 {
-    font-size: 0.95rem !important;
-    margin: 0 !important;
-  }
-
-  .banner-badge-glass span.text-uppercase {
-    font-size: 0.55rem !important;
-  }
-
-  /* 📊 Fact / Counters Section (2x2 Compact Grid) */
-  .bg-light.p-5.rounded {
-    padding: 12px 8px !important;
-    border-radius: 12px !important;
-  }
-
-  .counter.bg-white.rounded.p-5 {
-    padding: 10px 4px !important;
-    border-radius: 8px !important;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
-  }
-
-  .counter i {
-    font-size: 1.2rem !important;
-    margin-bottom: 3px !important;
-  }
-
-  .counter h4 {
-    font-size: 0.65rem !important;
-    margin-bottom: 2px !important;
-    letter-spacing: 0.3px;
-    font-weight: 600;
-  }
-
-  .counter h1 {
-    font-size: 1.15rem !important;
-    margin-bottom: 0 !important;
-    font-weight: 800;
-  }
-
-  /* Feature icons on mobile */
+  /* Feature icons on mobile: small size & compact 2-per-line spacing */
   .featurs-item {
-    padding: 0.75rem 0.4rem !important;
+    padding: 1rem 0.5rem !important;
   }
 
   .featurs-item .featurs-icon {
-    width: 56px !important;
-    height: 56px !important;
-    margin-bottom: 0.75rem !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    position: relative !important;
+    width: 65px !important;
+    height: 65px !important;
+    margin-bottom: 1.25rem !important;
   }
 
   .featurs-item .featurs-icon i {
-    font-size: 1.35rem !important;
-    position: relative !important;
-    z-index: 3 !important;
-    color: #ffffff !important;
-    display: inline-block !important;
-    line-height: 1 !important;
+    font-size: 1.4rem !important;
   }
 
   .featurs-item .featurs-icon::after {
-    content: "" !important;
-    width: 16px !important;
-    height: 16px !important;
-    bottom: -5px !important;
-    left: 50% !important;
-    transform: translateX(-50%) rotate(45deg) !important;
-    background: var(--bs-secondary) !important;
-    position: absolute !important;
-    z-index: 1 !important;
+    width: 20px !important;
+    height: 20px !important;
+    bottom: -6px !important;
   }
 
   .featurs-content h5 {
-    font-size: 0.78rem !important;
-    margin-bottom: 2px !important;
+    font-size: 0.85rem !important;
+    margin-bottom: 4px !important;
   }
 
   .featurs-content p {
-    font-size: 0.65rem !important;
+    font-size: 0.7rem !important;
   }
-}
 
-/* ==========================================================================
-   📱 Clinikally-Style Sticky Bottom Navigation Bar
-   ========================================================================== */
-.mobile-bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 56px;
-  background: #ffffff;
-  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  z-index: 1050;
-  border-top: 1px solid #f0f0f0;
-  padding: 4px 0;
-}
+  /* Counter section on mobile: compact 2-per-line spacing */
+  .counter.p-5 {
+    padding: 1.25rem 0.75rem !important;
+  }
 
-.mobile-bottom-nav .mobile-nav-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #64748b;
-  text-decoration: none;
-  font-size: 0.65rem;
-  font-weight: 500;
-  flex: 1;
-  height: 100%;
-  transition: all 0.2s ease;
-  position: relative;
-}
+  .counter i {
+    font-size: 2rem !important;
+    margin-bottom: 0.5rem !important;
+  }
 
-.mobile-bottom-nav .mobile-nav-item i {
-  font-size: 1.1rem;
-  margin-bottom: 2px;
-  transition: transform 0.2s ease;
-}
+  .counter h4 {
+    font-size: 0.8rem !important;
+    margin-bottom: 0.5rem !important;
+  }
 
-.mobile-bottom-nav .mobile-nav-item.active,
-.mobile-bottom-nav .mobile-nav-item:hover {
-  color: var(--bs-primary);
-}
-
-.mobile-bottom-nav .mobile-nav-item:active i {
-  transform: scale(0.92);
-}
-
-.mobile-bottom-nav .mobile-cart-badge {
-  position: absolute;
-  top: 1px;
-  right: calc(50% - 15px);
-  background-color: var(--bs-primary);
-  color: #fff;
-  border-radius: 50%;
-  font-size: 0.58rem;
-  font-weight: 700;
-  min-width: 15px;
-  height: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 3px;
-  border: 1.5px solid #fff;
+  .counter h1 {
+    font-size: 1.5rem !important;
+    margin-bottom: 0 !important;
+  }
 }
 
 /* 🔍 Mobile & Desktop Shop Search Controls */
@@ -2072,7 +1577,7 @@ input[type="search"]::-webkit-search-results-decoration {
 
   /* 📱 Ensure heading is 100% visible below fixed top navbar on mobile */
   .shop-page .content-header-margin {
-    margin-top: 122px !important;
+    margin-top: 105px !important;
   }
 
   .shop-page .container-fluid.fruite {
@@ -2121,27 +1626,6 @@ input[type="search"]::-webkit-search-results-decoration {
   }
 }
 
-/* 🏷️ Product Card Category Badge (Proper size in web view, compact in mobile) */
-.product-card-category-badge {
-  top: 10px !important;
-  left: 10px !important;
-  font-size: 0.82rem !important;
-  font-weight: 600 !important;
-  padding: 5px 12px !important;
-  border-radius: 6px !important;
-  z-index: 2;
-  letter-spacing: 0.2px;
-}
-
-@media (max-width: 767.98px) {
-  .product-card-category-badge {
-    top: 6px !important;
-    left: 6px !important;
-    font-size: 0.62rem !important;
-    padding: 2px 6px !important;
-    border-radius: 4px !important;
-  }
-}
 
 /* ==========================================
    Search Modal Product Results Styling

@@ -821,31 +821,33 @@ async function loadRelatedProducts(category, currentId) {
                   <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='${NEUTRAL_NO_IMAGE_SVG}'" />
                 </a>
               </div>
-              <span class="badge bg-secondary position-absolute product-card-category-badge">
+              <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top:10px; left:10px">
                 ${item.category}
-              </span>
-              <div class="p-4 border border-top-0 rounded-bottom d-flex flex-column" style="min-height: 150px;">
-                <h4 class="mb-1">
+              </div>
+              <div class="p-4 border border-top-0 rounded-bottom">
+                <h4>
                   <a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a>
                 </h4>
-                <div class="d-flex align-items-baseline mb-2">
-                  <span class="text-dark fw-bold fs-6">₹${item.discountPrice ?? item.price}</span>
-                </div>
-                <div class="d-flex align-items-center gap-1 mt-auto">
-                  <a href="javascript:void(0)" 
-                     class="btn btn-outline-primary rounded-pill px-2 py-1 add-to-cart-btn add-to-cart-btn-related flex-grow-1"
-                     data-id="${item.id}"
-                     data-name="${item.name}"
-                     data-price="${item.discountPrice ?? item.price}"
-                     data-img="${fullImgUrl}">
-                    <i class="fa fa-shopping-bag me-1"></i>Add to cart
-                  </a>
-                  <a href="https://wa.me/919461972759?text=${whatsappMessage}"
-                     target="_blank"
-                     class="whatsapp-btn ms-1"
-                     title="Chat on WhatsApp">
-                    <i class="fab fa-whatsapp"></i>
-                  </a>
+                <p class="text-muted small product-desc" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 40px;">
+                  ${item.description || 'Clinical skincare product.'}
+                </p>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2">
+                  <p class="text-dark fs-5 fw-bold mb-0">₹${item.discountPrice ?? item.price}</p>
+                  <div class="d-flex gap-2 align-items-center">
+                    <a href="javascript:void(0)" 
+                       class="btn border border-secondary rounded-pill px-3 py-1 text-primary add-to-cart-btn-related"
+                       data-id="${item.id}"
+                       data-name="${item.name}"
+                       data-price="${item.discountPrice ?? item.price}"
+                       data-img="${fullImgUrl}">
+                      <i class="fa fa-shopping-bag me-2"></i>Add to cart
+                    </a>
+                    <a href="https://wa.me/919461972759?text=${whatsappMessage}"
+                       target="_blank"
+                       class="border-primary rounded-pill px-2 text-primary whatsapp-btn">
+                      <i class="fab fa-whatsapp fs-2"></i>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
@@ -913,31 +915,33 @@ async function loadRelatedProducts(category, currentId) {
                   <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='${NEUTRAL_NO_IMAGE_SVG}'" />
                 </a>
               </div>
-              <span class="badge bg-secondary position-absolute product-card-category-badge">
+              <div class="text-white bg-secondary px-3 py-1 rounded position-absolute" style="top:10px; left:10px">
                 ${item.category}
-              </span>
-              <div class="p-4 border border-top-0 rounded-bottom d-flex flex-column" style="min-height: 150px;">
-                <h4 class="mb-1">
+              </div>
+              <div class="p-4 border border-top-0 rounded-bottom">
+                <h4>
                   <a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a>
                 </h4>
-                <div class="d-flex align-items-baseline mb-2">
-                  <span class="text-dark fw-bold fs-6">₹${item.discountPrice ?? item.price}</span>
-                </div>
-                <div class="d-flex align-items-center gap-1 mt-auto">
-                  <a href="javascript:void(0)" 
-                     class="btn btn-outline-primary rounded-pill px-2 py-1 add-to-cart-btn add-to-cart-btn-related flex-grow-1"
-                     data-id="${item.id}"
-                     data-name="${item.name}"
-                     data-price="${item.discountPrice ?? item.price}"
-                     data-img="${fullImgUrl}">
-                    <i class="fa fa-shopping-bag me-1"></i>Add to cart
-                  </a>
-                  <a href="https://wa.me/919461972759?text=${whatsappMessage}"
-                     target="_blank"
-                     class="whatsapp-btn ms-1"
-                     title="Chat on WhatsApp">
-                    <i class="fab fa-whatsapp"></i>
-                  </a>
+                <p class="text-muted small product-desc" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; min-height: 40px;">
+                  ${item.description || 'Clinical skincare product.'}
+                </p>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2">
+                  <p class="text-dark fs-5 fw-bold mb-0">₹${item.discountPrice ?? item.price}</p>
+                  <div class="d-flex gap-2 align-items-center">
+                    <a href="javascript:void(0)" 
+                       class="btn border border-secondary rounded-pill px-3 py-1 text-primary add-to-cart-btn-related"
+                       data-id="${item.id}"
+                       data-name="${item.name}"
+                       data-price="${item.discountPrice ?? item.price}"
+                       data-img="${fullImgUrl}">
+                      <i class="fa fa-shopping-bag me-2 text-primary"></i>Add to cart
+                    </a>
+                    <a href="https://wa.me/919461972759?text=${whatsappMessage}"
+                       target="_blank"
+                       class="border-primary rounded-pill px-2 text-primary whatsapp-btn">
+                      <i class="fab fa-whatsapp fs-2"></i>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
