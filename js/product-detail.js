@@ -332,17 +332,15 @@ function renderProductDetails(product) {
     return typeof candidate === "string" ? candidate.trim().replace(/\\/g, "/") : "";
   };
 
-  const NEUTRAL_NO_IMAGE_SVG = `data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%20viewBox%3D%220%200%20200%20200%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23f1f5f9%22%2F%3E%3Cpath%20d%3D%22M70%2080h60v50H70z%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%3Ccircle%20cx%3D%2285%22%20cy%3D%2295%22%20r%3D%226%22%20fill%3D%22%23cbd5e1%22%2F%3E%3Cpath%20d%3D%22M75%20125l20-25%2015%2015%2015-20%2010%2030z%22%20fill%3D%22%23cbd5e1%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%22155%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20font-family%3D%22system-ui%2C%20-apple-system%2C%20sans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22500%22%20fill%3D%22%2394a3b8%22%3ENo%20Image%20Available%3C%2Ftext%3E%3C%2Fsvg%3E`;
-
   const formatUrl = (rawPath) => {
-    if (!rawPath) return NEUTRAL_NO_IMAGE_SVG;
+    if (!rawPath) return "img/MOISTURING_LOTION.png";
     let cleaned = rawPath.trim().replace(/\\/g, "/");
-    if (!cleaned) return NEUTRAL_NO_IMAGE_SVG;
+    if (!cleaned) return "img/MOISTURING_LOTION.png";
     if (cleaned.startsWith("http://") || cleaned.startsWith("https://") || cleaned.startsWith("data:")) {
       return cleaned;
     }
     if (!cleaned.includes("/") && !cleaned.startsWith("img/")) {
-      cleaned = "images/products/" + cleaned;
+      cleaned = "uploads/products/" + cleaned;
     }
     const leadingSlash = cleaned.startsWith("/") ? "" : "/";
     return BASE_URL + leadingSlash + cleaned;
@@ -378,7 +376,7 @@ function renderProductDetails(product) {
 
   // Fallback if no images found
   if (galleryUrls.length === 0) {
-    galleryUrls.push(NEUTRAL_NO_IMAGE_SVG);
+    galleryUrls.push("img/MOISTURING_LOTION.png");
   }
 
   let currentGalleryIndex = 0;
@@ -422,8 +420,8 @@ function renderProductDetails(product) {
     galleryUrls.forEach((imgUrl, i) => {
       const isCurrentActive = i === 0;
       const thumbHtml = `
-        <div class="thumb-item ${isCurrentActive ? "active" : ""}" data-index="${i}" style="width: 72px; height: 72px; cursor: pointer; border: 2px solid ${isCurrentActive ? '#81c408' : '#ddd'}; border-radius: 8px; overflow: hidden; transition: all 0.2s; flex-shrink: 0; background: #fff;">
-          <img src="${imgUrl}" class="w-100 h-100" style="object-fit: contain; padding: 2px;" onerror="this.onerror=null;this.src='${NEUTRAL_NO_IMAGE_SVG}'">
+        <div class="thumb-item ${isCurrentActive ? "active" : ""}" data-index="${i}" style="width: 72px; height: 72px; cursor: pointer; border: 2px solid ${isCurrentActive ? '#81c408' : '#ddd'}; border-radius: 8px; overflow: hidden; transition: all 0.2s; flex-shrink: 0;">
+          <img src="${imgUrl}" class="w-100 h-100" style="object-fit: cover;" onerror="this.onerror=null;this.src='img/MOISTURING_LOTION.png'">
         </div>
       `;
 
@@ -650,7 +648,7 @@ function renderProductDetails(product) {
               sku: parsed.sku ?? parsed.Sku ?? "",
             };
           }
-        } catch (e) { }
+        } catch (e) {}
         return { size: item, name: item, price: product.price, discountPrice: product.discountPrice };
       }
       const sizeVal = item.size || item.Size || item.name || item.Name || "";
@@ -806,8 +804,8 @@ async function loadRelatedProducts(category, currentId) {
         const fullImgUrl = relativeImgUrl.startsWith("http")
           ? relativeImgUrl
           : relativeImgUrl
-            ? BASE_URL + (relativeImgUrl.startsWith("/") ? "" : "/") + relativeImgUrl
-            : NEUTRAL_NO_IMAGE_SVG;
+            ? BASE_URL + relativeImgUrl
+            : "img/product-default.jpg";
 
         const whatsappMessage = encodeURIComponent(
           `Hi SkinDekho! I'm interested in *${item.name}* (Price: ₹${item.discountPrice ?? item.price}). Can I get more details?\nLink: ${window.location.origin}/product-detail.html?id=${item.id}`
@@ -818,7 +816,7 @@ async function loadRelatedProducts(category, currentId) {
             <div class="rounded position-relative fruite-item h-100 border" style="border-color: #f2f9e6 !important;">
               <div class="fruite-img">
                 <a href="product-detail.html?id=${item.id}">
-                  <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='${NEUTRAL_NO_IMAGE_SVG}'" />
+                  <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
                 </a>
               </div>
               <span class="badge bg-secondary position-absolute product-card-category-badge">
@@ -857,18 +855,14 @@ async function loadRelatedProducts(category, currentId) {
       // Attach horizontal scroll controls for Best Used With (side column)
       $(document).off("click", ".best-used-next-btn").on("click", ".best-used-next-btn", function () {
         const $wrapper = $(".frequently_bought_together .featured-carousel-wrapper");
-        if ($wrapper.length) {
-          const cardWidth = $wrapper.find(".featured-product-card").first().outerWidth(true) || 280;
-          $wrapper[0].scrollTo({ left: $wrapper[0].scrollLeft + cardWidth * 2, behavior: "smooth" });
-        }
+        const scrollAmount = $wrapper.width() * 0.75;
+        $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() + scrollAmount }, 400);
       });
 
       $(document).off("click", ".best-used-prev-btn").on("click", ".best-used-prev-btn", function () {
         const $wrapper = $(".frequently_bought_together .featured-carousel-wrapper");
-        if ($wrapper.length) {
-          const cardWidth = $wrapper.find(".featured-product-card").first().outerWidth(true) || 280;
-          $wrapper[0].scrollTo({ left: $wrapper[0].scrollLeft - cardWidth * 2, behavior: "smooth" });
-        }
+        const scrollAmount = $wrapper.width() * 0.75;
+        $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() - scrollAmount }, 400);
       });
     }
 
@@ -898,8 +892,8 @@ async function loadRelatedProducts(category, currentId) {
         const fullImgUrl = relativeImgUrl.startsWith("http")
           ? relativeImgUrl
           : relativeImgUrl
-            ? BASE_URL + (relativeImgUrl.startsWith("/") ? "" : "/") + relativeImgUrl
-            : NEUTRAL_NO_IMAGE_SVG;
+            ? BASE_URL + relativeImgUrl
+            : "img/product-default.jpg";
 
         const whatsappMessage = encodeURIComponent(
           `Hi SkinDekho! I'm interested in *${item.name}* (Price: ₹${item.discountPrice ?? item.price}). Can I get more details?\nLink: ${window.location.origin}/product-detail.html?id=${item.id}`
@@ -910,7 +904,7 @@ async function loadRelatedProducts(category, currentId) {
             <div class="rounded position-relative fruite-item h-100 border" style="border-color: #f2f9e6 !important;">
               <div class="fruite-img">
                 <a href="product-detail.html?id=${item.id}">
-                  <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='${NEUTRAL_NO_IMAGE_SVG}'" />
+                  <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
                 </a>
               </div>
               <span class="badge bg-secondary position-absolute product-card-category-badge">
@@ -949,18 +943,14 @@ async function loadRelatedProducts(category, currentId) {
       // Attach horizontal scroll controls for next/prev buttons (matching home page)
       $(document).off("click", ".related-next-btn").on("click", ".related-next-btn", function () {
         const $wrapper = $(".related-products-section .featured-carousel-wrapper");
-        if ($wrapper.length) {
-          const cardWidth = $wrapper.find(".featured-product-card").first().outerWidth(true) || 280;
-          $wrapper[0].scrollTo({ left: $wrapper[0].scrollLeft + cardWidth * 2, behavior: "smooth" });
-        }
+        const scrollAmount = $wrapper.width() * 0.75;
+        $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() + scrollAmount }, 400);
       });
 
       $(document).off("click", ".related-prev-btn").on("click", ".related-prev-btn", function () {
         const $wrapper = $(".related-products-section .featured-carousel-wrapper");
-        if ($wrapper.length) {
-          const cardWidth = $wrapper.find(".featured-product-card").first().outerWidth(true) || 280;
-          $wrapper[0].scrollTo({ left: $wrapper[0].scrollLeft - cardWidth * 2, behavior: "smooth" });
-        }
+        const scrollAmount = $wrapper.width() * 0.75;
+        $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() - scrollAmount }, 400);
       });
     }
   } catch (err) {

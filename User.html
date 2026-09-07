@@ -41,36 +41,20 @@
     </div>
     <div class="container px-0">
       <nav class="navbar navbar-light bg-white navbar-expand-xl">
-        <!-- 🔹 Logo / Brand Name -->
+        <!-- 🔹 Logo -->
         <a href="home.html" class="navbar-brand d-flex align-items-center">
           <!-- Desktop Logo -->
           <img src="img/logo.png" alt="Logo" class="img-fluid d-none d-xl-block" style="height: 55px" />
 
-          <!-- Mobile Brand Title (Instead of Mobile Logo) -->
-          <span id="mobile-brand-title" class="d-inline d-xl-none ms-2 fw-bold text-primary" style="font-family: 'Raleway', sans-serif; font-size: 1.25rem; letter-spacing: -0.5px; vertical-align: middle;">
-            Skin Dekh<i class="fas fa-eye text-primary" style="font-size: 0.95em; margin-left: 1px; vertical-align: middle;"></i>
-          </span>
+          <!-- Mobile Logo -->
+          <img src="img/logo.png" alt="Logo" class="img-fluid d-xl-none" style="height: 40px" />
         </a>
 
-        <!-- 🔹 Mobile Controls (Search + User Icon + Cart Icon + Toggle Button) -->
-        <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto d-xl-none">
-          <button type="button" class="btn p-1 text-primary border-0 shadow-none" data-bs-toggle="modal" data-bs-target="#searchModal" title="Search Products">
-            <i class="fas fa-search fa-lg"></i>
-          </button>
-          <a href="User.html" class="text-primary p-1" title="My Account / Dashboard">
-            <i class="fas fa-user fa-lg"></i>
-          </a>
-          <a href="cart.html" class="position-relative text-primary p-1" title="Cart">
-            <i class="fa fa-shopping-bag fa-lg"></i>
-            <span
-              class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
-              style="top: -5px; left: 15px; height: 18px; min-width: 18px; font-size: 0.7rem; font-weight: 700;">0</span>
-          </a>
-          <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
-            data-bs-target="#navbarCollapse">
-            <span class="fa fa-bars text-primary"></span>
-          </button>
-        </div>
+        <!-- 🔹 Toggle Button -->
+        <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarCollapse">
+          <span class="fa fa-bars text-primary"></span>
+        </button>
 
         <!-- 🔹 Navbar Content -->
         <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
@@ -90,12 +74,7 @@
             <a href="contact.html" class="nav-item nav-link">Contact</a>
           </div>
 
-          <div class="d-none d-xl-flex m-3 me-0">
-            <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
-              data-bs-toggle="modal" data-bs-target="#searchModal">
-              <i class="fas fa-search text-primary"></i>
-            </button>
-
+          <div class="d-flex m-3 me-0">
             <a href="cart.html" class="position-relative me-4 my-auto">
               <i class="fa fa-shopping-bag fa-2x"></i>
               <span
@@ -103,7 +82,7 @@
                 style="top: -5px; left: 15px; height: 20px; min-width: 20px">0</span>
             </a>
 
-            <a href="User.html" class="my-auto user-icon-link">
+            <a href="#" class="my-auto user-icon-link">
               <i class="fas fa-user fa-2x"></i>
             </a>
           </div>
@@ -112,29 +91,6 @@
     </div>
   </div>
   <!-- Navbar End -->
-
-  <!-- Modal Search Start -->
-  <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-scrollable modal-lg">
-      <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-        <div class="modal-header border-bottom p-3 align-items-center bg-white">
-          <button type="button" class="btn p-0 me-3 border-0 shadow-none text-dark" data-bs-dismiss="modal" aria-label="Close">
-            <i class="fas fa-arrow-left fs-4"></i>
-          </button>
-          <div class="flex-grow-1 position-relative">
-            <input type="search" id="modalSearchInput" class="form-control rounded-3 py-2 px-3 fs-6 border" placeholder="Search products..." autocomplete="off" />
-          </div>
-        </div>
-        <div class="px-3 py-2 bg-light border-bottom text-secondary small fw-bold d-flex align-items-center gap-2">
-          <i class="fas fa-chart-line text-primary"></i> <span id="searchModalHeaderTitle">OUR EXPERT RECOMMENDATIONS</span>
-        </div>
-        <div class="modal-body p-0" id="searchModalResults" style="max-height: 65vh; overflow-y: auto;">
-          <!-- Live search product items rendered dynamically via JS -->
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- Modal Search End -->
 
   <div class="profile-container content-header-margin">
     <aside class="sidebar">
@@ -496,29 +452,22 @@
               <!-- ✅ Variants Section -->
               <div class="col-12">
                 <label class="form-label fw-semibold">
-                  Variants <small class="text-muted fw-normal">(Add multiple sizes/packs with prices, e.g. 125ml -
-                    ₹199)</small>
+                  Variants <small class="text-muted fw-normal">(Add multiple sizes/packs with prices, e.g. 125ml - ₹199)</small>
                 </label>
                 <div id="variantsList" class="d-flex flex-wrap gap-2 mb-2"></div>
                 <div class="p-3 bg-light rounded-3 border mb-2">
                   <div class="row g-2 align-items-end">
                     <div class="col-md-4 col-sm-6">
-                      <label class="form-label mb-1" style="font-size:0.8rem; font-weight:600;">Size /
-                        Name<sup>*</sup></label>
-                      <input type="text" class="form-control form-control-sm" id="variantNameInput"
-                        placeholder="e.g. 125ml or 2x125ml" />
+                      <label class="form-label mb-1" style="font-size:0.8rem; font-weight:600;">Size / Name<sup>*</sup></label>
+                      <input type="text" class="form-control form-control-sm" id="variantNameInput" placeholder="e.g. 125ml or 2x125ml" />
                     </div>
                     <div class="col-md-3 col-sm-6">
-                      <label class="form-label mb-1" style="font-size:0.8rem; font-weight:600;">Price
-                        (₹)<sup>*</sup></label>
-                      <input type="number" class="form-control form-control-sm" id="variantPriceInput"
-                        placeholder="e.g. 299" min="0" step="any" />
+                      <label class="form-label mb-1" style="font-size:0.8rem; font-weight:600;">Price (₹)<sup>*</sup></label>
+                      <input type="number" class="form-control form-control-sm" id="variantPriceInput" placeholder="e.g. 299" min="0" step="any" />
                     </div>
                     <div class="col-md-3 col-sm-6">
-                      <label class="form-label mb-1" style="font-size:0.8rem; font-weight:600;">Discount Price
-                        (₹)</label>
-                      <input type="number" class="form-control form-control-sm" id="variantDiscountInput"
-                        placeholder="Optional (e.g. 249)" min="0" step="any" />
+                      <label class="form-label mb-1" style="font-size:0.8rem; font-weight:600;">Discount Price (₹)</label>
+                      <input type="number" class="form-control form-control-sm" id="variantDiscountInput" placeholder="Optional (e.g. 249)" min="0" step="any" />
                     </div>
                     <div class="col-md-2 col-sm-6">
                       <button type="button" class="btn btn-primary btn-sm w-100 fw-semibold" id="addVariantBtn">
@@ -527,8 +476,7 @@
                     </div>
                   </div>
                 </div>
-                <small class="text-muted">Add each variant size and price. Sent as an array of objects to the
-                  API.</small>
+                <small class="text-muted">Add each variant size and price. Sent as an array of objects to the API.</small>
               </div>
 
               <div class="col-md-12 mt-2">
@@ -695,26 +643,6 @@
             <span class="spinner-border spinner-border-sm d-none me-1" id="categorySpinner"></span>
             Save Category
           </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Image Zoom / High-Res Inspection Modal -->
-  <div class="modal fade" id="imageZoomModal" tabindex="-1" aria-labelledby="imageZoomModalLabel" aria-hidden="true"
-    style="z-index: 1070;">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content bg-dark text-white border-0 shadow-lg">
-        <div class="modal-header border-bottom border-secondary py-2">
-          <h6 class="modal-title d-flex align-items-center gap-2" id="imageZoomModalLabel">
-            <i class="fas fa-search-plus text-warning"></i> High-Resolution Image Inspection
-          </h6>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body text-center p-3"
-          style="background: #0f172a; min-height: 350px; display: flex; align-items: center; justify-content: center;">
-          <img id="imageZoomTarget" src="" class="img-fluid rounded shadow"
-            style="max-height: 75vh; object-fit: contain; image-rendering: high-quality;" alt="Full Resolution Image" />
         </div>
       </div>
     </div>
@@ -1235,19 +1163,17 @@
         return (typeof candidate === "string" ? candidate : "").trim().replace(/\\/g, "/");
       }
 
-      const NEUTRAL_NO_IMAGE_SVG = `data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%20viewBox%3D%220%200%20200%20200%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23f1f5f9%22%2F%3E%3Cpath%20d%3D%22M70%2080h60v50H70z%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%3Ccircle%20cx%3D%2285%22%20cy%3D%2295%22%20r%3D%226%22%20fill%3D%22%23cbd5e1%22%2F%3E%3Cpath%20d%3D%22M75%20125l20-25%2015%2015%2015-20%2010%2030z%22%20fill%3D%22%23cbd5e1%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%22155%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20font-family%3D%22system-ui%2C%20-apple-system%2C%20sans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22500%22%20fill%3D%22%2394a3b8%22%3ENo%20Image%20Available%3C%2Ftext%3E%3C%2Fsvg%3E`;
-
       function formatFullImageUrl(rawPath) {
-        if (!rawPath) return NEUTRAL_NO_IMAGE_SVG;
+        if (!rawPath) return "img/MOISTURING_LOTION.png";
         let cleaned = rawPath.trim().replace(/\\/g, "/");
-        if (!cleaned) return NEUTRAL_NO_IMAGE_SVG;
+        if (!cleaned) return "img/MOISTURING_LOTION.png";
 
         if (cleaned.startsWith("http://") || cleaned.startsWith("https://") || cleaned.startsWith("data:")) {
           return cleaned;
         }
 
         if (!cleaned.includes("/") && !cleaned.startsWith("img/")) {
-          cleaned = "images/products/" + cleaned;
+          cleaned = "uploads/products/" + cleaned;
         }
 
         const leadingSlash = cleaned.startsWith("/") ? "" : "/";
@@ -1334,18 +1260,17 @@
           const isPrimary = Boolean(img.isPrimary);
 
           const primaryBadgeOrBtn = isPrimary
-            ? `<span class="preview-primary-badge badge bg-warning text-dark" title="Primary Image"><i class="fas fa-star me-1"></i>Primary</span>`
-            : `<button type="button" class="preview-primary-badge btn btn-sm btn-light border p-0 px-1 set-primary-img" data-id="${img.id}" data-index="${idx}" style="line-height: 1.2; background: rgba(255, 255, 255, 0.95);" title="Set as Primary Image"><i class="far fa-star text-warning me-1"></i>Set Primary</button>`;
+            ? `<span class="badge bg-warning text-dark position-absolute bottom-0 start-0 m-1" style="z-index: 10; font-size: 0.65rem; padding: 2px 5px;" title="Primary Image"><i class="fas fa-star me-1"></i>Primary</span>`
+            : `<button type="button" class="btn btn-sm btn-light border position-absolute bottom-0 start-0 m-1 p-0 px-1 set-primary-img" data-id="${img.id}" data-index="${idx}" style="line-height: 1.2; z-index: 10; font-size: 0.65rem; background: rgba(255, 255, 255, 0.9);" title="Set as Primary Image"><i class="far fa-star text-warning me-1"></i>Set Primary</button>`;
 
           const thumbHtml = `
-              <div class="image-preview-item ${isPrimary ? "primary-card" : ""}" draggable="true" data-type="existing" data-index="${idx}" data-id="${img.id}" title="Drag to reorder or click to zoom">
-                <img src="${fullImgUrl}" class="preview-img-element" onerror="this.onerror=null;this.src='${NEUTRAL_NO_IMAGE_SVG}'" alt="Product Image">
-                <span class="preview-order-pill badge bg-dark text-white">#${currentOrderNum++}</span>
+              <div class="image-preview-item position-relative border rounded overflow-hidden ${isPrimary ? "border-warning shadow-sm" : ""}" draggable="true" data-type="existing" data-index="${idx}" data-id="${img.id}" title="Drag to reorder">
+                <img src="${fullImgUrl}" class="w-100 h-100" style="object-fit: cover; pointer-events: none;" onerror="this.onerror=null;this.src='img/MOISTURING_LOTION.png'">
+                <span class="image-order-badge badge bg-dark text-white position-absolute top-0 start-0 m-1" style="font-size: 0.6rem; opacity: 0.85;">#${currentOrderNum++}</span>
                 
-                <div class="preview-actions-wrapper">
-                  <button type="button" class="preview-btn view-btn zoom-preview-img" data-src="${fullImgUrl}" title="Zoom / Inspect Image"><i class="fas fa-search-plus"></i></button>
-                  <button type="button" class="preview-btn replace-btn replace-existing-img" data-id="${img.id}" data-index="${idx}" title="Change/Replace Saved Image"><i class="fas fa-sync-alt"></i></button>
-                  <button type="button" class="preview-btn delete-btn remove-existing-img" data-id="${img.id}" data-index="${idx}" title="Remove Saved Image"><i class="fas fa-trash-alt"></i></button>
+                <div class="position-absolute top-0 end-0 m-1 d-flex gap-1" style="z-index: 10;">
+                  <button type="button" class="btn btn-sm btn-light text-primary p-0 replace-existing-img" data-id="${img.id}" data-index="${idx}" style="line-height: 1; font-size: 0.75rem; background: rgba(255, 255, 255, 0.95); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Change/Replace Saved Image"><i class="fas fa-sync-alt"></i></button>
+                  <button type="button" class="btn btn-sm btn-light text-danger p-0 remove-existing-img" data-id="${img.id}" data-index="${idx}" style="line-height: 1; font-size: 0.75rem; background: rgba(255, 255, 255, 0.95); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Remove Saved Image"><i class="fas fa-trash-alt"></i></button>
                 </div>
 
                 ${primaryBadgeOrBtn}
@@ -1358,14 +1283,13 @@
         selectedImages.forEach((file, idx) => {
           const url = URL.createObjectURL(file);
           const thumbHtml = `
-              <div class="image-preview-item new-card" draggable="true" data-type="new" data-index="${idx}" title="Drag to reorder or click to zoom">
-                <img src="${url}" class="preview-img-element" onerror="this.onerror=null;this.src='${NEUTRAL_NO_IMAGE_SVG}'" alt="New Image">
-                <span class="preview-order-pill badge bg-info text-white">#${currentOrderNum++} (New)</span>
+              <div class="image-preview-item position-relative border rounded overflow-hidden" draggable="true" data-type="new" data-index="${idx}" title="Drag to reorder">
+                <img src="${url}" class="w-100 h-100" style="object-fit: cover; pointer-events: none;">
+                <span class="image-order-badge badge bg-info text-white position-absolute top-0 start-0 m-1" style="font-size: 0.6rem;">#${currentOrderNum++} (New)</span>
                 
-                <div class="preview-actions-wrapper">
-                  <button type="button" class="preview-btn view-btn zoom-preview-img" data-src="${url}" title="Zoom / Inspect Image"><i class="fas fa-search-plus"></i></button>
-                  <button type="button" class="preview-btn replace-btn replace-new-img" data-index="${idx}" title="Change/Replace Image"><i class="fas fa-sync-alt"></i></button>
-                  <button type="button" class="preview-btn delete-btn remove-new-img" data-index="${idx}" title="Remove Image"><i class="fas fa-times-circle"></i></button>
+                <div class="position-absolute top-0 end-0 m-1 d-flex gap-1" style="z-index: 10;">
+                  <button type="button" class="btn btn-sm btn-light text-primary p-0 replace-new-img" data-index="${idx}" style="line-height: 1; font-size: 0.75rem; background: rgba(255, 255, 255, 0.95); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Change/Replace Image"><i class="fas fa-sync-alt"></i></button>
+                  <button type="button" class="btn btn-sm btn-light text-danger p-0 remove-new-img" data-index="${idx}" style="line-height: 1; font-size: 0.75rem; background: rgba(255, 255, 255, 0.95); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Remove Image"><i class="fas fa-times-circle"></i></button>
                 </div>
               </div>
             `;
@@ -1398,28 +1322,6 @@
           toggleImageLoading(false);
         }
       }
-
-      // --- Image Zoom / Inspection Handlers ---
-      $(document).on("click", ".zoom-preview-img", function (e) {
-        e.stopPropagation();
-        const src = $(this).data("src");
-        if (src && !src.startsWith("data:image/svg+xml")) {
-          $("#imageZoomTarget").attr("src", src);
-          const zoomModal = new bootstrap.Modal(document.getElementById("imageZoomModal"));
-          zoomModal.show();
-        }
-      });
-
-      $(document).on("click", ".image-preview-item", function (e) {
-        if ($(e.target).closest("button").length > 0) return;
-        const imgEl = $(this).find("img");
-        const src = imgEl.attr("src");
-        if (src && !src.startsWith("data:image/svg+xml")) {
-          $("#imageZoomTarget").attr("src", src);
-          const zoomModal = new bootstrap.Modal(document.getElementById("imageZoomModal"));
-          zoomModal.show();
-        }
-      });
 
       // --- Drag & Drop Reordering Event Listeners for Image Cards ---
       $(document).on("dragstart", ".image-preview-item", function (e) {
@@ -1802,7 +1704,7 @@
               rawImg = typeof firstExtra === "string" ? firstExtra : (firstExtra?.imageUrl || firstExtra?.ImageUrl || "");
             }
           }
-          const productCardImgUrl = formatFullImageUrl(rawImg);
+          const productCardImgUrl = rawImg ? (rawImg.startsWith("http") ? rawImg : BASE_URL + rawImg) : "img/product-default.jpg";
 
           const row = `
                 <div class="col-md-6 mb-3">
@@ -1832,7 +1734,7 @@
                         </div>
                       </div>
                       <div class="d-flex align-items-center mt-2 mb-3" style="min-width: 0;">
-                        <img src="${productCardImgUrl}" class="rounded me-3 border flex-shrink-0" style="width: 60px; height: 60px; object-fit: contain; background: #fff;" onerror="this.onerror=null;this.src='${NEUTRAL_NO_IMAGE_SVG}'">
+                        <img src="${productCardImgUrl}" class="rounded me-3 border flex-shrink-0" style="width: 60px; height: 60px; object-fit: cover;" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'">
                         <div style="min-width: 0; flex: 1;">
                           <p class="small mb-1 text-dark text-truncate"><strong>Category:</strong> <span class="badge bg-light text-dark border text-truncate" style="max-width: 140px; display: inline-block; vertical-align: bottom;" title="${p.category}">${p.category}</span></p>
                           <p class="small mb-0 text-dark text-truncate" style="word-break: break-all;" title="${p.sku}"><strong>SKU:</strong> ${p.sku}</p>
@@ -2122,7 +2024,7 @@
                     sku: parsed.sku ?? parsed.Sku ?? "",
                   };
                 }
-              } catch (e) { }
+              } catch (e) {}
               return { size: item, name: item, price: p.price, discountPrice: p.discountPrice, stockQuantity: p.stockQuantity };
             }
             const sizeVal = item.size || item.Size || item.name || item.Name || "";
@@ -2504,7 +2406,7 @@
                       <span class="admin-cat-status-badge ${statusClass}">${statusText}</span>
                     </div>
                     <div class="admin-cat-image-wrapper">
-                      <img src="${fullImgUrl}" alt="${item.category}" onerror="this.onerror=null;this.src='${NEUTRAL_NO_IMAGE_SVG}'" />
+                      <img src="${fullImgUrl}" alt="${item.category}" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
                     </div>
                     <div class="admin-cat-info">
                       <h4 class="admin-cat-name">${item.category}</h4>
