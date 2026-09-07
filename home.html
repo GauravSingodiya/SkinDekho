@@ -89,25 +89,41 @@
     </div>
     <div class="container px-0">
       <nav class="navbar navbar-light bg-white navbar-expand-xl">
-        <!-- 🔹 Logo -->
+        <!-- 🔹 Logo / Brand Name -->
         <a href="home.html" class="navbar-brand d-flex align-items-center">
           <!-- Desktop Logo -->
           <img src="img/logo.png" alt="Logo" class="img-fluid d-none d-xl-block" style="height: 65px" />
 
-          <!-- Mobile Logo -->
-          <img src="img/logo.png" alt="Logo" class="img-fluid d-xl-none" style="height: 40px" />
+          <!-- Mobile Brand Title (Instead of Mobile Logo) -->
+          <span id="mobile-brand-title" class="d-inline d-xl-none ms-2 fw-bold text-primary" style="font-family: 'Raleway', sans-serif; font-size: 1.25rem; letter-spacing: -0.5px; vertical-align: middle;">
+            Skin Dekh<i class="fas fa-eye text-primary" style="font-size: 0.95em; margin-left: 1px; vertical-align: middle;"></i>
+          </span>
         </a>
 
-        <!-- 🔹 Toggle Button -->
-        <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
-          data-bs-target="#navbarCollapse">
-          <span class="fa fa-bars text-primary"></span>
-        </button>
+        <!-- 🔹 Mobile Controls (Search + User Icon + Cart Icon + Toggle Button) -->
+        <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto d-xl-none">
+          <button type="button" class="btn p-1 text-primary border-0 shadow-none" data-bs-toggle="modal" data-bs-target="#searchModal" title="Search Products">
+            <i class="fas fa-search fa-lg"></i>
+          </button>
+          <a href="User.html" class="text-primary p-1" title="My Account / Dashboard">
+            <i class="fas fa-user fa-lg"></i>
+          </a>
+          <a href="cart.html" class="position-relative text-primary p-1" title="Cart">
+            <i class="fa fa-shopping-bag fa-lg"></i>
+            <span
+              class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
+              style="top: -5px; left: 15px; height: 18px; min-width: 18px; font-size: 0.7rem; font-weight: 700;">0</span>
+          </a>
+          <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse">
+            <span class="fa fa-bars text-primary"></span>
+          </button>
+        </div>
 
         <!-- 🔹 Navbar Content -->
         <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
           <div class="navbar-nav mx-auto">
-            <a href="home.html" class="nav-item nav-link">Home</a>
+            <a href="home.html" class="nav-item nav-link active">Home</a>
             <div class="nav-item dropdown">
               <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Products</a>
               <div class="dropdown-menu navbar-categories-dropdown m-0 bg-light border-0 rounded-3 shadow-sm">
@@ -122,7 +138,12 @@
             <a href="contact.html" class="nav-item nav-link">Contact</a>
           </div>
 
-          <div class="d-flex m-3 me-0">
+          <div class="d-none d-xl-flex m-3 me-0">
+            <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
+              data-bs-toggle="modal" data-bs-target="#searchModal">
+              <i class="fas fa-search text-primary"></i>
+            </button>
+
             <a href="cart.html" class="position-relative me-4 my-auto">
               <i class="fa fa-shopping-bag fa-2x"></i>
               <span
@@ -130,7 +151,7 @@
                 style="top: -5px; left: 15px; height: 20px; min-width: 20px">0</span>
             </a>
 
-            <a href="#" class="my-auto user-icon-link">
+            <a href="User.html" class="my-auto user-icon-link">
               <i class="fas fa-user fa-2x"></i>
             </a>
           </div>
@@ -139,6 +160,29 @@
     </div>
   </div>
   <!-- Navbar End -->
+
+  <!-- Modal Search Start -->
+  <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+      <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="modal-header border-bottom p-3 align-items-center bg-white">
+          <button type="button" class="btn p-0 me-3 border-0 shadow-none text-dark" data-bs-dismiss="modal" aria-label="Close">
+            <i class="fas fa-arrow-left fs-4"></i>
+          </button>
+          <div class="flex-grow-1 position-relative">
+            <input type="search" id="modalSearchInput" class="form-control rounded-3 py-2 px-3 fs-6 border" placeholder="Search products..." autocomplete="off" />
+          </div>
+        </div>
+        <div class="px-3 py-2 bg-light border-bottom text-secondary small fw-bold d-flex align-items-center gap-2">
+          <i class="fas fa-chart-line text-primary"></i> <span id="searchModalHeaderTitle">OUR EXPERT RECOMMENDATIONS</span>
+        </div>
+        <div class="modal-body p-0" id="searchModalResults" style="max-height: 65vh; overflow-y: auto;">
+          <!-- Live search product items rendered dynamically via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal Search End -->
 
   <!-- Hero Start -->
   <div class="container-fluid py-5 mb-5 hero-header">
@@ -987,6 +1031,24 @@
   <!-- Back to Top -->
   <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top"><i
       class="fa fa-arrow-up"></i></a>
+
+  <!-- Mobile Search Modal -->
+  <div class="modal fade" id="mobileSearchModal" tabindex="-1" aria-labelledby="mobileSearchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-top">
+      <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; margin-top: 75px;">
+        <div class="modal-body p-3">
+          <form action="shop.html" method="GET" class="d-flex align-items-center gap-2">
+            <div class="input-group">
+              <span class="input-group-text bg-light border-0"><i class="fas fa-search text-muted"></i></span>
+              <input type="search" name="search" class="form-control bg-light border-0 py-2" placeholder="Search skincare products..." autofocus required />
+              <button type="submit" class="btn btn-primary px-3 rounded-end fw-semibold">Search</button>
+            </div>
+            <button type="button" class="btn-close ms-1" data-bs-dismiss="modal" aria-label="Close"></button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- JavaScript Libraries -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
