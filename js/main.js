@@ -10,6 +10,8 @@ import { addToCartAPI, getCartAPI } from "./api/cartService.js";
 import { getDashboardStats } from "./api/dashboardService.js";
 import { BASE_URL } from "./api/config.js";
 
+const NEUTRAL_NO_IMAGE_SVG = `data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22200%22%20height%3D%22200%22%20viewBox%3D%220%200%20200%20200%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23f1f5f9%22%2F%3E%3Cpath%20d%3D%22M70%2080h60v50H70z%22%20fill%3D%22none%22%20stroke%3D%22%23cbd5e1%22%20stroke-width%3D%223%22%2F%3E%3Ccircle%20cx%3D%2285%22%20cy%3D%2295%22%20r%3D%226%22%20fill%3D%22%23cbd5e1%22%2F%3E%3Cpath%20d%3D%22M75%20125l20-25%2015%2015%2015-20%2010%2030z%22%20fill%3D%22%23cbd5e1%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%22155%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20font-family%3D%22system-ui%2C%20-apple-system%2C%20sans-serif%22%20font-size%3D%2212%22%20font-weight%3D%22500%22%20fill%3D%22%2394a3b8%22%3ENo%20Image%20Available%3C%2Ftext%3E%3C%2Fsvg%3E`;
+
 // ✅ Custom Toast Function
 export function showToast(message, type = "success", title = "") {
   const toastContainer = $("#toast-container");
@@ -505,7 +507,7 @@ function renderClinikallyProductCard(item, colClass = "") {
 async function loadProducts(category = "") {
   try {
     const res = await getAllProducts(category);
-    const products = res.result || [];
+    let products = res.result || [];
     const $productList = $("#productList");
 
     const isShopPage =
@@ -645,21 +647,21 @@ function renderPagination() {
 
   // Previous
   $pagination.append(`
-    <a href="#" class="rounded ${currentPage === 1 ? "disabled" : ""}" data-page="prev">&laquo;</a>
-  `);
+      < a href = "#" class="rounded ${currentPage === 1 ? "disabled" : ""}" data - page="prev" >& laquo;</a >
+        `);
 
   for (let i = 1; i <= totalPages; i++) {
     $pagination.append(`
-      <a href="#" class="rounded ${i === currentPage ? "active" : ""}" data-page="${i}">
-        ${i}
-      </a>
-    `);
+        < a href = "#" class="rounded ${i === currentPage ? "active" : ""}" data - page="${i}" >
+          ${i}
+      </a >
+      `);
   }
 
   // Next
   $pagination.append(`
-    <a href="#" class="rounded ${currentPage === totalPages ? "disabled" : ""}" data-page="next">&raquo;</a>
-  `);
+      < a href = "#" class="rounded ${currentPage === totalPages ? "disabled" : ""}" data - page="next" >& raquo;</a >
+        `);
 }
 
 $(document).on("click", "#pagination a", function (e) {
@@ -694,7 +696,7 @@ $(document).on("click", "#pagination a", function (e) {
 //       if (!item.name || item.name === "string") return;
 
 //       const whatsappMessage = encodeURIComponent(
-//         `🧴 *${item.name}*\n\n💰 Price: ₹${item.discountPrice ?? item.price}`,
+//         `🧴 * ${ item.name }*\n\n💰 Price: ₹${ item.discountPrice ?? item.price } `,
 //       );
 
 //       const productCard = `
@@ -873,45 +875,133 @@ $(document).on("input", "#modalSearchInput", function () {
   }
 });
 
-$(document).on("keypress", "#modalSearchInput", function (e) {
-  if (e.which === 13) {
-    e.preventDefault();
+/* ==========================================
+   Real-Time Product Search Modal Logic
+   ========================================== */
+let searchModalProductsCache = [];
+
+async function loadSearchModalProducts() {
+  if (searchModalProductsCache.length > 0) return searchModalProductsCache;
+  try {
+    const res = await getAllProducts();
+    const list = res.result || res || [];
+    searchModalProductsCache = Array.isArray(list) ? list : [];
+  } catch (err) {
+    console.error("Failed to load search products", err);
+    searchModalProductsCache = [];
+  }
+  return searchModalProductsCache;
+}
+
+function renderSearchModalResults(products, isSearchResults = false, query = "") {
+  const $container = $("#searchModalResults");
+  const $title = $("#searchModalHeaderTitle");
+  if ($container.length === 0) return;
+
+  if (isSearchResults) {
+    $title.text(products.length > 0 ? `SEARCH RESULTS (${products.length})` : `NO PRODUCTS FOUND FOR "${query.toUpperCase()}"`);
+  } else {
+    $title.text("OUR EXPERT RECOMMENDATIONS");
+  }
+
+  if (!products || products.length === 0) {
+    $container.html(`
+      <div class="text-center py-5 text-muted">
+        <i class="fas fa-search fa-3x mb-3 text-secondary opacity-50"></i>
+        <p class="mb-0 fw-semibold">No matching products found.</p>
+        <small class="text-muted">Try searching with a keyword like "cream", "lotion", or "serum".</small>
+      </div>
+    `);
+    return;
+  }
+
+  let html = "";
+  products.forEach((item) => {
+    if (!item.name || item.name === "string") return;
+
+    const relativeImgUrl = item.imageUrl || item.image || "";
+    const fullImgUrl = relativeImgUrl.startsWith("http")
+      ? relativeImgUrl
+      : relativeImgUrl
+        ? BASE_URL + (relativeImgUrl.startsWith("/") ? "" : "/") + relativeImgUrl
+        : NEUTRAL_NO_IMAGE_SVG;
+
+    const price = Number(item.discountPrice ?? item.price ?? 0);
+    const originalPrice = Number(item.price ?? 0);
+    const hasDiscount = originalPrice > price && price > 0;
+    const discountPercent = hasDiscount
+      ? Math.round(((originalPrice - price) / originalPrice) * 100)
+      : 0;
+
+    const ratingVal = item.rating || item.stars || 4.7;
+
+    html += `
+      <a href="product-detail.html?id=${item.id || item._id}" class="search-product-item d-flex align-items-center p-3 border-bottom text-dark">
+        <div class="position-relative me-3 flex-shrink-0" style="width: 75px; height: 75px;">
+          <img src="${fullImgUrl}" class="product-thumb w-100 h-100" alt="${item.name}" onerror="this.onerror=null;this.src='${NEUTRAL_NO_IMAGE_SVG}'" />
+          ${discountPercent > 0 ? `<span class="position-absolute top-0 start-0 save-badge">SAVE ${discountPercent}%</span>` : ""}
+        </div>
+        <div class="flex-grow-1 min-w-0">
+          <h6 class="mb-1 fw-bold text-dark text-truncate fs-6" style="line-height: 1.3;">${item.name}</h6>
+          <div class="d-flex align-items-center gap-1 mb-1 text-warning" style="font-size: 0.8rem;">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star-half-alt"></i>
+            <span class="text-muted ms-1 font-weight-bold" style="font-size: 0.78rem;">${ratingVal}</span>
+          </div>
+          <div class="d-flex align-items-center gap-2">
+            <span class="fw-bold text-primary fs-6">₹${price}</span>
+            ${hasDiscount ? `<span class="text-muted text-decoration-line-through small">₹${originalPrice}</span>` : ""}
+          </div>
+        </div>
+        <div class="ms-2 text-muted">
+          <i class="fas fa-chevron-right fs-6"></i>
+        </div>
+      </a>
+    `;
+  });
+
+  $container.html(html);
+}
+
+$(document).ready(function () {
+  const searchModalEl = document.getElementById("searchModal");
+  if (searchModalEl) {
+    searchModalEl.addEventListener("shown.bs.modal", async function () {
+      const $input = $("#modalSearchInput");
+      $input.focus();
+      const allProds = await loadSearchModalProducts();
+      const currentQuery = $input.val().trim();
+      if (currentQuery) {
+        const filtered = allProds.filter((p) =>
+          (p.name || "").toLowerCase().includes(currentQuery.toLowerCase()) ||
+          (p.category || "").toLowerCase().includes(currentQuery.toLowerCase())
+        );
+        renderSearchModalResults(filtered, true, currentQuery);
+      } else {
+        renderSearchModalResults(allProds.slice(0, 8), false);
+      }
+    });
+  }
+
+  $(document).on("input", "#modalSearchInput", async function () {
     const query = $(this).val().trim();
-    const isShopPage =
-      $("body").hasClass("shop-page") ||
-      window.location.pathname.includes("shop.html");
-    if (isShopPage) {
-      $("#shopSearchInput").val(query);
-      handleSearch(query);
-      const searchModal = bootstrap.Modal.getInstance($("#searchModal")[0]);
-      if (searchModal) searchModal.hide();
-    } else if (query) {
-      window.location.href = `shop.html?search=${encodeURIComponent(query)}`;
+    const allProds = await loadSearchModalProducts();
+    if (!query) {
+      renderSearchModalResults(allProds.slice(0, 8), false);
+      return;
     }
-  }
+    const filtered = allProds.filter((p) =>
+      (p.name || "").toLowerCase().includes(query.toLowerCase()) ||
+      (p.category || "").toLowerCase().includes(query.toLowerCase()) ||
+      (p.description || "").toLowerCase().includes(query.toLowerCase())
+    );
+    renderSearchModalResults(filtered, true, query);
+  });
 });
 
-$(document).on("click", "#search-icon-1", function () {
-  const modalVal = $("#modalSearchInput").val()?.trim();
-  const shopVal = $("#shopSearchInput").val()?.trim();
-  const query = modalVal || shopVal || "";
-  const isShopPage =
-    $("body").hasClass("shop-page") ||
-    window.location.pathname.includes("shop.html");
-
-  if (isShopPage) {
-    if (modalVal) {
-      $("#shopSearchInput").val(modalVal);
-      handleSearch(modalVal);
-      const searchModal = bootstrap.Modal.getInstance($("#searchModal")[0]);
-      if (searchModal) searchModal.hide();
-    } else {
-      handleSearch(query);
-    }
-  } else if (query) {
-    window.location.href = `shop.html?search=${encodeURIComponent(query)}`;
-  }
-});
 
 // ✅ Price slider — works with all active filters combined
 $(document).on("input", "#rangeInput", function () {
@@ -1084,14 +1174,14 @@ async function loadHomeCategories() {
       const fullImgUrl = relativeImgUrl.startsWith("http")
         ? relativeImgUrl
         : relativeImgUrl
-          ? BASE_URL + relativeImgUrl
-          : "img/product-default.jpg"; // fallback
+          ? BASE_URL + (relativeImgUrl.startsWith("/") ? "" : "/") + relativeImgUrl
+          : NEUTRAL_NO_IMAGE_SVG; // fallback
 
       const cardHtml = `
         <div class="category-card" onclick="window.location.href='shop.html?category=${encodeURIComponent(item.category)}'">
           <div class="category-card-img-wrapper" style="background-color: ${bgColor}">
             <div class="category-card-img-inner">
-              <img src="${fullImgUrl}" alt="${item.category}" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
+              <img src="${fullImgUrl}" alt="${item.category}" onerror="this.onerror=null;this.src='${NEUTRAL_NO_IMAGE_SVG}'" />
             </div>
           </div>
           <a href="shop.html?category=${encodeURIComponent(item.category)}" class="category-card-title">${item.category}</a>
@@ -1104,23 +1194,13 @@ async function loadHomeCategories() {
     $(document)
       .off("click", ".category-next-btn")
       .on("click", ".category-next-btn", function () {
-        const $wrapper = $(".category-carousel-wrapper");
-        const scrollAmount = $wrapper.width() * 0.75;
-        $wrapper.animate(
-          { scrollLeft: $wrapper.scrollLeft() + scrollAmount },
-          400,
-        );
+        smoothScrollCarousel($(".category-carousel-wrapper"), "next");
       });
 
     $(document)
       .off("click", ".category-prev-btn")
       .on("click", ".category-prev-btn", function () {
-        const $wrapper = $(".category-carousel-wrapper");
-        const scrollAmount = $wrapper.width() * 0.75;
-        $wrapper.animate(
-          { scrollLeft: $wrapper.scrollLeft() - scrollAmount },
-          400,
-        );
+        smoothScrollCarousel($(".category-carousel-wrapper"), "prev");
       });
   } catch (err) {
     console.error("Failed to load home page categories", err);
@@ -1128,6 +1208,23 @@ async function loadHomeCategories() {
       '<div class="col-12 text-center py-4 text-danger">Failed to load categories.</div>',
     );
   }
+}
+
+function smoothScrollCarousel($wrapper, direction) {
+  if (!$wrapper || $wrapper.length === 0) return;
+  const el = $wrapper[0];
+  const card = $wrapper.find(".latest-product-card, .featured-product-card, .category-card, .fruite-item").first();
+  const cardWidth = card.length > 0 ? (card.outerWidth(true) || 280) : 280;
+  const step = window.innerWidth < 768 ? cardWidth * 1 : cardWidth * 2;
+
+  const targetScroll = direction === "next"
+    ? el.scrollLeft + step
+    : el.scrollLeft - step;
+
+  el.scrollTo({
+    left: targetScroll,
+    behavior: "smooth"
+  });
 }
 
 async function loadLatestProducts() {
@@ -1166,7 +1263,6 @@ $(document).on("click", "#categoryTabs a", function (e) {
     window.location.pathname.includes("shop.html");
 
   if (!isShopPage) {
-    // On home page, allow the browser to follow the href link
     return;
   }
 
@@ -1177,11 +1273,9 @@ $(document).on("click", "#categoryTabs a", function (e) {
 
   const category = $(this).data("category") || "";
 
-  // ✅ Update central filter state & reset price slider
   activeFilters.category = category;
-  activeFilters.priceUnder = ""; // reset price filter on category change
+  activeFilters.priceUnder = "";
 
-  // ✅ Reset slider UI to max (show all)
   const $slider = $("#rangeInput");
   const maxVal = parseInt($slider.attr("max") || "500", 10);
   $slider.val(maxVal);
@@ -1217,23 +1311,13 @@ async function loadHomeFeaturedProducts() {
     $(document)
       .off("click", ".featured-next-btn")
       .on("click", ".featured-next-btn", function () {
-        const $wrapper = $(".featured-carousel-wrapper");
-        const scrollAmount = $wrapper.width() * 0.75;
-        $wrapper.animate(
-          { scrollLeft: $wrapper.scrollLeft() + scrollAmount },
-          400,
-        );
+        smoothScrollCarousel($(".featured-carousel-wrapper"), "next");
       });
 
     $(document)
       .off("click", ".featured-prev-btn")
       .on("click", ".featured-prev-btn", function () {
-        const $wrapper = $(".featured-carousel-wrapper");
-        const scrollAmount = $wrapper.width() * 0.75;
-        $wrapper.animate(
-          { scrollLeft: $wrapper.scrollLeft() - scrollAmount },
-          400,
-        );
+        smoothScrollCarousel($(".featured-carousel-wrapper"), "prev");
       });
   } catch (err) {
     console.error("Failed to load home page featured products", err);
@@ -1285,11 +1369,10 @@ function renderFeaturedProducts() {
 
           <div class="d-flex mb-2">
             <h5 class="fw-bold me-2">₹${item.discountPrice ?? item.price}</h5>
-            ${
-              item.discountPrice
-                ? `<h5 class="text-danger text-decoration-line-through">₹${item.price}</h5>`
-                : ""
-            }
+            ${item.discountPrice
+        ? `<h5 class="text-danger text-decoration-line-through">₹${item.price}</h5>`
+        : ""
+      }
           </div>
         </div>
       </div>
@@ -1531,9 +1614,41 @@ $(document).on("submit", "#contactForm", async function (e) {
 });
 
 /* ==========================
+   Add Categories Nav Logic
+========================== */
+export async function populateNavCategories() {
+  const $containers = $(".navbar-categories-dropdown, #mobileNavCategories");
+  if ($containers.length === 0) return;
+
+  try {
+    const res = await getAllCategories();
+    const categories = res.result || res || [];
+    if (!Array.isArray(categories) || categories.length === 0) return;
+
+    $containers.each(function () {
+      const $dropdown = $(this);
+      $dropdown.empty();
+      $dropdown.append('<a href="shop.html" class="dropdown-item fw-bold text-primary py-2 border-bottom">All Products</a>');
+      categories.forEach((catObj) => {
+        const catName = typeof catObj === "string" ? catObj : (catObj.category || catObj.Category || "");
+        if (catName && catName !== "string") {
+          $dropdown.append(
+            `<a href="shop.html?category=${encodeURIComponent(catName)}" class="dropdown-item py-2">${catName}</a>`
+          );
+        }
+      });
+    });
+  } catch (err) {
+    console.error("Failed to populate nav categories", err);
+  }
+}
+
+/* ==========================
    Active Navbar Link Logic
 ========================== */
 $(document).ready(function () {
+  populateNavCategories();
+
   const currentLocation =
     window.location.pathname.split("/").pop() || "home.html";
   $(".navbar-nav .nav-link").each(function () {
