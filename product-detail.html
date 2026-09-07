@@ -40,7 +40,7 @@
   <link href="css/bootstrap.min.css" rel="stylesheet" />
 
   <!-- Template Stylesheet -->
-  <link href="css/style.css" rel="stylesheet" />
+  <link href="css/style.css?v=1.1" rel="stylesheet" />
   <style>
     /* Premium design adjustments */
     .product-img-card {
@@ -135,11 +135,14 @@
     }
 
     .delivery-banner {
-      color: #ff3b30;
-      font-weight: 700;
-      font-size: 1rem;
-      margin-top: 10px;
-      margin-bottom: 20px;
+      color: #15803d;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-top: 8px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     .features-list {
@@ -484,6 +487,132 @@
       align-items: center !important;
       justify-content: center !important;
     }
+
+    /* 📱 Mobile Responsiveness for Product Details */
+    @media (max-width: 767.98px) {
+      .content-header-margin {
+        margin-top: 75px !important;
+      }
+
+      .container-fluid.py-5 {
+        padding-top: 0.5rem !important;
+        padding-bottom: 1.5rem !important;
+      }
+
+      .container-fluid.py-5 > .container.py-5 {
+        padding-top: 0.5rem !important;
+        padding-bottom: 1rem !important;
+      }
+
+      .product-img-card {
+        border-radius: 12px !important;
+      }
+
+      #product-img {
+        max-height: 290px !important;
+      }
+
+      .product-title {
+        font-size: 1.35rem !important;
+        line-height: 1.3 !important;
+        font-weight: 700 !important;
+        margin-bottom: 6px !important;
+      }
+
+      .product-meta__price-list-container {
+        margin-bottom: 8px !important;
+      }
+
+      .new-price {
+        font-size: 1.4rem !important;
+        font-weight: 700 !important;
+      }
+
+      .old-price-crossed {
+        font-size: 1rem !important;
+      }
+
+      .product__policies {
+        font-size: 0.75rem !important;
+      }
+
+      .delivery-banner {
+        font-size: 0.82rem !important;
+        margin-top: 4px !important;
+        margin-bottom: 12px !important;
+      }
+
+      .whatsapp-order-btn {
+        padding: 10px 16px !important;
+        font-size: 0.92rem !important;
+        border-radius: 30px !important;
+        margin-bottom: 12px !important;
+      }
+
+      .stock-badge {
+        font-size: 0.82rem !important;
+        margin-bottom: 12px !important;
+      }
+
+      .actions-row {
+        display: grid !important;
+        grid-template-columns: 115px 1fr !important;
+        gap: 10px !important;
+        margin-bottom: 16px !important;
+      }
+
+      .custom-qty-pill {
+        min-width: unset !important;
+        width: 100% !important;
+        height: 42px !important;
+        padding: 2px 6px !important;
+      }
+
+      .custom-qty-pill button {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 0.9rem !important;
+      }
+
+      .custom-qty-pill input {
+        width: 32px !important;
+        font-size: 0.95rem !important;
+      }
+
+      .action-pill-btn {
+        padding: 8px 14px !important;
+        font-size: 0.85rem !important;
+        height: 42px !important;
+        width: 100% !important;
+        white-space: nowrap !important;
+      }
+
+      .buy-now-btn {
+        grid-column: 1 / -1 !important;
+        width: 100% !important;
+        height: 42px !important;
+      }
+
+      .logos-wrappper {
+        padding: 10px 6px !important;
+        margin-top: 14px !important;
+        margin-bottom: 16px !important;
+        gap: 6px !important;
+      }
+
+      .logo-box img {
+        height: 28px !important;
+        margin-bottom: 4px !important;
+      }
+
+      .logo-box b {
+        font-size: 0.7rem !important;
+      }
+
+      .floating-widget-container {
+        display: none !important;
+      }
+    }
   </style>
   <link rel="icon" href="img/logo.png" type="image/png" />
 </head>
@@ -658,7 +787,7 @@
           </div>
 
           <div class="delivery-banner">
-            Estimated Order delivered within 2 days
+            <i class="fas fa-shipping-fast text-success"></i> Estimated Order delivered within 2 days
           </div>
 
           <!-- ✅ Variants / Size Selector -->
@@ -1113,7 +1242,7 @@
   <!-- Copyright End -->
 
   <!-- Floating Widgets -->
-  <div class="floating-widget-container">
+  <div class="floating-widget-container d-none d-lg-flex">
     <a href="cart.html" class="floating-circle-btn floating-cart">
       <i class="fa fa-shopping-bag fa-lg"></i>
       <span id="floating-cart-count" class="floating-cart-badge">0</span>
