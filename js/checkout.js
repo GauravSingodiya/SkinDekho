@@ -498,13 +498,58 @@ $(document).ready(function () {
       try {
         const productsRes = await getAllProducts();
         const products = productsRes.result || productsRes || [];
-        const productPriceMap = {};
-        products.forEach(p => {
-          productPriceMap[p.id] = p.discountPrice !== null && p.discountPrice !== undefined ? p.discountPrice : p.price;
-        });
-        cartItems.forEach(item => {
-          if (productPriceMap[item.productId] !== undefined) {
-            item.productPrice = productPriceMap[item.productId];
+        const cartVariants = JSON.parse(localStorage.getItem("cartVariants") || "{}");
+
+        cartItems.forEach((item) => {
+          const pId = item.productId || item.id;
+          const savedVar = cartVariants[pId] || null;
+
+          let variantSize = item.size || item.Size || item.variant || item.variantName || (savedVar ? savedVar.size : null);
+          let effectivePrice = item.variantPrice || (savedVar ? savedVar.price : null);
+
+          const productObj = products.find((p) => p.id == pId);
+          if (productObj) {
+            const rawVars = productObj.variants || productObj.Variants || productObj.variantsJson || productObj.VariantsJson || [];
+            let pVariants = [];
+            if (Array.isArray(rawVars)) {
+              pVariants = rawVars.map((v) => {
+                if (typeof v === "string") {
+                  try { return JSON.parse(v); } catch (e) { return { size: v, name: v, price: productObj.price, discountPrice: productObj.discountPrice }; }
+                }
+                return v;
+              });
+            } else if (typeof rawVars === "string" && rawVars.trim()) {
+              try { pVariants = JSON.parse(rawVars); } catch (e) {}
+            }
+
+            if (pVariants.length > 0) {
+              const itmVarId = item.variantId || item.VariantId || item.productVariantId || item.ProductVariantId || (savedVar ? savedVar.variantId : null);
+              const itmSizeNorm = (variantSize || "").toString().trim().toLowerCase();
+
+              const matchedVar = pVariants.find((pv) => {
+                const pvId = pv.id ?? pv.Id;
+                const pvSizeNorm = (pv.size || pv.Size || pv.name || pv.Name || "").toString().trim().toLowerCase();
+                return (itmVarId && pvId == itmVarId) || (itmSizeNorm && pvSizeNorm && (pvSizeNorm === itmSizeNorm || pvSizeNorm.includes(itmSizeNorm) || itmSizeNorm.includes(pvSizeNorm)));
+              }) || (savedVar ? null : (pVariants.length === 1 ? pVariants[0] : null));
+
+              if (matchedVar) {
+                variantSize = matchedVar.size || matchedVar.Size || matchedVar.name || matchedVar.Name;
+                const regP = matchedVar.price ?? matchedVar.Price;
+                const discP = matchedVar.discountPrice ?? matchedVar.DiscountPrice;
+                effectivePrice = (discP !== null && discP !== "" && discP !== undefined && (!regP || parseFloat(discP) < parseFloat(regP)))
+                  ? parseFloat(discP)
+                  : parseFloat(regP);
+              }
+            }
+          }
+
+          if (effectivePrice !== null && effectivePrice !== undefined && !isNaN(parseFloat(effectivePrice))) {
+            item.productPrice = parseFloat(effectivePrice);
+          } else if (productObj) {
+            item.productPrice = (productObj.discountPrice !== null && productObj.discountPrice !== undefined) ? productObj.discountPrice : productObj.price;
+          }
+          if (variantSize) {
+            item.variantSize = variantSize;
           }
         });
       } catch (e) {
@@ -561,6 +606,9 @@ $(document).ready(function () {
               : "img/product-default.jpg";
 
           const itemId = item.id || item.cartId || item.productId;
+          const vBadge = item.variantSize
+            ? `<span class="badge bg-light text-primary border border-primary-subtle px-2 py-1 mt-1 d-inline-block" style="font-size: 0.75rem; border-radius: 6px;">Size: ${item.variantSize}</span>`
+            : "";
 
           const tr = `
             <tr>
@@ -574,7 +622,10 @@ $(document).ready(function () {
                   />
                 </div>
               </th>
-              <td class="py-4 align-middle">${item.productName || "Product Name"}</td>
+              <td class="py-4 align-middle">
+                <div>${item.productName || "Product Name"}</div>
+                ${vBadge}
+              </td>
               <td class="py-4 align-middle">₹${price.toFixed(2)}</td>
               <td class="py-4 align-middle">${quantity}</td>
               <td class="py-4 align-middle fw-bold">₹${total.toFixed(2)}</td>
@@ -591,18 +642,9 @@ $(document).ready(function () {
 
       // Add Subtotal Row
       $tableBody.append(`
-        <tr>
-          <th scope="row"></th>
-          <td class="py-2"></td>
-          <td class="py-2"></td>
-          <td class="py-2">
-            <p class="mb-0 text-dark fw-bold">Subtotal</p>
-          </td>
-          <td class="py-2 text-end" colspan="2">
-            <div>
-              <p class="mb-0 text-dark fw-bold">₹${subtotal.toFixed(2)}</p>
-            </div>
-          </td>
+        <tr class="border-top">
+          <td colspan="3" class="py-2 text-dark fw-bold">Subtotal</td>
+          <td colspan="3" class="py-2 text-end text-dark fw-bold">₹${subtotal.toFixed(2)}</td>
         </tr>
       `);
 
@@ -612,17 +654,9 @@ $(document).ready(function () {
       // Add Shipping Options Row
       $tableBody.append(`
         <tr>
-          <th scope="row"></th>
-          <td class="py-2">
-            <p class="mb-0 text-dark">Shipping</p>
-          </td>
+          <td colspan="2" class="py-2 text-dark">Shipping</td>
           <td colspan="4" class="py-2 text-end">
-            <div class="form-check d-inline-block text-start me-0">
-              <input type="checkbox" class="form-check-input bg-primary border-0 shipping-opt" id="Shipping-2" name="Shipping-1" value="${shippingCharge}" checked disabled />
-              <label class="form-check-label fw-semibold" for="Shipping-2">
-                ${shippingCharge > 0 ? `Flat rate: ₹50.00` : `Free Shipping (Order > ₹500)`}
-              </label>
-            </div>
+            <span class="fw-semibold text-dark">${shippingCharge > 0 ? "Flat rate: ₹50.00" : "Free Shipping"}</span>
           </td>
         </tr>
       `);
@@ -630,18 +664,9 @@ $(document).ready(function () {
       // Add Final Total Row
       const finalTotalWithShipping = subtotal + shippingCharge;
       $tableBody.append(`
-        <tr>
-          <th scope="row"></th>
-          <td class="py-2">
-            <p class="mb-0 text-dark text-uppercase fw-bold">TOTAL</p>
-          </td>
-          <td class="py-2"></td>
-          <td class="py-2"></td>
-          <td class="py-2 text-end" colspan="2">
-            <div>
-              <p class="mb-0 text-dark fw-bold" id="finalTotal">₹${finalTotalWithShipping.toFixed(2)}</p>
-            </div>
-          </td>
+        <tr class="border-top border-2">
+          <td colspan="3" class="py-2 text-dark text-uppercase fw-bold" style="font-size: 1.05rem;">TOTAL</td>
+          <td colspan="3" class="py-2 text-end text-dark fw-bold" style="font-size: 1.05rem;" id="finalTotal">₹${finalTotalWithShipping.toFixed(2)}</td>
         </tr>
       `);
     } catch (err) {
@@ -684,13 +709,54 @@ $(document).ready(function () {
       try {
         const productsRes = await getAllProducts();
         const products = productsRes.result || productsRes || [];
-        const productPriceMap = {};
-        products.forEach(p => {
-          productPriceMap[p.id] = p.discountPrice !== null && p.discountPrice !== undefined ? p.discountPrice : p.price;
-        });
-        cartItems.forEach(item => {
-          if (productPriceMap[item.productId] !== undefined) {
-            item.productPrice = productPriceMap[item.productId];
+        const cartVariants = JSON.parse(localStorage.getItem("cartVariants") || "{}");
+
+        cartItems.forEach((item) => {
+          const pId = item.productId || item.id;
+          const savedVar = cartVariants[pId] || null;
+
+          let variantSize = item.size || item.Size || item.variant || item.variantName || (savedVar ? savedVar.size : null);
+          let effectivePrice = item.variantPrice || (savedVar ? savedVar.price : null);
+
+          const productObj = products.find((p) => p.id == pId);
+          if (productObj) {
+            const rawVars = productObj.variants || productObj.Variants || productObj.variantsJson || productObj.VariantsJson || [];
+            let pVariants = [];
+            if (Array.isArray(rawVars)) {
+              pVariants = rawVars.map((v) => {
+                if (typeof v === "string") {
+                  try { return JSON.parse(v); } catch (e) { return { size: v, name: v, price: productObj.price, discountPrice: productObj.discountPrice }; }
+                }
+                return v;
+              });
+            } else if (typeof rawVars === "string" && rawVars.trim()) {
+              try { pVariants = JSON.parse(rawVars); } catch (e) {}
+            }
+
+            if (pVariants.length > 0) {
+              const itmVarId = item.variantId || item.VariantId || item.productVariantId || item.ProductVariantId || (savedVar ? savedVar.variantId : null);
+              const itmSizeNorm = (variantSize || "").toString().trim().toLowerCase();
+
+              const matchedVar = pVariants.find((pv) => {
+                const pvId = pv.id ?? pv.Id;
+                const pvSizeNorm = (pv.size || pv.Size || pv.name || pv.Name || "").toString().trim().toLowerCase();
+                return (itmVarId && pvId == itmVarId) || (itmSizeNorm && pvSizeNorm && (pvSizeNorm === itmSizeNorm || pvSizeNorm.includes(itmSizeNorm) || itmSizeNorm.includes(pvSizeNorm)));
+              }) || (savedVar ? null : (pVariants.length === 1 ? pVariants[0] : null));
+
+              if (matchedVar) {
+                const regP = matchedVar.price ?? matchedVar.Price;
+                const discP = matchedVar.discountPrice ?? matchedVar.DiscountPrice;
+                effectivePrice = (discP !== null && discP !== "" && discP !== undefined && (!regP || parseFloat(discP) < parseFloat(regP)))
+                  ? parseFloat(discP)
+                  : parseFloat(regP);
+              }
+            }
+          }
+
+          if (effectivePrice !== null && effectivePrice !== undefined && !isNaN(parseFloat(effectivePrice))) {
+            item.productPrice = parseFloat(effectivePrice);
+          } else if (productObj) {
+            item.productPrice = (productObj.discountPrice !== null && productObj.discountPrice !== undefined) ? productObj.discountPrice : productObj.price;
           }
         });
       } catch (e) { }
