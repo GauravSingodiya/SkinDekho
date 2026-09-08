@@ -781,6 +781,28 @@ function safeArray(res) {
   return [];
 }
 
+function smoothScroll($wrapper, dir = 1) {
+  if (!$wrapper || !$wrapper.length) return;
+  const containerEl = $wrapper[0];
+  const $firstCard = $wrapper.children().first();
+  const cardWidth = $firstCard.length ? $firstCard.outerWidth(true) : 280;
+  const distance = Math.max(cardWidth * (window.innerWidth < 576 ? 1 : 2), 240) * dir;
+
+  if (typeof containerEl.scrollBy === "function") {
+    containerEl.scrollBy({
+      left: distance,
+      behavior: "smooth"
+    });
+  } else {
+    $wrapper.stop(true, false).animate(
+      { scrollLeft: $wrapper.scrollLeft() + distance },
+      400,
+      "swing"
+    );
+  }
+}
+
+
 async function loadRelatedProducts(category, currentId) {
   try {
     let res = await getAllProducts(category);
@@ -827,6 +849,10 @@ async function loadRelatedProducts(category, currentId) {
             `Hi SkinDekho! I'm interested in *${item.name}* (Price: ₹${item.discountPrice ?? item.price}). Can I get more details?\nLink: ${window.location.origin}/product-detail.html?id=${item.id}`
           );
 
+          const itemCategory = typeof item.category === "string"
+            ? item.category
+            : (item.category?.name || item.Category || item.CategoryName || item.categoryName || "");
+
           const card = `
           <div class="best-used-product-card">
             <div class="rounded position-relative fruite-item h-100 border" style="border-color: #f2f9e6 !important;">
@@ -835,9 +861,7 @@ async function loadRelatedProducts(category, currentId) {
                   <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
                 </a>
               </div>
-              <span class="badge bg-secondary position-absolute product-card-category-badge">
-                ${item.category}
-              </span>
+              ${itemCategory ? `<span class="badge bg-secondary position-absolute product-card-category-badge">${itemCategory}</span>` : ""}
               <div class="p-4 border border-top-0 rounded-bottom d-flex flex-column" style="min-height: 150px;">
                 <h4 class="mb-1">
                   <a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a>
@@ -870,15 +894,11 @@ async function loadRelatedProducts(category, currentId) {
 
         // Attach horizontal scroll controls for Best Used With (side column)
         $(document).off("click", ".best-used-next-btn").on("click", ".best-used-next-btn", function () {
-          const $wrapper = $(".frequently_bought_together .featured-carousel-wrapper");
-          const scrollAmount = $wrapper.width() * 0.75;
-          $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() + scrollAmount }, 400);
+          smoothScroll($(".frequently_bought_together .featured-carousel-wrapper"), 1);
         });
 
         $(document).off("click", ".best-used-prev-btn").on("click", ".best-used-prev-btn", function () {
-          const $wrapper = $(".frequently_bought_together .featured-carousel-wrapper");
-          const scrollAmount = $wrapper.width() * 0.75;
-          $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() - scrollAmount }, 400);
+          smoothScroll($(".frequently_bought_together .featured-carousel-wrapper"), -1);
         });
       }
 
@@ -915,6 +935,10 @@ async function loadRelatedProducts(category, currentId) {
             `Hi SkinDekho! I'm interested in *${item.name}* (Price: ₹${item.discountPrice ?? item.price}). Can I get more details?\nLink: ${window.location.origin}/product-detail.html?id=${item.id}`
           );
 
+          const itemCategory = typeof item.category === "string"
+            ? item.category
+            : (item.category?.name || item.Category || item.CategoryName || item.categoryName || "");
+
           const card = `
           <div class="featured-product-card">
             <div class="rounded position-relative fruite-item h-100 border" style="border-color: #f2f9e6 !important;">
@@ -923,9 +947,7 @@ async function loadRelatedProducts(category, currentId) {
                   <img src="${fullImgUrl}" class="img-fluid w-100 rounded-top" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" />
                 </a>
               </div>
-              <span class="badge bg-secondary position-absolute product-card-category-badge">
-                ${item.category}
-              </span>
+              ${itemCategory ? `<span class="badge bg-secondary position-absolute product-card-category-badge">${itemCategory}</span>` : ""}
               <div class="p-4 border border-top-0 rounded-bottom d-flex flex-column" style="min-height: 150px;">
                 <h4 class="mb-1">
                   <a href="product-detail.html?id=${item.id}" class="text-dark text-decoration-none">${item.name}</a>
@@ -958,15 +980,11 @@ async function loadRelatedProducts(category, currentId) {
 
         // Attach horizontal scroll controls for next/prev buttons (matching home page)
         $(document).off("click", ".related-next-btn").on("click", ".related-next-btn", function () {
-          const $wrapper = $(".related-products-section .featured-carousel-wrapper");
-          const scrollAmount = $wrapper.width() * 0.75;
-          $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() + scrollAmount }, 400);
+          smoothScroll($(".related-products-section .featured-carousel-wrapper"), 1);
         });
 
         $(document).off("click", ".related-prev-btn").on("click", ".related-prev-btn", function () {
-          const $wrapper = $(".related-products-section .featured-carousel-wrapper");
-          const scrollAmount = $wrapper.width() * 0.75;
-          $wrapper.animate({ scrollLeft: $wrapper.scrollLeft() - scrollAmount }, 400);
+          smoothScroll($(".related-products-section .featured-carousel-wrapper"), -1);
         });
       }
     }

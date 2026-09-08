@@ -106,6 +106,42 @@ export function showConfirm(title, message) {
   });
 }
 
+// ✅ Safe Array Extractor Helper
+export function safeArray(res) {
+  if (Array.isArray(res)) return res;
+  if (res && Array.isArray(res.result)) return res.result;
+  if (res && Array.isArray(res.data)) return res.data;
+  if (res && Array.isArray(res.products)) return res.products;
+  if (res && Array.isArray(res.items)) return res.items;
+  return [];
+}
+
+// ✅ Smooth Scroll Helper for Horizontal Carousels
+export function smoothScroll($wrapper, dir = 1) {
+  if (!$wrapper || !$wrapper.length) return;
+  const containerEl = $wrapper[0];
+  const $firstCard = $wrapper.children().first();
+  const cardWidth = $firstCard.length ? $firstCard.outerWidth(true) : 280;
+  const distance = Math.max(cardWidth * (window.innerWidth < 576 ? 1 : 2), 240) * dir;
+
+  if (typeof containerEl.scrollBy === "function") {
+    containerEl.scrollBy({
+      left: distance,
+      behavior: "smooth"
+    });
+  } else {
+    $wrapper.stop(true, false).animate(
+      { scrollLeft: $wrapper.scrollLeft() + distance },
+      400,
+      "swing"
+    );
+  }
+}
+
+
+
+
+
 (function ($) {
   "use strict";
 
@@ -274,14 +310,6 @@ export function showConfirm(title, message) {
 
   let searchProductsCache = [];
 
-  function safeArray(res) {
-    if (Array.isArray(res)) return res;
-    if (res && Array.isArray(res.result)) return res.result;
-    if (res && Array.isArray(res.data)) return res.data;
-    if (res && Array.isArray(res.products)) return res.products;
-    if (res && Array.isArray(res.items)) return res.items;
-    return [];
-  }
 
   function ensureSearchModal() {
     if ($("#searchModal").length === 0) {
@@ -421,9 +449,23 @@ export function showConfirm(title, message) {
       });
     } catch (err) {
       console.error("Failed to load modal search products", err);
-      $container.html('<div class="text-center py-4 text-danger">Failed to load products. Please try again.</div>');
+      $container.html(`
+        <div class="text-center py-4 text-danger">
+          <i class="fas fa-exclamation-triangle mb-2" style="font-size: 2rem; opacity: 0.7;"></i>
+          <p class="mb-2">Unable to connect to server. Please check network or try again.</p>
+          <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 mt-1" onclick="window.retrySearchModal && window.retrySearchModal()">
+            <i class="fas fa-redo me-1"></i> Retry
+          </button>
+        </div>
+      `);
     }
   }
+
+  window.retrySearchModal = function () {
+    searchProductsCache = [];
+    loadModalSearchData($("#modalSearchInput").val() || "");
+  };
+
 
   ensureAuthModal();
   ensureSearchModal();
@@ -734,6 +776,10 @@ function renderClinikallyProductCard(item, colClass = "") {
     `🧴 *${item.name}*\n💰 Price: ₹${currentPrice}`,
   );
 
+  const categoryName = typeof item.category === "string"
+    ? item.category
+    : (item.category?.name || item.Category || item.CategoryName || item.categoryName || "");
+
   return `
     <div class="${colClass}">
       <div class="rounded position-relative fruite-item h-100">
@@ -741,7 +787,7 @@ function renderClinikallyProductCard(item, colClass = "") {
           <a href="product-detail.html?id=${item.id}" class="d-flex align-items-center justify-content-center w-100 h-100">
             <img src="${fullImgUrl}" class="img-fluid rounded-top" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" alt="${item.name}" />
           </a>
-          ${item.category ? `<span class="badge bg-secondary position-absolute product-card-category-badge">${item.category}</span>` : ""}
+          ${categoryName ? `<span class="badge bg-secondary position-absolute product-card-category-badge">${categoryName}</span>` : ""}
         </div>
 
         <div class="p-4 border border-secondary border-top-0 rounded-bottom d-flex flex-column">
@@ -959,10 +1005,35 @@ function renderPagination() {
 
   // Previous
   $pagination.append(`
-    <a href="#" class="rounded ${currentPage === 1 ? "disabled" : ""}" data-page="prev">&laquo;</a>
+    <a href="#" class="rounded ${currentPage === 1 ? "disabled" : ""}" data-page="prev" title="Previous Page">&laquo;</a>
   `);
 
-  for (let i = 1; i <= totalPages; i++) {
+  const maxVisiblePages = 5;
+  let startPage = 1;
+  let endPage = totalPages;
+
+  if (totalPages > maxVisiblePages) {
+    startPage = Math.max(1, currentPage - 2);
+    endPage = startPage + maxVisiblePages - 1;
+
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+  }
+
+  // First Page if startPage > 1
+  if (startPage > 1) {
+    $pagination.append(`
+      <a href="#" class="rounded ${1 === currentPage ? "active" : ""}" data-page="1">1</a>
+    `);
+    if (startPage > 2) {
+      $pagination.append(`<span class="pagination-ellipsis">&hellip;</span>`);
+    }
+  }
+
+  // Main window pages (max 5)
+  for (let i = startPage; i <= endPage; i++) {
     $pagination.append(`
       <a href="#" class="rounded ${i === currentPage ? "active" : ""}" data-page="${i}">
         ${i}
@@ -970,9 +1041,19 @@ function renderPagination() {
     `);
   }
 
+  // Last Page if endPage < totalPages
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) {
+      $pagination.append(`<span class="pagination-ellipsis">&hellip;</span>`);
+    }
+    $pagination.append(`
+      <a href="#" class="rounded ${totalPages === currentPage ? "active" : ""}" data-page="${totalPages}">${totalPages}</a>
+    `);
+  }
+
   // Next
   $pagination.append(`
-    <a href="#" class="rounded ${currentPage === totalPages ? "disabled" : ""}" data-page="next">&raquo;</a>
+    <a href="#" class="rounded ${currentPage === totalPages ? "disabled" : ""}" data-page="next" title="Next Page">&raquo;</a>
   `);
 }
 
@@ -1144,10 +1225,9 @@ $(document).on("click", "#clearAllFiltersBtn", function () {
   $("#clearShopSearchBtn").addClass("d-none");
   $("#categoryTabs a").removeClass("active");
   $("#categoryTabs a[data-category='']").addClass("active");
-  // Reset price slider to max
-  const maxVal = parseInt($("#rangeInput").attr("max") || "500", 10);
-  $("#rangeInput").val(maxVal);
-  $("#amount").val(maxVal + "+");
+  // Reset price slider to 0
+  $("#rangeInput").val(0);
+  $("#amount").val("0");
   // Reset all active filters
   activeFilters.category = "";
   activeFilters.priceUnder = "";
@@ -1180,12 +1260,10 @@ $(document).on("click", "#toggleMobileFiltersBtn", function () {
 // ✅ Price slider — works with all active filters combined
 $(document).on("input", "#rangeInput", function () {
   const val = parseInt(this.value, 10);
-  const maxVal = parseInt($(this).attr("max") || "500", 10);
 
-  // If slider is at max, treat as "no price filter" (show all)
-  if (val >= maxVal) {
+  if (val === 0) {
     activeFilters.priceUnder = "";
-    $("#amount").val(maxVal + "+");
+    $("#amount").val("0");
   } else {
     activeFilters.priceUnder = val;
     $("#amount").val(val);
@@ -1365,16 +1443,7 @@ async function loadHomeCategories() {
     });
 
     // Attach horizontal scroll controls
-    function smoothScroll($wrapper, dir = 1) {
-      if (!$wrapper || !$wrapper.length) return;
-      const el = $wrapper[0];
-      const distance = ($wrapper.width() || 300) * 0.75 * dir;
-      if (el && typeof el.scrollBy === "function") {
-        el.scrollBy({ left: distance, behavior: "smooth" });
-      } else {
-        $wrapper.stop(true, true).animate({ scrollLeft: $wrapper.scrollLeft() + distance }, 200);
-      }
-    }
+
 
     $(document)
       .off("click", ".category-next-btn")
@@ -1607,10 +1676,9 @@ $(document).ready(function () {
     $("body").hasClass("shop-page") ||
     window.location.pathname.includes("shop.html")
   ) {
-    // ✅ Init price slider to max (show all products)
-    const sliderMax = parseInt($("#rangeInput").attr("max") || "500", 10);
-    $("#rangeInput").val(sliderMax);
-    $("#amount").val(sliderMax + "+");
+    // ✅ Init price slider to 0
+    $("#rangeInput").val(0);
+    $("#amount").val("0");
 
     // 1. Trigger product fetching immediately (with search query or category filter)
     if (searchParam && searchParam.trim()) {

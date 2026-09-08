@@ -435,12 +435,12 @@
   }
 }
 
-@media (max-width: 992px) {
+@media (max-width: 991.98px) {
 
   .hero-header,
   .page-header,
   .content-header-margin {
-    margin-top: 97px !important;
+    margin-top: 85px !important;
   }
 }
 
@@ -812,26 +812,73 @@
 
 /*** Single Page Start ***/
 .pagination {
-  display: inline-block;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  padding: 6px 0;
+  margin: 0 auto;
 }
 
 .pagination a {
   color: var(--bs-dark);
-  padding: 10px 16px;
+  padding: 6px 12px;
+  min-width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   text-decoration: none;
-  transition: 0.5s;
-  border: 1px solid var(--bs-secondary);
-  margin: 0 4px;
+  transition: all 0.2s ease;
+  border: 1px solid #ffd8a8;
+  border-radius: 10px !important;
+  font-size: 0.88rem;
+  font-weight: 600;
+  flex-shrink: 0;
 }
 
 .pagination a.active {
-  background-color: var(--bs-primary);
-  color: var(--bs-light);
-  border: 1px solid var(--bs-secondary);
+  background-color: var(--bs-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--bs-primary) !important;
 }
 
-.pagination a:hover:not(.active) {
-  background-color: var(--bs-primary);
+.pagination a.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.pagination a:hover:not(.active):not(.disabled) {
+  background-color: #fef9c3;
+  border-color: #eab308;
+}
+
+.pagination-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  color: #64748b;
+  font-weight: 700;
+  font-size: 0.85rem;
+  user-select: none;
+}
+
+@media (max-width: 576px) {
+  .pagination {
+    gap: 4px;
+  }
+
+  .pagination a {
+    padding: 4px 8px;
+    min-width: 30px;
+    height: 30px;
+    font-size: 0.78rem;
+    border-radius: 8px !important;
+  }
 }
 
 .nav.nav-tabs .nav-link.active {
@@ -1253,12 +1300,12 @@
     padding: 0 4px !important;
   }
 
-  /* 🌟 Hero Header (Compact Banner Height ~190px, Scaled Typography) */
+  /* 🌟 Hero Header (Balanced Mobile Height & Spacing) */
   .hero-header {
-    margin-top: 118px !important;
-    margin-bottom: 1.25rem !important;
-    padding-top: 0.75rem !important;
-    padding-bottom: 0.75rem !important;
+    margin-top: 82px !important;
+    margin-bottom: 1rem !important;
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
   }
 
   .hero-header .container {
