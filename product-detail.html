@@ -499,7 +499,7 @@
         padding-bottom: 1.5rem !important;
       }
 
-      .container-fluid.py-5 > .container.py-5 {
+      .container-fluid.py-5>.container.py-5 {
         padding-top: 0.5rem !important;
         padding-bottom: 1rem !important;
       }
@@ -641,22 +641,47 @@
     </div>
     <div class="container px-0">
       <nav class="navbar navbar-light bg-white navbar-expand-xl">
+        <!-- 🔹 Logo -->
         <a href="home.html" class="navbar-brand d-flex align-items-center">
           <!-- Desktop Logo -->
           <img src="img/logo.png" alt="Logo" class="img-fluid d-none d-xl-block" style="height: 65px" />
 
-          <!-- Mobile Logo -->
-          <img src="img/logo.png" alt="Logo" class="img-fluid d-xl-none" style="height: 40px" />
+          <!-- Mobile Brand Title (Instead of Mobile Logo) -->
+          <span id="mobile-brand-title" class="d-inline d-xl-none ms-2 fw-bold text-primary"
+            style="font-family: 'Raleway', sans-serif; font-size: 1.25rem; letter-spacing: -0.5px; vertical-align: middle;">
+            Skin Dekh<i class="fas fa-eye text-primary"
+              style="font-size: 0.95em; margin-left: 1px; vertical-align: middle;"></i>
+          </span>
         </a>
-        <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
-          data-bs-target="#navbarCollapse">
-          <span class="fa fa-bars text-primary"></span>
-        </button>
+
+        <!-- 🔹 Mobile Controls (Search + User Icon + Cart Icon + Toggle Button) -->
+        <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto d-xl-none">
+          <button type="button" class="btn p-1 text-primary border-0 shadow-none" data-bs-toggle="modal"
+            data-bs-target="#searchModal" title="Search Products">
+            <i class="fas fa-search fa-lg"></i>
+          </button>
+          <a href="User.html" class="text-primary p-1 user-icon-link" onclick="handleUserIconClick(event)"
+            title="My Account / Dashboard">
+            <i class="fas fa-user fa-lg"></i>
+          </a>
+          <a href="cart.html" class="position-relative text-primary p-1" title="Cart">
+            <i class="fa fa-shopping-bag fa-lg"></i>
+            <span
+              class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1 mobile-cart-badge"
+              style="top: -5px; left: 15px; height: 18px; min-width: 18px; font-size: 0.7rem; font-weight: 700;">0</span>
+          </a>
+          <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse">
+            <span class="fa fa-bars text-primary"></span>
+          </button>
+        </div>
+
+        <!-- 🔹 Navbar Content -->
         <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
           <div class="navbar-nav mx-auto">
             <a href="home.html" class="nav-item nav-link">Home</a>
             <div class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Products</a>
+              <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Products</a>
               <div class="dropdown-menu navbar-categories-dropdown m-0 bg-light border-0 rounded-3 shadow-sm">
                 <a href="shop.html" class="dropdown-item">All Products</a>
                 <a href="shop.html?category=Moisturing Lotion" class="dropdown-item">Moisturing Lotion</a>
@@ -668,14 +693,20 @@
             </div>
             <a href="contact.html" class="nav-item nav-link">Contact</a>
           </div>
-          <div class="d-flex m-3 me-0">
+
+          <div class="d-none d-xl-flex m-3 me-0">
+            <button class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
+              data-bs-toggle="modal" data-bs-target="#searchModal">
+              <i class="fas fa-search text-primary"></i>
+            </button>
             <a href="cart.html" class="position-relative me-4 my-auto">
               <i class="fa fa-shopping-bag fa-2x"></i>
-              <span id="cart-badge"
-                class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
+              <span
+                class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1 cart-count-badge"
                 style="top: -5px; left: 15px; height: 20px; min-width: 20px">0</span>
             </a>
-            <a href="#" class="my-auto user-icon-link">
+
+            <a href="User.html" class="my-auto user-icon-link" onclick="handleUserIconClick(event)">
               <i class="fas fa-user fa-2x"></i>
             </a>
           </div>
@@ -691,20 +722,34 @@
       <div class="row g-4" id="product-detail-content">
         <div class="col-lg-6">
           <div class="product-img-card position-relative overflow-hidden shadow-sm border rounded">
-            <button type="button" class="slider-nav-btn prev-btn" id="main-img-prev" style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); z-index: 10; background: rgba(255,255,255,0.9); border: 1px solid #ddd; border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15); cursor: pointer;" title="Previous Image"><i class="fas fa-chevron-left text-dark"></i></button>
+            <button type="button" class="slider-nav-btn prev-btn" id="main-img-prev"
+              style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); z-index: 10; background: rgba(255,255,255,0.9); border: 1px solid #ddd; border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15); cursor: pointer;"
+              title="Previous Image"><i class="fas fa-chevron-left text-dark"></i></button>
             <a id="product-img-zoom" href="img/placeholder.png" data-lightbox="product-gallery">
-              <img id="product-img" src="img/placeholder.png" class="img-fluid w-100" style="object-fit: contain; max-height: 480px;" alt="Product Image" />
+              <img id="product-img" src="img/placeholder.png" class="img-fluid w-100"
+                style="object-fit: contain; max-height: 480px;" alt="Product Image" />
             </a>
-            <button type="button" class="slider-nav-btn next-btn" id="main-img-next" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); z-index: 10; background: rgba(255,255,255,0.9); border: 1px solid #ddd; border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15); cursor: pointer;" title="Next Image"><i class="fas fa-chevron-right text-dark"></i></button>
+            <button type="button" class="slider-nav-btn next-btn" id="main-img-next"
+              style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); z-index: 10; background: rgba(255,255,255,0.9); border: 1px solid #ddd; border-radius: 50%; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(0,0,0,0.15); cursor: pointer;"
+              title="Next Image"><i class="fas fa-chevron-right text-dark"></i></button>
             <div class="zoom-icon" id="zoom-trigger" title="Zoom Image">
               <i class="fas fa-search-plus"></i>
             </div>
-            <span id="product-img-counter" class="badge bg-dark text-white position-absolute bottom-0 start-0 m-2 px-2 py-1" style="z-index: 10; opacity: 0.85; font-size: 0.75rem;">1 / 1</span>
+            <span id="product-img-counter"
+              class="badge bg-dark text-white position-absolute bottom-0 start-0 m-2 px-2 py-1"
+              style="z-index: 10; opacity: 0.85; font-size: 0.75rem;">1 / 1</span>
           </div>
           <div id="product-thumbnails-container" class="d-flex align-items-center gap-2 mt-3 position-relative">
-            <button type="button" id="thumb-scroll-left" class="btn btn-sm btn-light border rounded-circle shadow-sm flex-shrink-0" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;" title="Scroll Left"><i class="fas fa-chevron-left"></i></button>
-            <div id="product-thumbnails" class="d-flex gap-2 overflow-auto justify-content-start py-1" style="white-space: nowrap; scroll-behavior: smooth; flex: 1; scrollbar-width: none;"></div>
-            <button type="button" id="thumb-scroll-right" class="btn btn-sm btn-light border rounded-circle shadow-sm flex-shrink-0" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;" title="Scroll Right"><i class="fas fa-chevron-right"></i></button>
+            <button type="button" id="thumb-scroll-left"
+              class="btn btn-sm btn-light border rounded-circle shadow-sm flex-shrink-0"
+              style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"
+              title="Scroll Left"><i class="fas fa-chevron-left"></i></button>
+            <div id="product-thumbnails" class="d-flex gap-2 overflow-auto justify-content-start py-1"
+              style="white-space: nowrap; scroll-behavior: smooth; flex: 1; scrollbar-width: none;"></div>
+            <button type="button" id="thumb-scroll-right"
+              class="btn btn-sm btn-light border rounded-circle shadow-sm flex-shrink-0"
+              style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;"
+              title="Scroll Right"><i class="fas fa-chevron-right"></i></button>
           </div>
         </div>
         <div class="col-lg-6">

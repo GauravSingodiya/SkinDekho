@@ -1968,3 +1968,49 @@ input[type="search"]::-webkit-search-results-decoration {
     border-radius: 4px !important;
   }
 }
+
+@media (max-width: 1199.98px) {
+  .navbar {
+    height: 60px !important;
+    min-height: 60px !important;
+    max-height: 60px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    align-items: center !important;
+  }
+
+  .navbar-collapse {
+    position: absolute !important;
+    top: 60px !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12) !important;
+    z-index: 1050 !important;
+    padding: 1rem !important;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+  }
+
+  .navbar-collapse .d-flex.m-3,
+  .navbar-collapse .d-flex.me-0 {
+    display: none !important;
+  }
+}
+
+/* 🌀 Ultra-Smooth Horizontal Carousel Scroll */
+.category-carousel-wrapper,
+.latest-carousel-wrapper,
+.featured-carousel-wrapper {
+  scroll-behavior: smooth !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-x: contain !important;
+  touch-action: pan-x pan-y !important;
+}
+
+.category-card,
+.latest-product-card,
+.featured-product-card {
+  scroll-snap-align: none !important;
+}
