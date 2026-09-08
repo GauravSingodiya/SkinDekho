@@ -4,27 +4,23 @@ import {
   getAllProducts,
   getFeaturedProducts,
   getProductsByFilter,
-  getLatestProducts,
+  getLatestProducts
 } from "./products.js";
 import { addToCartAPI, getCartAPI } from "./api/cartService.js";
 import { getDashboardStats } from "./api/dashboardService.js";
 import { BASE_URL } from "./api/config.js";
-
-// ✅ Custom Toast Function
 export function showToast(message, type = "success", title = "") {
   const toastContainer = $("#toast-container");
   if (toastContainer.length === 0) {
     $("body").append(
-      '<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 10000"></div>',
+      '<div id="toast-container" class="position-fixed bottom-0 end-0 p-3" style="z-index: 10000"></div>'
     );
   }
-
   const icons = {
     success: '<i class="fas fa-check-circle text-success me-2"></i>',
     error: '<i class="fas fa-exclamation-circle text-danger me-2"></i>',
-    info: '<i class="fas fa-info-circle text-info me-2"></i>',
+    info: '<i class="fas fa-info-circle text-info me-2"></i>'
   };
-
   const toastId = "toast-" + Date.now();
   const toastHtml = `
     <div id="${toastId}" class="toast custom-toast show" role="alert" aria-live="assertive" aria-atomic="true">
@@ -41,26 +37,18 @@ export function showToast(message, type = "success", title = "") {
       </div>
     </div>
   `;
-
   $("#toast-container").append(toastHtml);
-
   const $toast = $(`#${toastId}`);
-
-  // Progress bar animation
   setTimeout(() => {
     $toast.find(".progress-bar").css("width", "0%");
   }, 10);
-
-  // Auto-dismiss
   setTimeout(() => {
     $toast.addClass("hiding");
     setTimeout(() => {
       $toast.remove();
     }, 400);
-  }, 3000);
+  }, 3e3);
 }
-
-// ✅ Custom Premium Confirm Modal
 export function showConfirm(title, message) {
   return new Promise((resolve) => {
     const modalId = "confirm-modal-" + Date.now();
@@ -83,96 +71,44 @@ export function showConfirm(title, message) {
         </div>
       </div>
     `;
-
     $("body").append(modalHtml);
-
     const $modalEl = $(`#${modalId}`);
     const modalInstance = new bootstrap.Modal($modalEl[0], {
       backdrop: "static",
-      keyboard: false,
+      keyboard: false
     });
-
     modalInstance.show();
-
-    $modalEl.find(".confirm-btn").on("click", function () {
+    $modalEl.find(".confirm-btn").on("click", function() {
       modalInstance.hide();
       resolve(true);
     });
-
-    $modalEl.on("hidden.bs.modal", function () {
+    $modalEl.on("hidden.bs.modal", function() {
       $modalEl.remove();
       resolve(false);
     });
   });
 }
-
-// ✅ Safe Array Extractor Helper
-export function safeArray(res) {
-  if (Array.isArray(res)) return res;
-  if (res && Array.isArray(res.result)) return res.result;
-  if (res && Array.isArray(res.data)) return res.data;
-  if (res && Array.isArray(res.products)) return res.products;
-  if (res && Array.isArray(res.items)) return res.items;
-  return [];
-}
-
-// ✅ Smooth Scroll Helper for Horizontal Carousels
-export function smoothScroll($wrapper, dir = 1) {
-  if (!$wrapper || !$wrapper.length) return;
-  const containerEl = $wrapper[0];
-  const $firstCard = $wrapper.children().first();
-  const cardWidth = $firstCard.length ? $firstCard.outerWidth(true) : 280;
-  const distance = Math.max(cardWidth * (window.innerWidth < 576 ? 1 : 2), 240) * dir;
-
-  if (typeof containerEl.scrollBy === "function") {
-    containerEl.scrollBy({
-      left: distance,
-      behavior: "smooth"
-    });
-  } else {
-    $wrapper.stop(true, false).animate(
-      { scrollLeft: $wrapper.scrollLeft() + distance },
-      400,
-      "swing"
-    );
-  }
-}
-
-
-
-
-
-(function ($) {
+(function($2) {
   "use strict";
-
-  /* ==========================
-     Spinner
-  ========================== */
-  var spinner = function () {
-    setTimeout(function () {
-      if ($("#spinner").length > 0) {
-        $("#spinner").removeClass("show");
+  var spinner = function() {
+    setTimeout(function() {
+      if ($2("#spinner").length > 0) {
+        $2("#spinner").removeClass("show");
       }
     }, 1);
   };
   spinner();
-
-  /* ==========================
-     Mobile Header Branding
-  ========================== */
   function injectMobileBranding() {
-    const $mobileLogo = $(".navbar-brand img.d-xl-none");
-    if ($mobileLogo.length > 0 && $("#mobile-brand-title").length === 0) {
+    const $mobileLogo = $2(".navbar-brand img.d-xl-none");
+    if ($mobileLogo.length > 0 && $2("#mobile-brand-title").length === 0) {
       const brandTextHtml = `
         <span id="mobile-brand-title" class="d-inline d-xl-none ms-2 fw-bold text-primary" style="font-family: 'Raleway', sans-serif; font-size: 1.25rem; letter-spacing: -0.5px; vertical-align: middle;">
           Skin Dekh<i class="fas fa-eye text-primary" style="font-size: 0.95em; margin-left: 1px; vertical-align: middle;"></i>
         </span>
       `;
       $mobileLogo.after(brandTextHtml);
-
-      // Center the mobile brand container in the header bar
-      if ($("#mobile-brand-center-style").length === 0) {
-        $("head").append(`
+      if ($2("#mobile-brand-center-style").length === 0) {
+        $2("head").append(`
           <style id="mobile-brand-center-style">
             @media (max-width: 1199px) {
               .navbar {
@@ -195,12 +131,8 @@ export function smoothScroll($wrapper, dir = 1) {
     }
   }
   injectMobileBranding();
-
-  /* ==========================
-     Inject Auth Modal & Opener
-  ========================== */
   function ensureAuthModal() {
-    if ($("#authModal").length === 0) {
+    if ($2("#authModal").length === 0) {
       console.log("Injecting Auth Modal...");
       const modalHtml = `
         <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true" style="z-index: 10050;">
@@ -266,15 +198,13 @@ export function smoothScroll($wrapper, dir = 1) {
           </div>
         </div>
       `;
-      $("body").append(modalHtml);
+      $2("body").append(modalHtml);
     }
   }
-
   function openAuthModal() {
     ensureAuthModal();
     const modalEl = document.getElementById("authModal");
     if (!modalEl) return;
-
     try {
       if (window.bootstrap && window.bootstrap.Modal) {
         const modalInstance = window.bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -284,35 +214,30 @@ export function smoothScroll($wrapper, dir = 1) {
     } catch (err) {
       console.warn("Bootstrap Modal show exception, using fallback", err);
     }
-
-    if (window.jQuery && $.fn.modal) {
-      $(modalEl).modal("show");
+    if (window.jQuery && $2.fn.modal) {
+      $2(modalEl).modal("show");
       return;
     }
-
-    $(modalEl).removeClass("d-none").addClass("show").css({ display: "block", opacity: "1", zIndex: "1055" }).attr("aria-hidden", "false");
-    if ($(".modal-backdrop").length === 0) {
-      $("body").append('<div class="modal-backdrop fade show" style="z-index: 1050;"></div>');
+    $2(modalEl).removeClass("d-none").addClass("show").css({ display: "block", opacity: "1", zIndex: "1055" }).attr("aria-hidden", "false");
+    if ($2(".modal-backdrop").length === 0) {
+      $2("body").append('<div class="modal-backdrop fade show" style="z-index: 1050;"></div>');
     }
   }
-
-  $(document).on("click", "#authModal [data-bs-dismiss='modal'], #authModal .btn-close, .modal-backdrop", function () {
+  $2(document).on("click", "#authModal [data-bs-dismiss='modal'], #authModal .btn-close, .modal-backdrop", function() {
     const modalEl = document.getElementById("authModal");
     if (modalEl && window.bootstrap && window.bootstrap.Modal) {
       try {
         const modalInstance = window.bootstrap.Modal.getInstance(modalEl);
         if (modalInstance) modalInstance.hide();
-      } catch (e) { }
+      } catch (e) {
+      }
     }
-    $("#authModal").removeClass("show").css({ display: "none" }).attr("aria-hidden", "true");
-    $(".modal-backdrop").remove();
+    $2("#authModal").removeClass("show").css({ display: "none" }).attr("aria-hidden", "true");
+    $2(".modal-backdrop").remove();
   });
-
   let searchProductsCache = [];
-
-
   function ensureSearchModal() {
-    if ($("#searchModal").length === 0) {
+    if ($2("#searchModal").length === 0) {
       const searchModalHtml = `
         <div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-fullscreen">
@@ -327,7 +252,7 @@ export function smoothScroll($wrapper, dir = 1) {
                     type="search"
                     id="modalSearchInput"
                     class="form-control rounded-3 border py-2 px-3 shadow-none"
-                    placeholder="Search products..."
+                    placeholder="Search"
                     style="font-size: 1rem; border-color: #cbd5e1; background: #fff;"
                     autocomplete="off"
                   />
@@ -344,7 +269,7 @@ export function smoothScroll($wrapper, dir = 1) {
                 <!-- Products Recommendations / Live Search Results List -->
                 <div class="container py-3" style="max-width: 650px;">
                   <div id="modalSearchResultsList" class="d-flex flex-column gap-2">
-                    <div class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Loading products...</div>
+                    <div class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Loading recommendations...</div>
                   </div>
                 </div>
               </div>
@@ -352,37 +277,24 @@ export function smoothScroll($wrapper, dir = 1) {
           </div>
         </div>
       `;
-      $("body").append(searchModalHtml);
+      $2("body").append(searchModalHtml);
     }
   }
-
   function renderModalProductRow(item) {
-    const id = item.id || item.Id || item._id || "";
-    const name = item.name || item.Name || "Product";
-    const relativeImgUrl = item.imageUrl || item.ImageUrl || (item.images && item.images[0]) || "";
-    const fullImgUrl = relativeImgUrl.startsWith("http")
-      ? relativeImgUrl
-      : relativeImgUrl
-        ? BASE_URL + relativeImgUrl
-        : "img/product-default.jpg";
-
-    const price = Number(item.price ?? item.Price ?? 0);
-    const discountPrice = item.discountPrice !== undefined && item.discountPrice !== null ? Number(item.discountPrice) : (item.DiscountPrice !== undefined && item.DiscountPrice !== null ? Number(item.DiscountPrice) : null);
-    const currentPrice = discountPrice !== null && !isNaN(discountPrice) ? discountPrice : price;
-    const mrp = discountPrice !== null && !isNaN(discountPrice) ? price : Math.round(price * 1.2);
-    const discountPct = (mrp > currentPrice && mrp > 0) ? Math.round(((mrp - currentPrice) / mrp) * 100) : 0;
-    const discountBadge = discountPct > 0
-      ? `<span class="position-absolute top-0 start-0 badge text-white px-2 py-1" style="background: var(--bs-primary, #81c408); font-size: 0.65rem; font-weight: 700; border-top-left-radius: 6px; border-bottom-right-radius: 8px; z-index: 2;">SAVE ${discountPct}%</span>`
-      : "";
-
+    const relativeImgUrl = item.imageUrl || "";
+    const fullImgUrl = relativeImgUrl.startsWith("http") ? relativeImgUrl : relativeImgUrl ? BASE_URL + relativeImgUrl : "img/product-default.jpg";
+    const currentPrice = item.discountPrice ?? item.price;
+    const mrp = item.discountPrice ? item.price : Math.round(item.price * 1.2);
+    const discountPct = Math.round((mrp - currentPrice) / mrp * 100);
+    const discountBadge = discountPct > 0 ? `<span class="position-absolute top-0 start-0 badge text-white px-1 py-1" style="background: #8b5cf6; font-size: 0.6rem; font-weight: 700; border-top-left-radius: 4px; border-bottom-right-radius: 6px; z-index: 2;">SAVE ${discountPct}%</span>` : "";
     return `
-      <a href="product-detail.html?id=${id}" class="d-flex align-items-center p-2 bg-white rounded-3 shadow-sm text-decoration-none border hover-shadow" style="transition: transform 0.2s ease, box-shadow 0.2s ease; border-color: #e2e8f0 !important;">
-        <div class="position-relative me-3 flex-shrink-0" style="width: 75px; height: 75px; background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #f1f5f9;">
-          <img src="${fullImgUrl}" alt="${name}" class="w-100 h-100" style="object-fit: contain; filter: none; opacity: 1;" onerror="this.onerror=null;this.src='img/product-default.jpg';" />
+      <a href="product-detail.html?id=${item.id}" class="d-flex align-items-center p-2 bg-white rounded shadow-sm text-decoration-none border hover-shadow" style="transition: transform 0.15s ease, box-shadow 0.15s ease;">
+        <div class="position-relative me-3 flex-shrink-0" style="width: 75px; height: 75px; background: #ffffff; border-radius: 6px; overflow: hidden; border: 1px solid #f1f5f9;">
+          <img src="${fullImgUrl}" alt="${item.name}" class="w-100 h-100" style="object-fit: contain; filter: none; opacity: 1;" onerror="this.onerror=null;this.src='img/product-default.jpg';" />
           ${discountBadge}
         </div>
         <div class="flex-grow-1 min-w-0">
-          <h6 class="text-dark fw-bold mb-1 text-truncate" style="font-size: 0.92rem;">${name}</h6>
+          <h6 class="text-dark fw-bold mb-1 text-truncate" style="font-size: 0.92rem; font-family: 'Raleway', sans-serif;">${item.name}</h6>
           <div class="d-flex align-items-center text-warning small mb-1" style="font-size: 0.78rem;">
             <i class="fas fa-star me-1"></i>
             <i class="fas fa-star me-1"></i>
@@ -392,146 +304,93 @@ export function smoothScroll($wrapper, dir = 1) {
             <span class="text-muted ms-1" style="font-size: 0.75rem; font-weight: 600;">4.7</span>
           </div>
           <div class="d-flex align-items-center gap-2">
-            <span class="fw-bold" style="font-size: 0.98rem; color: var(--bs-primary, #81c408);">₹${currentPrice}</span>
-            ${mrp > currentPrice ? `<span class="text-muted text-decoration-line-through small" style="font-size: 0.8rem;">₹${mrp}</span>` : ""}
+            <span class="fw-bold" style="font-size: 0.98rem; color: #7c3aed;">\u20B9${currentPrice}</span>
+            ${mrp > currentPrice ? `<span class="text-muted text-decoration-line-through small" style="font-size: 0.8rem;">\u20B9${mrp}</span>` : ""}
           </div>
         </div>
       </a>
     `;
   }
-
   async function loadModalSearchData(query = "") {
-    const $container = $("#modalSearchResultsList");
-    const $headerTitle = $("#searchHeaderTitle");
-
-    if ($container.length === 0) return;
-
+    const $container = $2("#modalSearchResultsList");
+    const $headerTitle = $2("#searchHeaderTitle");
     try {
-      if (!Array.isArray(searchProductsCache) || searchProductsCache.length === 0) {
-        $container.html('<div class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Loading products...</div>');
+      if (searchProductsCache.length === 0) {
         const res = await getAllProducts();
-        searchProductsCache = safeArray(res);
+        searchProductsCache = res.result || res || [];
       }
-
-      const q = (query || "").trim().toLowerCase();
+      const q = query.trim().toLowerCase();
       let list = [];
-
       if (!q) {
-        if ($headerTitle.length) $headerTitle.text("OUR EXPERT RECOMMENDATIONS");
+        $headerTitle.text("OUR EXPERT RECOMMENDATIONS");
         list = searchProductsCache.slice(0, 10);
       } else {
-        if ($headerTitle.length) $headerTitle.text(`SEARCH RESULTS (${query.trim()})`);
-        list = searchProductsCache.filter((item) => {
-          if (!item || typeof item !== "object") return false;
-          const name = (item.name || item.Name || "").toLowerCase();
-          const desc = (item.description || item.Description || "").toLowerCase();
-          const cat = (item.category || item.Category || "").toLowerCase();
-          return name.includes(q) || desc.includes(q) || cat.includes(q);
-        });
+        $headerTitle.text(`SEARCH RESULTS (${q})`);
+        list = searchProductsCache.filter(
+          (item) => item.name && item.name.toLowerCase().includes(q) || item.description && item.description.toLowerCase().includes(q) || item.category && item.category.toLowerCase().includes(q)
+        );
       }
-
       $container.empty();
-
       if (list.length === 0) {
         $container.html(`
           <div class="text-center py-5 text-muted">
             <i class="fas fa-search-minus mb-2" style="font-size: 2.5rem; opacity: 0.5;"></i>
-            <p class="mb-0">No matching products found${query.trim() ? ` for "${query.trim()}"` : ""}.</p>
+            <p class="mb-0">No matching products found for "${query}".</p>
           </div>
         `);
         return;
       }
-
       list.forEach((item) => {
-        const name = item.name || item.Name;
-        if (!name || name === "string") return;
+        if (!item.name || item.name === "string") return;
         $container.append(renderModalProductRow(item));
       });
     } catch (err) {
       console.error("Failed to load modal search products", err);
-      $container.html(`
-        <div class="text-center py-4 text-danger">
-          <i class="fas fa-exclamation-triangle mb-2" style="font-size: 2rem; opacity: 0.7;"></i>
-          <p class="mb-2">Unable to connect to server. Please check network or try again.</p>
-          <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 mt-1" onclick="window.retrySearchModal && window.retrySearchModal()">
-            <i class="fas fa-redo me-1"></i> Retry
-          </button>
-        </div>
-      `);
+      $container.html('<div class="text-center py-4 text-danger">Failed to load products.</div>');
     }
   }
-
-  window.retrySearchModal = function () {
-    searchProductsCache = [];
-    loadModalSearchData($("#modalSearchInput").val() || "");
-  };
-
-
   ensureAuthModal();
   ensureSearchModal();
-
-  // Listen to Bootstrap modal events to guarantee data loading whenever search modal opens
-  $(document).on("show.bs.modal shown.bs.modal", "#searchModal", function () {
-    loadModalSearchData($("#modalSearchInput").val() || "");
-    setTimeout(() => {
-      $("#modalSearchInput").focus();
-    }, 300);
-  });
-
-  $(document).on("click", '[data-bs-target="#searchModal"], .btn-search', function (e) {
+  $2(document).on("click", '[data-bs-target="#searchModal"], .btn-search', function(e) {
+    e.preventDefault();
     ensureSearchModal();
     const searchModalEl = document.getElementById("searchModal");
-    if (searchModalEl && window.bootstrap && window.bootstrap.Modal) {
-      try {
-        const modal = bootstrap.Modal.getOrCreateInstance(searchModalEl);
-        modal.show();
-      } catch (err) { }
+    if (searchModalEl) {
+      const modal = bootstrap.Modal.getOrCreateInstance(searchModalEl);
+      modal.show();
+      loadModalSearchData($2("#modalSearchInput").val() || "");
+      setTimeout(() => {
+        $2("#modalSearchInput").focus();
+      }, 300);
     }
-    loadModalSearchData($("#modalSearchInput").val() || "");
-    setTimeout(() => {
-      $("#modalSearchInput").focus();
-    }, 300);
   });
-
-  /* ==========================
-     Fixed Navbar
-  ========================== */
-  $(window).scroll(function () {
-    if ($(window).width() < 992) {
-      if ($(this).scrollTop() > 55) {
-        $(".fixed-top").addClass("shadow");
+  $2(window).scroll(function() {
+    if ($2(window).width() < 992) {
+      if ($2(this).scrollTop() > 55) {
+        $2(".fixed-top").addClass("shadow");
       } else {
-        $(".fixed-top").removeClass("shadow");
+        $2(".fixed-top").removeClass("shadow");
       }
     } else {
-      if ($(this).scrollTop() > 55) {
-        $(".fixed-top").addClass("shadow").css("top", -55);
+      if ($2(this).scrollTop() > 55) {
+        $2(".fixed-top").addClass("shadow").css("top", -55);
       } else {
-        $(".fixed-top").removeClass("shadow").css("top", 0);
+        $2(".fixed-top").removeClass("shadow").css("top", 0);
       }
     }
   });
-
-  /* ==========================
-     Back to Top Button
-  ========================== */
-  $(window).scroll(function () {
-    if ($(this).scrollTop() > 300) {
-      $(".back-to-top").fadeIn("slow");
+  $2(window).scroll(function() {
+    if ($2(this).scrollTop() > 300) {
+      $2(".back-to-top").fadeIn("slow");
     } else {
-      $(".back-to-top").fadeOut("slow");
+      $2(".back-to-top").fadeOut("slow");
     }
   });
-
-  $(".back-to-top").click(function () {
-    $("html, body").animate({ scrollTop: 0 }, 1500, "easeInOutExpo");
+  $2(".back-to-top").click(function() {
+    $2("html, body").animate({ scrollTop: 0 }, 1500, "easeInOutExpo");
     return false;
   });
-
-  /* ==========================
-     Vegetable Carousel
-  ========================== */
-  $(".vegetable-carousel").owlCarousel({
+  $2(".vegetable-carousel").owlCarousel({
     autoplay: true,
     smartSpeed: 1500,
     center: false,
@@ -541,60 +400,44 @@ export function smoothScroll($wrapper, dir = 1) {
     nav: true,
     navText: [
       '<i class="bi bi-arrow-left"></i>',
-      '<i class="bi bi-arrow-right"></i>',
+      '<i class="bi bi-arrow-right"></i>'
     ],
     responsive: {
       0: { items: 1 },
       576: { items: 1 },
       768: { items: 2 },
       992: { items: 3 },
-      1200: { items: 4 },
-    },
+      1200: { items: 4 }
+    }
   });
-
-  /* ==========================
-     Modal Video
-  ========================== */
-  $(document).ready(function () {
+  $2(document).ready(function() {
     let videoSrc = "";
-
-    $(".btn-play").click(function () {
-      videoSrc = $(this).data("src");
+    $2(".btn-play").click(function() {
+      videoSrc = $2(this).data("src");
     });
-
-    $("#videoModal").on("shown.bs.modal", function () {
-      $("#video").attr(
+    $2("#videoModal").on("shown.bs.modal", function() {
+      $2("#video").attr(
         "src",
-        videoSrc + "?autoplay=1&modestbranding=1&showinfo=0",
+        videoSrc + "?autoplay=1&modestbranding=1&showinfo=0"
       );
     });
-
-    $("#videoModal").on("hide.bs.modal", function () {
-      $("#video").attr("src", videoSrc);
+    $2("#videoModal").on("hide.bs.modal", function() {
+      $2("#video").attr("src", videoSrc);
     });
   });
-
-  /* ==========================
-     LOGIN FORM
-  ========================== */
-  $("#loginForm").on("submit", async function (e) {
+  $2("#loginForm").on("submit", async function(e) {
     e.preventDefault();
-
-    const email = $(this).find("[name='email']").val();
-    const password = $(this).find("[name='password']").val();
+    const email = $2(this).find("[name='email']").val();
+    const password = $2(this).find("[name='password']").val();
     console.log("email---", email, password);
-
     try {
       const res = await loginUser(email, password);
       console.log("Login Success:", res);
-
       const token = res.result?.token?.accessToken || res.token;
       if (!token) throw new Error("Token not received");
-
       sessionStorage.setItem("token", token);
       localStorage.setItem("token", token);
       console.log("Token:", token);
-
       try {
         const userRes = await getCurrentUser(token);
         console.log("Current User:", userRes);
@@ -604,10 +447,8 @@ export function smoothScroll($wrapper, dir = 1) {
       } catch (userErr) {
         console.error("Failed to fetch user data", userErr);
       }
-
-      showToast("Login successful ✅ Redirecting...", "success", "Welcome Back");
-      $("#authModal").modal("hide");
-
+      showToast("Login successful \u2705 Redirecting...", "success", "Welcome Back");
+      $2("#authModal").modal("hide");
       setTimeout(() => {
         window.location.href = "User.html";
       }, 600);
@@ -615,28 +456,21 @@ export function smoothScroll($wrapper, dir = 1) {
       showToast(err.message || "Login failed", "error", "Login Error");
     }
   });
-
-  /* ==========================
-     SIGNUP FORM
-  ========================== */
-  $("#signupForm").on("submit", async function (e) {
+  $2("#signupForm").on("submit", async function(e) {
     e.preventDefault();
-
     const payload = {
-      firstName: $(this).find("[name='firstName']").val(),
-      lastName: $(this).find("[name='lastName']").val(),
-      email: $(this).find("[name='email']").val(),
-      phoneNumber: $(this).find("[name='phoneNumber']").val(),
-      password: $(this).find("[name='password']").val(),
+      firstName: $2(this).find("[name='firstName']").val(),
+      lastName: $2(this).find("[name='lastName']").val(),
+      email: $2(this).find("[name='email']").val(),
+      phoneNumber: $2(this).find("[name='phoneNumber']").val(),
+      password: $2(this).find("[name='password']").val()
     };
     console.log("payload---", payload);
     try {
       const res = await registerUser(payload);
       console.log("Signup Success:", res);
-
       const token = res.result?.token?.accessToken || res.token;
       const user = res.result?.user || res.user;
-
       if (token) {
         sessionStorage.setItem("token", token);
         localStorage.setItem("token", token);
@@ -644,18 +478,15 @@ export function smoothScroll($wrapper, dir = 1) {
           sessionStorage.setItem("user", JSON.stringify(user));
           localStorage.setItem("user", JSON.stringify(user));
         }
-        showToast("Signup & Login successful 🎉 Redirecting...", "success", "Welcome");
+        showToast("Signup & Login successful \u{1F389} Redirecting...", "success", "Welcome");
       } else {
-        showToast("Signup successful 🎉", "success", "Account Created");
+        showToast("Signup successful \u{1F389}", "success", "Account Created");
       }
-
-      $("#authModal").modal("hide");
+      $2("#authModal").modal("hide");
       this.reset();
-
       if (typeof syncCartBadge === "function") {
         syncCartBadge();
       }
-
       setTimeout(() => {
         window.location.href = token ? "User.html" : "home.html";
       }, 600);
@@ -664,21 +495,13 @@ export function smoothScroll($wrapper, dir = 1) {
       showToast(err.message || "Signup failed", "error", "Signup Error");
     }
   });
-
   function handleUserIconClick(e) {
     if (e) {
       e.preventDefault();
       e.stopPropagation();
     }
-
-    const token =
-      sessionStorage.getItem("token") || localStorage.getItem("token");
-    const isValidToken =
-      token &&
-      token !== "null" &&
-      token !== "undefined" &&
-      token.trim() !== "";
-
+    const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+    const isValidToken = token && token !== "null" && token !== "undefined" && token.trim() !== "";
     if (isValidToken) {
       window.location.href = "User.html";
     } else {
@@ -687,99 +510,70 @@ export function smoothScroll($wrapper, dir = 1) {
       openAuthModal();
     }
   }
-
   if (typeof window !== "undefined") {
     window.handleUserIconClick = handleUserIconClick;
     window.openAuthModal = openAuthModal;
     window.loadModalSearchData = loadModalSearchData;
   }
-
-  /* ==========================
-     USER ICON CLICKS (Mobile & Desktop)
-  ========================== */
-  $(document).on(
+  $2(document).on(
     "click",
     ".user-icon-link, .user-icon-link *, a[href*='User.html']:not(.btn-link), .fa-user, [data-auth-trigger]",
-    function (e) {
+    function(e) {
       handleUserIconClick(e);
-    },
+    }
   );
-
-  /* ==========================
-     FOOTER ACCOUNT LINKS LOGIN CHECK
-  ========================== */
-  $(document).on("click", ".footer-item a", function (e) {
-    const linkText = $(this).text().trim();
+  $2(document).on("click", ".footer-item a", function(e) {
+    const linkText = $2(this).text().trim();
     const loginRequiredLinks = [
       "My Account",
       "Shop details",
       "Shopping Cart",
-      "Order History",
+      "Order History"
     ];
-
     if (loginRequiredLinks.includes(linkText)) {
       const token = sessionStorage.getItem("token");
       if (!token) {
         e.preventDefault();
-        $("#authModal").modal("show");
+        $2("#authModal").modal("show");
       }
     }
   });
-
-  /* ==========================
-     MODAL SEARCH INPUT HANDLERS (inside IIFE for scope access)
-  ========================== */
-  $(document).on("input", "#modalSearchInput", function () {
+  $2(document).on("input", "#modalSearchInput", function() {
     const val = this.value;
     loadModalSearchData(val);
-
-    const isShopPage =
-      window.location.pathname.includes("shop.html");
+    const isShopPage = window.location.pathname.includes("shop.html");
     if (isShopPage && typeof handleSearch === "function") {
-      $("#shopSearchInput").val(val);
+      $2("#shopSearchInput").val(val);
       handleSearch(val);
     }
   });
-
-  $(document).on("keypress", "#modalSearchInput", function (e) {
+  $2(document).on("keypress", "#modalSearchInput", function(e) {
     if (e.which === 13) {
       e.preventDefault();
-      const query = $(this).val().trim();
+      const query = $2(this).val().trim();
       const isShopPage = window.location.pathname.includes("shop.html");
       if (isShopPage && typeof handleSearch === "function") {
-        $("#shopSearchInput").val(query);
+        $2("#shopSearchInput").val(query);
         handleSearch(query);
-        const searchModal = bootstrap.Modal.getInstance($("#searchModal")[0]);
+        const searchModal = bootstrap.Modal.getInstance($2("#searchModal")[0]);
         if (searchModal) searchModal.hide();
       } else if (query) {
         window.location.href = `shop.html?search=${encodeURIComponent(query)}`;
       }
     }
   });
-
 })(jQuery);
-
 function renderClinikallyProductCard(item, colClass = "") {
   const relativeImgUrl = item.imageUrl || "";
-  const fullImgUrl = relativeImgUrl.startsWith("http")
-    ? relativeImgUrl
-    : relativeImgUrl
-      ? BASE_URL + relativeImgUrl
-      : "img/product-default.jpg";
-
+  const fullImgUrl = relativeImgUrl.startsWith("http") ? relativeImgUrl : relativeImgUrl ? BASE_URL + relativeImgUrl : "img/product-default.jpg";
   const currentPrice = item.discountPrice ?? item.price;
   const mrp = item.discountPrice ? item.price : Math.round(item.price * 1.2);
-  const discountPct = Math.round(((mrp - currentPrice) / mrp) * 100);
+  const discountPct = Math.round((mrp - currentPrice) / mrp * 100);
   const showDiscount = discountPct > 0;
-
   const whatsappMessage = encodeURIComponent(
-    `🧴 *${item.name}*\n💰 Price: ₹${currentPrice}`,
+    `\u{1F9F4} *${item.name}*
+\u{1F4B0} Price: \u20B9${currentPrice}`
   );
-
-  const categoryName = typeof item.category === "string"
-    ? item.category
-    : (item.category?.name || item.Category || item.CategoryName || item.categoryName || "");
-
   return `
     <div class="${colClass}">
       <div class="rounded position-relative fruite-item h-100">
@@ -787,7 +581,7 @@ function renderClinikallyProductCard(item, colClass = "") {
           <a href="product-detail.html?id=${item.id}" class="d-flex align-items-center justify-content-center w-100 h-100">
             <img src="${fullImgUrl}" class="img-fluid rounded-top" onerror="this.onerror=null;this.src='img/product-sm-1.jpg'" alt="${item.name}" />
           </a>
-          ${categoryName ? `<span class="badge bg-secondary position-absolute product-card-category-badge">${categoryName}</span>` : ""}
+          ${item.category ? `<span class="badge bg-secondary position-absolute product-card-category-badge">${item.category}</span>` : ""}
         </div>
 
         <div class="p-4 border border-secondary border-top-0 rounded-bottom d-flex flex-column">
@@ -801,8 +595,8 @@ function renderClinikallyProductCard(item, colClass = "") {
           <p class="text-muted small product-desc d-none d-md-block mb-2">${item.description || ""}</p>
 
           <div class="d-flex align-items-baseline mb-2">
-            <span class="text-dark fw-bold fs-6">₹${currentPrice}</span>
-            ${mrp > currentPrice ? `<span class="text-muted text-decoration-line-through ms-2" style="font-size: 0.75rem;">₹${mrp}</span>` : ""}
+            <span class="text-dark fw-bold fs-6">\u20B9${currentPrice}</span>
+            ${mrp > currentPrice ? `<span class="text-muted text-decoration-line-through ms-2" style="font-size: 0.75rem;">\u20B9${mrp}</span>` : ""}
           </div>
 
           <div class="d-flex align-items-center gap-1 mt-auto">
@@ -827,53 +621,33 @@ function renderClinikallyProductCard(item, colClass = "") {
     </div>
   `;
 }
-
 async function loadProducts(category = "") {
   try {
     const res = await getAllProducts(category);
-    let products = safeArray(res);
+    let products = res.result || [];
     const $productList = $("#productList");
-
-    const isShopPage =
-      $("body").hasClass("shop-page") ||
-      window.location.pathname.includes("shop.html");
-
+    const isShopPage = $("body").hasClass("shop-page") || window.location.pathname.includes("shop.html");
     if (!isShopPage) {
       products = products.slice(0, 8);
     }
-
-    const colClass = isShopPage
-      ? "col-6 col-md-6 col-lg-4 col-xl-4" // 2 items per row on mobile!
-      : "col-6 col-md-6 col-lg-3 col-xl-3";
-
+    const colClass = isShopPage ? "col-6 col-md-6 col-lg-4 col-xl-4" : "col-6 col-md-6 col-lg-3 col-xl-3";
     $productList.empty();
-
     products.forEach((item) => {
-      const name = item.name || item.Name;
-      if (!name || name === "string") return;
+      if (!item.name || item.name === "string") return;
       $productList.append(renderClinikallyProductCard(item, colClass));
     });
   } catch (err) {
     console.error("Failed to load products", err);
   }
 }
-
-// $(document).ready(function () {
-//   loadProducts(); // loads all products
-// });
-
 let allProducts = [];
-
-// ✅ Central filter state - tracks all active filters
 const activeFilters = {
   category: "",
   priceUnder: "",
   priceSort: "",
-  productName: "",
+  productName: ""
 };
-
 function applyFilters() {
-  // ✅ Only send category, productName to API (priceUnder & priceSort handled in JS)
   const filters = {};
   if (activeFilters.category) filters.category = activeFilters.category;
   if (activeFilters.productName)
@@ -882,57 +656,40 @@ function applyFilters() {
 }
 let currentPage = 1;
 const PRODUCTS_PER_PAGE = 12;
-
 async function getFilterProducts(filters = {}) {
   try {
     let products = [];
     try {
       const res = await getProductsByFilter(filters);
-      products = safeArray(res);
+      products = res.result || res || [];
     } catch (e) {
       console.warn("getProductsByFilter failed, trying getAllProducts", e);
     }
-
-    // Fallback if API filter is empty but search or category is set
-    if (
-      (!products || products.length === 0) &&
-      (activeFilters.productName || activeFilters.category)
-    ) {
+    if ((!products || products.length === 0) && (activeFilters.productName || activeFilters.category)) {
       const allRes = await getAllProducts();
-      products = safeArray(allRes);
+      products = allRes.result || allRes || [];
       if (activeFilters.category) {
         const catLower = activeFilters.category.toLowerCase();
         products = products.filter(
-          (item) => (item.category || item.Category || "")?.toLowerCase() === catLower,
+          (item) => item.category?.toLowerCase() === catLower
         );
       }
     }
-
-    // Comprehensive client-side search matching (name, description, category)
     if (activeFilters.productName) {
       const queryLower = activeFilters.productName.toLowerCase().trim();
       if (queryLower) {
         products = products.filter(
-          (item) =>
-            ((item.name || item.Name || "") && (item.name || item.Name).toLowerCase().includes(queryLower)) ||
-            ((item.description || item.Description || "") && (item.description || item.Description).toLowerCase().includes(queryLower)) ||
-            ((item.category || item.Category || "") && (item.category || item.Category).toLowerCase().includes(queryLower)),
+          (item) => item.name && item.name.toLowerCase().includes(queryLower) || item.description && item.description.toLowerCase().includes(queryLower) || item.category && item.category.toLowerCase().includes(queryLower)
         );
       }
     }
-
-    // ✅ Frontend price filter on discountPrice (because API filters on 'price', not 'discountPrice')
-    const maxPrice = activeFilters.priceUnder
-      ? Number(activeFilters.priceUnder)
-      : null;
+    const maxPrice = activeFilters.priceUnder ? Number(activeFilters.priceUnder) : null;
     if (maxPrice && maxPrice > 0) {
       products = products.filter((item) => {
         const displayPrice = item.discountPrice ?? item.price;
         return Number(displayPrice) <= maxPrice;
       });
     }
-
-    // ✅ Frontend price sort on discountPrice
     if (activeFilters.priceSort) {
       products = [...products].sort((a, b) => {
         const pa = Number(a.discountPrice ?? a.price);
@@ -940,25 +697,20 @@ async function getFilterProducts(filters = {}) {
         return activeFilters.priceSort == 1 ? pa - pb : pb - pa;
       });
     }
-
     allProducts = products;
     currentPage = 1;
-
     renderPaginatedProducts();
     renderPagination();
   } catch (err) {
     console.error("Filter load failed", err);
   }
 }
-
 function renderPaginatedProducts() {
   const $productList = $("#productList");
   $productList.empty();
-
   if (!allProducts || allProducts.length === 0) {
     const searchVal = $("#shopSearchInput").val()?.trim() || "";
     const activeCat = $("#categoryTabs a.active").data("category") || "";
-
     const emptyHtml = `
       <div class="col-12 text-center py-5">
         <div class="mb-3">
@@ -976,20 +728,11 @@ function renderPaginatedProducts() {
     $productList.html(emptyHtml);
     return;
   }
-
   const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
   const end = start + PRODUCTS_PER_PAGE;
-
   const productsToShow = allProducts.slice(start, end);
-
-  const isShopPage =
-    $("body").hasClass("shop-page") ||
-    window.location.pathname.includes("shop.html");
-
-  const colClass = isShopPage
-    ? "col-6 col-md-6 col-lg-4 col-xl-4" // 2 items per row on mobile!
-    : "col-6 col-md-6 col-lg-3 col-xl-3";
-
+  const isShopPage = $("body").hasClass("shop-page") || window.location.pathname.includes("shop.html");
+  const colClass = isShopPage ? "col-6 col-md-6 col-lg-4 col-xl-4" : "col-6 col-md-6 col-lg-3 col-xl-3";
   productsToShow.forEach((item) => {
     if (!item.name || item.name === "string") return;
     $productList.append(renderClinikallyProductCard(item, colClass));
@@ -998,157 +741,39 @@ function renderPaginatedProducts() {
 function renderPagination() {
   const $pagination = $("#pagination");
   $pagination.empty();
-
   const totalPages = Math.ceil(allProducts.length / PRODUCTS_PER_PAGE);
-
   if (totalPages <= 1) return;
-
-  // Previous
   $pagination.append(`
-    <a href="#" class="rounded ${currentPage === 1 ? "disabled" : ""}" data-page="prev" title="Previous Page">&laquo;</a>
+    <a href="#" class="rounded ${currentPage === 1 ? "disabled" : ""}" data-page="prev">&laquo;</a>
   `);
-
-  const maxVisiblePages = 5;
-  let startPage = 1;
-  let endPage = totalPages;
-
-  if (totalPages > maxVisiblePages) {
-    startPage = Math.max(1, currentPage - 2);
-    endPage = startPage + maxVisiblePages - 1;
-
-    if (endPage > totalPages) {
-      endPage = totalPages;
-      startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
-  }
-
-  // First Page if startPage > 1
-  if (startPage > 1) {
-    $pagination.append(`
-      <a href="#" class="rounded ${1 === currentPage ? "active" : ""}" data-page="1">1</a>
-    `);
-    if (startPage > 2) {
-      $pagination.append(`<span class="pagination-ellipsis">&hellip;</span>`);
-    }
-  }
-
-  // Main window pages (max 5)
-  for (let i = startPage; i <= endPage; i++) {
+  for (let i = 1; i <= totalPages; i++) {
     $pagination.append(`
       <a href="#" class="rounded ${i === currentPage ? "active" : ""}" data-page="${i}">
         ${i}
       </a>
     `);
   }
-
-  // Last Page if endPage < totalPages
-  if (endPage < totalPages) {
-    if (endPage < totalPages - 1) {
-      $pagination.append(`<span class="pagination-ellipsis">&hellip;</span>`);
-    }
-    $pagination.append(`
-      <a href="#" class="rounded ${totalPages === currentPage ? "active" : ""}" data-page="${totalPages}">${totalPages}</a>
-    `);
-  }
-
-  // Next
   $pagination.append(`
-    <a href="#" class="rounded ${currentPage === totalPages ? "disabled" : ""}" data-page="next" title="Next Page">&raquo;</a>
+    <a href="#" class="rounded ${currentPage === totalPages ? "disabled" : ""}" data-page="next">&raquo;</a>
   `);
 }
-
-$(document).on("click", "#pagination a", function (e) {
+$(document).on("click", "#pagination a", function(e) {
   e.preventDefault();
-
   const page = $(this).data("page");
   const totalPages = Math.ceil(allProducts.length / PRODUCTS_PER_PAGE);
-
   if (page === "prev" && currentPage > 1) currentPage--;
   else if (page === "next" && currentPage < totalPages) currentPage++;
   else if (!isNaN(page)) currentPage = page;
-
   renderPaginatedProducts();
   renderPagination();
-
   $("html, body").animate(
     { scrollTop: $("#productList").offset().top - 100 },
-    300,
+    300
   );
 });
-
-// async function getFilterProducts(filters = {}) {
-//   try {
-//     const res = await getProductsByFilter(filters);
-//     console.log("res---", res);
-//     const products = res.result || [];
-//     const $productList = $("#productList");
-
-//     $productList.empty();
-
-//     products.forEach((item) => {
-//       if (!item.name || item.name === "string") return;
-
-//       const whatsappMessage = encodeURIComponent(
-//         `🧴 *${item.name}*\n\n💰 Price: ₹${item.discountPrice ?? item.price}`,
-//       );
-
-//       const productCard = `
-//         <div class="col-12 col-md-6 col-lg-4">
-//           <div class="rounded position-relative fruite-item h-100">
-
-//             <div class="fruite-img">
-//               <img src="${item.imageUrl}" class="img-fluid w-100 rounded-top" />
-//             </div>
-
-//             <div class="text-white bg-secondary px-3 py-1 rounded position-absolute"
-//                  style="top:10px; left:10px">
-//               ${item.category}
-//             </div>
-
-//             <div class="p-4 border border-secondary border-top-0 rounded-bottom">
-//               <h4>${item.name}</h4>
-//               <p class="text-muted small">${item.description}</p>
-
-//               <div class="d-flex justify-content-between align-items-center">
-//                 <p class="text-dark fs-5 fw-bold mb-0">
-//                   ₹${item.discountPrice ?? item.price}
-//                 </p>
-
-//                 <div class="d-flex gap-2">
-//                   <a class="btn border border-secondary rounded-pill px-2 text-primary">
-//                     <i class="fa fa-shopping-bag me-2"></i>Add to cart
-//                   </a>
-
-//                   <a href="https://wa.me/919461972759?text=${whatsappMessage}"
-//                      target="_blank"
-//                      class="border-success rounded-pill px-1 text-success whatsapp-btn">
-//                     <i class="fab fa-whatsapp"></i>
-//                   </a>
-//                 </div>
-//               </div>
-//             </div>
-
-//           </div>
-//         </div>
-//       `;
-
-//       $productList.append(productCard);
-//     });
-//   } catch (err) {
-//     console.error("Filter load failed", err);
-//   }
-// }
-
-// $("#searchInput").on("input", function () {
-//   getFilterProducts({
-//     productName: $(this).val().trim(),
-//   });
-// });
 let searchDebounceTimer = null;
-
 function handleSearch(value) {
   clearTimeout(searchDebounceTimer);
-
   const query = value.trim();
   const $clearBtn = $("#clearShopSearchBtn");
   if (query.length > 0) {
@@ -1156,23 +781,18 @@ function handleSearch(value) {
   } else {
     $clearBtn.addClass("d-none");
   }
-
   searchDebounceTimer = setTimeout(() => {
     activeFilters.productName = query;
     applyFilters();
   }, 300);
 }
-
-// Shop search input
-$(document).on("input", "#shopSearchInput", function () {
+$(document).on("input", "#shopSearchInput", function() {
   handleSearch(this.value);
 });
-
-// Click handler for search icon inside shop input box
 $(document).on(
   "click",
   "#shopSearchIconBtn, #shopSearchIconBtn *",
-  function (e) {
+  function(e) {
     e.preventDefault();
     clearTimeout(searchDebounceTimer);
     const query = $("#shopSearchInput").val()?.trim() || "";
@@ -1186,11 +806,9 @@ $(document).on(
       $("#clearShopSearchBtn").addClass("d-none");
     }
     applyFilters();
-  },
+  }
 );
-
-// Trigger search when pressing Enter key in shop search input
-$(document).on("keypress", "#shopSearchInput", function (e) {
+$(document).on("keypress", "#shopSearchInput", function(e) {
   if (e.which === 13) {
     e.preventDefault();
     clearTimeout(searchDebounceTimer);
@@ -1207,9 +825,7 @@ $(document).on("keypress", "#shopSearchInput", function (e) {
     applyFilters();
   }
 });
-
-// Clear shop search button
-$(document).on("click", "#clearShopSearchBtn", function () {
+$(document).on("click", "#clearShopSearchBtn", function() {
   $("#shopSearchInput").val("").focus();
   $(this).addClass("d-none");
   $("#categoryTabs a").removeClass("active");
@@ -1218,97 +834,68 @@ $(document).on("click", "#clearShopSearchBtn", function () {
   activeFilters.category = "";
   applyFilters();
 });
-
-// Reset all filters button
-$(document).on("click", "#clearAllFiltersBtn", function () {
+$(document).on("click", "#clearAllFiltersBtn", function() {
   $("#shopSearchInput").val("");
   $("#clearShopSearchBtn").addClass("d-none");
   $("#categoryTabs a").removeClass("active");
   $("#categoryTabs a[data-category='']").addClass("active");
-  // Reset price slider to 0
-  $("#rangeInput").val(0);
-  $("#amount").val("0");
-  // Reset all active filters
+  const maxVal = parseInt($("#rangeInput").attr("max") || "500", 10);
+  $("#rangeInput").val(maxVal);
+  $("#amount").val(maxVal + "+");
   activeFilters.category = "";
   activeFilters.priceUnder = "";
   activeFilters.priceSort = "";
   activeFilters.productName = "";
   applyFilters();
 });
-
-// Toggle extra mobile filters (Categories, Price slider, Featured)
-$(document).on("click", "#toggleMobileFiltersBtn", function () {
+$(document).on("click", "#toggleMobileFiltersBtn", function() {
   const $filters = $("#mobileFiltersContainer");
   const isHidden = $filters.hasClass("d-none") || !$filters.hasClass("d-block");
-
   if (isHidden) {
     $filters.removeClass("d-none").addClass("d-block");
     $(this).html('<i class="fas fa-times me-2"></i>Hide Filters');
-    $(this)
-      .addClass("btn-primary text-white")
-      .removeClass("btn-outline-primary");
+    $(this).addClass("btn-primary text-white").removeClass("btn-outline-primary");
   } else {
     $filters.removeClass("d-block").addClass("d-none");
     $(this).html('<i class="fas fa-sliders-h me-2"></i>Filters');
-    $(this)
-      .addClass("btn-outline-primary")
-      .removeClass("btn-primary text-white");
+    $(this).addClass("btn-outline-primary").removeClass("btn-primary text-white");
   }
 });
-
-
-// ✅ Price slider — works with all active filters combined
-$(document).on("input", "#rangeInput", function () {
+$(document).on("input", "#rangeInput", function() {
   const val = parseInt(this.value, 10);
-
-  if (val === 0) {
+  const maxVal = parseInt($(this).attr("max") || "500", 10);
+  if (val >= maxVal) {
     activeFilters.priceUnder = "";
-    $("#amount").val("0");
+    $("#amount").val(maxVal + "+");
   } else {
     activeFilters.priceUnder = val;
     $("#amount").val(val);
   }
-
   applyFilters();
 });
-
-/* ==========================
-     Custom Premium Sorting Dropdown
-  ========================== */
-$(document).on("click", "#sortDropdownBtn", function (e) {
+$(document).on("click", "#sortDropdownBtn", function(e) {
   e.stopPropagation();
   $(".premium-sort-container").toggleClass("active");
 });
-
-$(document).on("click", ".sort-option", function () {
+$(document).on("click", ".sort-option", function() {
   const value = $(this).data("value");
   const text = $(this).text().trim();
-
-  // UI Updates
   $("#currentSortText").text(text);
   $(".sort-option").removeClass("active");
   $(this).addClass("active");
   $(".premium-sort-container").removeClass("active");
-
-  // Sync Hidden Native Select & Trigger Logic
   $("#fruits").val(value).trigger("change");
 });
-
-$(document).on("click", function (e) {
+$(document).on("click", function(e) {
   if (!$(e.target).closest(".premium-sort-container").length) {
     $(".premium-sort-container").removeClass("active");
   }
 });
-
-$("#fruits").on("change", function () {
+$("#fruits").on("change", function() {
   const value = $(this).val();
   activeFilters.priceSort = value === "low" ? 1 : value === "high" ? 2 : "";
   applyFilters();
 });
-
-/**
- * 🧴 Custom Icon Mapping for SkinDekho Categories
- */
 function getCategoryIcon(category) {
   const name = category ? category.trim() : "";
   const iconMap = {
@@ -1319,12 +906,10 @@ function getCategoryIcon(category) {
     "Sunscreen Lotion": "fa-sun",
     "Hair Care": "fa-hand-holding-heart",
     Acne: "fa-notes-medical",
-    Tablets: "fa-pills",
+    Tablets: "fa-pills"
   };
-
   return iconMap[name] || "fa-tag";
 }
-
 async function loadCategories() {
   try {
     const res = await getAllCategories();
@@ -1333,8 +918,6 @@ async function loadCategories() {
     const $categoryTabs = $("#categoryTabs");
     if ($categoryTabs.length === 0) return;
     $categoryTabs.empty();
-
-    // ✅ All category
     $categoryTabs.append(`
       <li>
         <div class="d-flex justify-content-between fruite-name">
@@ -1344,12 +927,9 @@ async function loadCategories() {
         </div>
       </li>
     `);
-
     categories.forEach((item) => {
       if (!item.category || item.category === "string") return;
-
       const iconClass = getCategoryIcon(item.category);
-
       $categoryTabs.append(`
         <li>
           <div class="d-flex justify-content-between fruite-name">
@@ -1365,31 +945,33 @@ async function loadCategories() {
     console.error("Failed to load categories", err);
   }
 }
-
-// ✅ Cycles through pastel colors matching the user reference
 const pastelBackgrounds = [
-  "#ffe8d6", // Peach
-  "#e8e8ff", // Lavender
-  "#d8f3dc", // Mint Green
-  "#ffe5ec", // Soft Pink
-  "#d8f3f3", // Light Aqua
-  "#ffebd6", // Light Orange
-  "#f0e6ff", // Light Purple
-  "#ffe5d9", // Soft Coral
+  "#ffe8d6",
+  // Peach
+  "#e8e8ff",
+  // Lavender
+  "#d8f3dc",
+  // Mint Green
+  "#ffe5ec",
+  // Soft Pink
+  "#d8f3f3",
+  // Light Aqua
+  "#ffebd6",
+  // Light Orange
+  "#f0e6ff",
+  // Light Purple
+  "#ffe5d9"
+  // Soft Coral
 ];
-
 async function loadNavbarCategories() {
   try {
     const res = await getAllCategories();
     const categories = res.result || res || [];
     const $dropdowns = $(".navbar-categories-dropdown");
     if ($dropdowns.length === 0) return;
-
-    $dropdowns.each(function () {
+    $dropdowns.each(function() {
       const $dropdown = $(this);
-      // Keep "All Products" link, remove other static dropdown links
       $dropdown.find(".dropdown-item:not([href='shop.html'])").remove();
-
       categories.forEach((item) => {
         if (!item.category || item.category === "string") return;
         $dropdown.append(`
@@ -1401,34 +983,24 @@ async function loadNavbarCategories() {
     console.error("Failed to load navbar categories", err);
   }
 }
-
 async function loadHomeCategories() {
   const $container = $("#homeCategoriesList");
   if ($container.length === 0) return;
-
   try {
     const res = await getAllCategories();
     const categories = res.result || res || [];
     $container.empty();
-
     if (categories.length === 0) {
       $container.html(
-        '<div class="col-12 text-center py-4 text-muted">No categories found.</div>',
+        '<div class="col-12 text-center py-4 text-muted">No categories found.</div>'
       );
       return;
     }
-
     categories.forEach((item, index) => {
       if (!item.category || item.category === "string") return;
-
       const bgColor = pastelBackgrounds[index % pastelBackgrounds.length];
       const relativeImgUrl = item.imageUrl || "";
-      const fullImgUrl = relativeImgUrl.startsWith("http")
-        ? relativeImgUrl
-        : relativeImgUrl
-          ? BASE_URL + relativeImgUrl
-          : "img/product-default.jpg"; // fallback
-
+      const fullImgUrl = relativeImgUrl.startsWith("http") ? relativeImgUrl : relativeImgUrl ? BASE_URL + relativeImgUrl : "img/product-default.jpg";
       const cardHtml = `
         <div class="category-card" onclick="window.location.href='shop.html?category=${encodeURIComponent(item.category)}'">
           <div class="category-card-img-wrapper" style="background-color: ${bgColor}">
@@ -1441,174 +1013,148 @@ async function loadHomeCategories() {
       `;
       $container.append(cardHtml);
     });
-
-    // Attach horizontal scroll controls
-
-
-    $(document)
-      .off("click", ".category-next-btn")
-      .on("click", ".category-next-btn", function () {
-        smoothScroll($(".category-carousel-wrapper"), 1);
-      });
-
-    $(document)
-      .off("click", ".category-prev-btn")
-      .on("click", ".category-prev-btn", function () {
-        smoothScroll($(".category-carousel-wrapper"), -1);
-      });
+    $(document).off("click", ".category-next-btn").on("click", ".category-next-btn", function() {
+      const $wrapper = $(".category-carousel-wrapper");
+      const scrollAmount = $wrapper.width() * 0.75;
+      $wrapper.animate(
+        { scrollLeft: $wrapper.scrollLeft() + scrollAmount },
+        400
+      );
+    });
+    $(document).off("click", ".category-prev-btn").on("click", ".category-prev-btn", function() {
+      const $wrapper = $(".category-carousel-wrapper");
+      const scrollAmount = $wrapper.width() * 0.75;
+      $wrapper.animate(
+        { scrollLeft: $wrapper.scrollLeft() - scrollAmount },
+        400
+      );
+    });
   } catch (err) {
     console.error("Failed to load home page categories", err);
     $container.html(
-      '<div class="col-12 text-center py-4 text-danger">Failed to load categories.</div>',
+      '<div class="col-12 text-center py-4 text-danger">Failed to load categories.</div>'
     );
   }
 }
-
 async function loadLatestProducts() {
   const $container = $("#latestProductList");
   if ($container.length === 0) return;
-
   try {
     const res = await getLatestProducts();
-    const products = safeArray(res);
+    const products = res.result || res || [];
     $container.empty();
-
     if (products.length === 0) {
       $container.html(
-        '<div class="col-12 text-center py-4 text-muted">No latest products found.</div>',
+        '<div class="col-12 text-center py-4 text-muted">No latest products found.</div>'
       );
       return;
     }
-
     products.forEach((item) => {
-      const name = item.name || item.Name;
-      if (!name || name === "string") return;
+      if (!item.name || item.name === "string") return;
       $container.append(
-        renderClinikallyProductCard(item, "latest-product-card"),
+        renderClinikallyProductCard(item, "latest-product-card")
       );
     });
-
-    // Attach horizontal scroll controls
-    $(document)
-      .off("click", ".latest-next-btn")
-      .on("click", ".latest-next-btn", function () {
-        smoothScroll($(".latest-carousel-wrapper"), 1);
-      });
-
-    $(document)
-      .off("click", ".latest-prev-btn")
-      .on("click", ".latest-prev-btn", function () {
-        smoothScroll($(".latest-carousel-wrapper"), -1);
-      });
+    $(document).off("click", ".latest-next-btn").on("click", ".latest-next-btn", function() {
+      const $wrapper = $(".latest-carousel-wrapper");
+      const scrollAmount = $wrapper.width() * 0.75;
+      $wrapper.animate(
+        { scrollLeft: $wrapper.scrollLeft() + scrollAmount },
+        400
+      );
+    });
+    $(document).off("click", ".latest-prev-btn").on("click", ".latest-prev-btn", function() {
+      const $wrapper = $(".latest-carousel-wrapper");
+      const scrollAmount = $wrapper.width() * 0.75;
+      $wrapper.animate(
+        { scrollLeft: $wrapper.scrollLeft() - scrollAmount },
+        400
+      );
+    });
   } catch (err) {
     console.error("Failed to load latest products", err);
     $container.html(
-      '<div class="col-12 text-center py-4 text-danger">Failed to load latest products.</div>',
+      '<div class="col-12 text-center py-4 text-danger">Failed to load latest products.</div>'
     );
   }
 }
-
-$(document).on("click", "#categoryTabs a", function (e) {
-  const isShopPage =
-    $("body").hasClass("shop-page") ||
-    window.location.pathname.includes("shop.html");
-
+$(document).on("click", "#categoryTabs a", function(e) {
+  const isShopPage = $("body").hasClass("shop-page") || window.location.pathname.includes("shop.html");
   if (!isShopPage) {
-    // On home page, allow the browser to follow the href link
     return;
   }
-
   e.preventDefault();
-
   $("#categoryTabs a").removeClass("active");
   $(this).addClass("active");
-
   const category = $(this).data("category") || "";
-
-  // ✅ Update central filter state & reset price slider
   activeFilters.category = category;
-  activeFilters.priceUnder = ""; // reset price filter on category change
-
-  // ✅ Reset slider UI to max (show all)
+  activeFilters.priceUnder = "";
   const $slider = $("#rangeInput");
   const maxVal = parseInt($slider.attr("max") || "500", 10);
   $slider.val(maxVal);
   $("#amount").val(maxVal + "+");
-
   applyFilters();
 });
-
 async function loadHomeFeaturedProducts() {
   const $container = $("#featuredProductsHomeList");
   if ($container.length === 0) return;
-
   try {
     const res = await getFeaturedProducts();
-    const products = safeArray(res);
+    const products = res.result || res || [];
     $container.empty();
-
     if (products.length === 0) {
       $container.html(
-        '<div class="col-12 text-center py-4 text-muted">No featured products found.</div>',
+        '<div class="col-12 text-center py-4 text-muted">No featured products found.</div>'
       );
       return;
     }
-
     products.forEach((item) => {
-      const name = item.name || item.Name;
-      if (!name || name === "string") return;
+      if (!item.name || item.name === "string") return;
       $container.append(
-        renderClinikallyProductCard(item, "featured-product-card"),
+        renderClinikallyProductCard(item, "featured-product-card")
       );
     });
-
-    // Attach horizontal scroll controls
-    $(document)
-      .off("click", ".featured-next-btn")
-      .on("click", ".featured-next-btn", function () {
-        smoothScroll($(".featured-carousel-wrapper"), 1);
-      });
-
-    $(document)
-      .off("click", ".featured-prev-btn")
-      .on("click", ".featured-prev-btn", function () {
-        smoothScroll($(".featured-carousel-wrapper"), -1);
-      });
+    $(document).off("click", ".featured-next-btn").on("click", ".featured-next-btn", function() {
+      const $wrapper = $(".featured-carousel-wrapper");
+      const scrollAmount = $wrapper.width() * 0.75;
+      $wrapper.animate(
+        { scrollLeft: $wrapper.scrollLeft() + scrollAmount },
+        400
+      );
+    });
+    $(document).off("click", ".featured-prev-btn").on("click", ".featured-prev-btn", function() {
+      const $wrapper = $(".featured-carousel-wrapper");
+      const scrollAmount = $wrapper.width() * 0.75;
+      $wrapper.animate(
+        { scrollLeft: $wrapper.scrollLeft() - scrollAmount },
+        400
+      );
+    });
   } catch (err) {
     console.error("Failed to load home page featured products", err);
     $container.html(
-      '<div class="col-12 text-center py-4 text-danger">Failed to load featured products.</div>',
+      '<div class="col-12 text-center py-4 text-danger">Failed to load featured products.</div>'
     );
   }
 }
-
 let allFeaturedProducts = [];
 let showAllFeatured = false;
-
 async function loadFeaturedProducts() {
   try {
     const res = await getFeaturedProducts();
     allFeaturedProducts = res || [];
-
     renderFeaturedProducts();
   } catch (err) {
     console.error("Failed to load featured products", err);
   }
 }
-
 function renderFeaturedProducts() {
   const $container = $("#featuredProductList");
   const $viewMoreBtn = $("#viewMoreFeatured");
-
   $container.empty();
-
-  const productsToShow = showAllFeatured
-    ? allFeaturedProducts
-    : allFeaturedProducts.slice(0, 3);
-
+  const productsToShow = showAllFeatured ? allFeaturedProducts : allFeaturedProducts.slice(0, 3);
   productsToShow.forEach((item) => {
     if (!item.name || item.name === "string") return;
-
     const card = `
       <div class="d-flex align-items-center justify-content-start mb-3">
         <div class="rounded me-4" style="width: 100px; height: 100px">
@@ -1623,32 +1169,24 @@ function renderFeaturedProducts() {
           </div>
 
           <div class="d-flex mb-2">
-            <h5 class="fw-bold me-2">₹${item.discountPrice ?? item.price}</h5>
-            ${item.discountPrice
-        ? `<h5 class="text-danger text-decoration-line-through">₹${item.price}</h5>`
-        : ""
-      }
+            <h5 class="fw-bold me-2">\u20B9${item.discountPrice ?? item.price}</h5>
+            ${item.discountPrice ? `<h5 class="text-danger text-decoration-line-through">\u20B9${item.price}</h5>` : ""}
           </div>
         </div>
       </div>
     `;
-
     $container.append(card);
   });
-
-  // ✅ Show / hide View More button
   if (allFeaturedProducts.length > 3) {
     $viewMoreBtn.show().text(showAllFeatured ? "View Less" : "View More");
   } else {
     $viewMoreBtn.hide();
   }
 }
-
-$(document).on("click", "#viewMoreFeatured", function () {
+$(document).on("click", "#viewMoreFeatured", function() {
   showAllFeatured = !showAllFeatured;
   renderFeaturedProducts();
 });
-
 async function loadDashboardStats() {
   console.log("Attempting to load dashboard stats...");
   try {
@@ -1666,21 +1204,14 @@ async function loadDashboardStats() {
     console.error("Failed to load dashboard stats:", error);
   }
 }
-
-$(document).ready(function () {
+$(document).ready(function() {
   const urlParams = new URLSearchParams(window.location.search);
   const categoryParam = urlParams.get("category");
   const searchParam = urlParams.get("search");
-
-  if (
-    $("body").hasClass("shop-page") ||
-    window.location.pathname.includes("shop.html")
-  ) {
-    // ✅ Init price slider to 0
-    $("#rangeInput").val(0);
-    $("#amount").val("0");
-
-    // 1. Trigger product fetching immediately (with search query or category filter)
+  if ($("body").hasClass("shop-page") || window.location.pathname.includes("shop.html")) {
+    const sliderMax = parseInt($("#rangeInput").attr("max") || "500", 10);
+    $("#rangeInput").val(sliderMax);
+    $("#amount").val(sliderMax + "+");
     if (searchParam && searchParam.trim()) {
       $("#shopSearchInput").val(searchParam.trim());
       $("#clearShopSearchBtn").removeClass("d-none");
@@ -1692,13 +1223,11 @@ $(document).ready(function () {
     } else {
       applyFilters();
     }
-
-    // 2. Load categories list asynchronously and highlight active tab
     loadCategories().then(() => {
       if (categoryParam && categoryParam.trim()) {
         const targetCategory = categoryParam.trim().toLowerCase();
         $("#categoryTabs a").removeClass("active");
-        $("#categoryTabs a").each(function () {
+        $("#categoryTabs a").each(function() {
           const cat = $(this).data("category");
           if (cat && cat.toString().trim().toLowerCase() === targetCategory) {
             $(this).addClass("active");
@@ -1706,7 +1235,6 @@ $(document).ready(function () {
         });
       }
     });
-
     loadFeaturedProducts();
   }
   loadNavbarCategories();
@@ -1716,43 +1244,32 @@ $(document).ready(function () {
   loadDashboardStats();
   syncCartBadge();
 });
-
-/* ==========================
-   Add to Cart Logic (API Version)
- ========================== */
-$(document).on("click", ".add-to-cart-btn", async function (e) {
+$(document).on("click", ".add-to-cart-btn", async function(e) {
   e.preventDefault();
-
   const productId = $(this).data("id");
   const productName = $(this).data("name") || "Product";
   const productPrice = $(this).data("price");
   const productImg = $(this).data("img") || "";
   const token = sessionStorage.getItem("token");
-
   const $btn = $(this);
   const originalHtml = $btn.html();
-  $btn
-    .prop("disabled", true)
-    .html(
-      '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...',
-    );
-
+  $btn.prop("disabled", true).html(
+    '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...'
+  );
   try {
     if (token) {
-      // ✅ Logged in — use API
       const res = await addToCartAPI(productId, 1, token);
       if (res.success) {
         showToast(
           `<strong>${productName}</strong> has been added to your cart.`,
           "success",
-          "Added to Cart",
+          "Added to Cart"
         );
         syncCartBadge();
       } else {
         throw new Error(res.message || "Failed to add to cart");
       }
     } else {
-      // ✅ Guest — save to localStorage, login required only at checkout
       const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
       const existing = guestCart.find((item) => item.id == productId);
       if (existing) {
@@ -1763,22 +1280,19 @@ $(document).on("click", ".add-to-cart-btn", async function (e) {
           name: productName,
           price: productPrice,
           imageUrl: productImg,
-          quantity: 1,
+          quantity: 1
         });
       }
       localStorage.setItem("guestCart", JSON.stringify(guestCart));
-
-      // Update cart badge
       const totalItems = guestCart.reduce(
         (sum, item) => sum + item.quantity,
-        0,
+        0
       );
       $(".fa-shopping-bag").next("span").text(totalItems);
-
       showToast(
         `<strong>${productName}</strong> added to cart. <a href="cart.html" class="text-white fw-bold">View Cart</a>`,
         "success",
-        "Added to Cart",
+        "Added to Cart"
       );
     }
   } catch (err) {
@@ -1788,101 +1302,69 @@ $(document).on("click", ".add-to-cart-btn", async function (e) {
     $btn.prop("disabled", false).html(originalHtml);
   }
 });
-
 export async function syncCartBadge() {
   const token = sessionStorage.getItem("token");
   if (!token) {
-    // ✅ Show guest cart count from localStorage
     const guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
     const guestTotal = guestCart.reduce(
       (sum, item) => sum + (item.quantity || 1),
-      0,
+      0
     );
     $(".fa-shopping-bag").next("span").text(guestTotal);
     $(".mobile-cart-badge, .cart-count-badge, .nav-cart-count").text(guestTotal);
     return;
   }
-
   try {
     const res = await getCartAPI(token);
     const cartItems = res.result?.items || res.result || [];
-    const totalItems = Array.isArray(cartItems)
-      ? cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0)
-      : 0;
-
+    const totalItems = Array.isArray(cartItems) ? cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0) : 0;
     $(".fa-shopping-bag").next("span").text(totalItems);
     $(".mobile-cart-badge, .cart-count-badge, .nav-cart-count").text(totalItems);
   } catch (err) {
     console.error("Failed to sync cart badge", err);
   }
 }
-
 function updateCartBadge() {
-  // Legacy function for session storage - kept for compatibility but syncCartBadge is preferred now
   const cart = JSON.parse(sessionStorage.getItem("cart")) || [];
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   $(".fa-shopping-bag").next("span").text(totalItems);
   $(".mobile-cart-badge, .cart-count-badge, .nav-cart-count").text(totalItems);
 }
-
-/* ==========================
-   Contact Form Logic
-========================== */
 import { sendContactMessage } from "./contact.js";
-
-$(document).on("submit", "#contactForm", async function (e) {
+$(document).on("submit", "#contactForm", async function(e) {
   e.preventDefault();
-
   const name = $(this).find("[name='name']").val();
   const email = $(this).find("[name='email']").val();
   const message = $(this).find("[name='message']").val();
-
   const $submitBtn = $("#contactSubmitBtn");
   const $spinner = $submitBtn.find(".spinner-border");
   const $messageDiv = $("#contactMessage");
-
   $submitBtn.prop("disabled", true);
   $spinner.removeClass("d-none");
   $messageDiv.removeClass("text-success text-danger").text("");
-
   try {
     const res = await sendContactMessage({ name, email, message });
     console.log("res:::", res);
-
-    $messageDiv
-      .addClass("text-success")
-      .text("Message sent successfully! We will get back to you shortly.");
+    $messageDiv.addClass("text-success").text("Message sent successfully! We will get back to you shortly.");
     setTimeout(() => {
       $messageDiv.text("").removeClass("text-success");
-    }, 3000);
+    }, 3e3);
     this.reset();
   } catch (err) {
     console.error("Contact Error:", err);
-    $messageDiv
-      .addClass("text-danger")
-      .text(err.message || "Failed to send message. Please try again.");
+    $messageDiv.addClass("text-danger").text(err.message || "Failed to send message. Please try again.");
   } finally {
     $submitBtn.prop("disabled", false);
     $spinner.addClass("d-none");
   }
 });
-
-/* ==========================
-   Active Navbar Link Logic
-========================== */
-$(document).ready(function () {
-  const currentLocation =
-    window.location.pathname.split("/").pop() || "home.html";
-  $(".navbar-nav .nav-link").each(function () {
+$(document).ready(function() {
+  const currentLocation = window.location.pathname.split("/").pop() || "home.html";
+  $(".navbar-nav .nav-link").each(function() {
     const $this = $(this);
     const href = $this.attr("href");
-    const isProductsPage =
-      currentLocation === "shop.html" ||
-      currentLocation === "product-detail.html";
-    if (
-      href === currentLocation ||
-      (isProductsPage && $this.text().trim() === "Products")
-    ) {
+    const isProductsPage = currentLocation === "shop.html" || currentLocation === "product-detail.html";
+    if (href === currentLocation || isProductsPage && $this.text().trim() === "Products") {
       $(".navbar-nav .nav-link").removeClass("active");
       $this.addClass("active");
     }

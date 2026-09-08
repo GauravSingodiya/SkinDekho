@@ -1,23 +1,16 @@
-// products.js
 import apiRequest from "./api/apiClient.js";
 import { API } from "./api/endpoints.js";
-
 export function getAllProducts(category = "") {
-  const url = category
-    ? `${API.PRODUCTS.GET_ALL}/${encodeURIComponent(category)}`
-    : API.PRODUCTS.GET_ALL;
-
+  const url = category ? `${API.PRODUCTS.GET_ALL}/${encodeURIComponent(category)}` : API.PRODUCTS.GET_ALL;
   return apiRequest(url, "GET");
 }
-
 export function getProductsByFilter({
   category = "",
   priceUnder = "",
   priceSort = "",
-  productName = "",
+  productName = ""
 } = {}) {
   const params = new URLSearchParams();
-
   if (category) params.append("category", category);
   if (priceUnder) params.append("priceUnder", priceUnder);
   if (priceSort) params.append("priceSort", priceSort);
@@ -28,20 +21,16 @@ export function getProductsByFilter({
   );
   return apiRequest(`${API.PRODUCTS.FILTER}?${params.toString()}`, "GET");
 }
-
 export function getAllCategories() {
   return apiRequest(API.PRODUCTS.CATEGORIES, "GET");
 }
-
 export function getFeaturedProducts() {
   return apiRequest(API.PRODUCTS.FEATURED, "GET");
 }
-
 export async function getProductById(id) {
   const res = await apiRequest(API.PRODUCTS.GET_BY_ID(id), "GET");
-  return res ? (res.result || res.data || res) : null;
+  return res.result;
 }
-
 export function getLatestProducts() {
   return apiRequest(API.PRODUCTS.LATEST, "GET");
 }

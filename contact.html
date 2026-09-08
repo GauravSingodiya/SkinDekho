@@ -67,54 +67,78 @@
       </div>
     </div>
     <div class="container px-0">
-      <nav class="navbar navbar-light bg-white navbar-expand-xl">
-        <!-- 🔹 Logo -->
-        <a href="home.html" class="navbar-brand d-flex align-items-center">
-          <!-- Desktop Logo -->
-          <img src="img/logo.png" alt="Logo" class="img-fluid d-none d-xl-block" style="height: 65px" />
+        <nav class="navbar navbar-light bg-white navbar-expand-xl">
+          <!-- 🔹 Logo -->
+          <a href="home.html" class="navbar-brand d-flex align-items-center">
+            <!-- Desktop Logo -->
+            <img src="img/logo.png" alt="Logo" class="img-fluid d-none d-xl-block" style="height: 65px" />
 
-          <!-- Mobile Logo -->
-          <img src="img/logo.png" alt="Logo" class="img-fluid d-xl-none" style="height: 40px" />
-        </a>
+            <!-- Mobile Brand Title (Instead of Mobile Logo) -->
+            <span id="mobile-brand-title" class="d-inline d-xl-none ms-2 fw-bold text-primary" style="font-family: 'Raleway', sans-serif; font-size: 1.25rem; letter-spacing: -0.5px; vertical-align: middle;">
+              Skin Dekh<i class="fas fa-eye text-primary" style="font-size: 0.95em; margin-left: 1px; vertical-align: middle;"></i>
+            </span>
+          </a>
 
-        <!-- 🔹 Toggle Button -->
-        <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse"
-          data-bs-target="#navbarCollapse">
-          <span class="fa fa-bars text-primary"></span>
-        </button>
-
-        <!-- 🔹 Navbar Content -->
-        <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
-          <div class="navbar-nav mx-auto">
-            <a href="home.html" class="nav-item nav-link">Home</a>
-            <div class="nav-item dropdown">
-              <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Products</a>
-              <div class="dropdown-menu navbar-categories-dropdown m-0 bg-light border-0 rounded-3 shadow-sm">
-                <a href="shop.html" class="dropdown-item">All Products</a>
-                <a href="shop.html?category=Moisturing Lotion" class="dropdown-item">Moisturing Lotion</a>
-                <a href="shop.html?category=Moisturing Cream" class="dropdown-item">Moisturing Cream</a>
-                <a href="shop.html?category=Face Serum" class="dropdown-item">Face Serum</a>
-                <a href="shop.html?category=Sunscreen Lotion" class="dropdown-item">Sunscreen Lotion</a>
-                <a href="shop.html?category=Face Wash" class="dropdown-item">Face Wash</a>
-              </div>
-            </div>
-            <a href="contact.html" class="nav-item nav-link">Contact</a>
-          </div>
-
-          <div class="d-flex m-3 me-0">
-            <a href="cart.html" class="position-relative me-4 my-auto">
-              <i class="fa fa-shopping-bag fa-2x"></i>
+          <!-- 🔹 Mobile Controls (Search + User Icon + Cart Icon + Toggle Button) -->
+          <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto d-xl-none">
+            <button type="button" class="btn p-1 text-primary border-0 shadow-none" data-bs-toggle="modal" data-bs-target="#searchModal" title="Search Products">
+              <i class="fas fa-search fa-lg"></i>
+            </button>
+            <a href="User.html" class="text-primary p-1 user-icon-link" onclick="handleUserIconClick(event)" title="My Account / Dashboard">
+              <i class="fas fa-user fa-lg"></i>
+            </a>
+            <a href="cart.html" class="position-relative text-primary p-1" title="Cart">
+              <i class="fa fa-shopping-bag fa-lg"></i>
               <span
-                class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1"
-                style="top: -5px; left: 15px; height: 20px; min-width: 20px">0</span>
+                class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1 mobile-cart-badge"
+                style="top: -5px; left: 15px; height: 18px; min-width: 18px; font-size: 0.7rem; font-weight: 700;">0</span>
             </a>
-
-            <a href="#" class="my-auto user-icon-link">
-              <i class="fas fa-user fa-2x"></i>
-            </a>
+            <button class="navbar-toggler py-2 px-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+              <span class="fa fa-bars text-primary"></span>
+            </button>
           </div>
-        </div>
-      </nav>
+
+          <!-- 🔹 Navbar Content -->
+          <div class="collapse navbar-collapse bg-white" id="navbarCollapse">
+            <div class="navbar-nav mx-auto">
+              <a href="home.html" class="nav-item nav-link">Home</a>
+              <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Products</a>
+                <div class="dropdown-menu navbar-categories-dropdown m-0 bg-light border-0 rounded-3 shadow-sm">
+                  <a href="shop.html" class="dropdown-item">All Products</a>
+                  <a href="shop.html?category=Moisturing Lotion" class="dropdown-item">Moisturing Lotion</a>
+                  <a href="shop.html?category=Moisturing Cream" class="dropdown-item">Moisturing Cream</a>
+                  <a href="shop.html?category=Face Serum" class="dropdown-item">Face Serum</a>
+                  <a href="shop.html?category=Sunscreen Lotion" class="dropdown-item">Sunscreen Lotion</a>
+                  <a href="shop.html?category=Face Wash" class="dropdown-item">Face Wash</a>
+                </div>
+              </div>
+              <a href="contact.html" class="nav-item nav-link active">Contact</a>
+            </div>
+
+            <div class="d-flex m-3 me-0">
+              <button
+                class="btn-search btn border border-secondary btn-md-square rounded-circle bg-white me-4"
+                data-bs-toggle="modal"
+                data-bs-target="#searchModal"
+              >
+                <i class="fas fa-search text-primary"></i>
+              </button>
+              <a href="cart.html" class="position-relative me-4 my-auto">
+                <i class="fa fa-shopping-bag fa-2x"></i>
+                <span
+                  class="position-absolute bg-secondary rounded-circle d-flex align-items-center justify-content-center text-dark px-1 nav-cart-count"
+                  style="top: -5px; left: 15px; height: 20px; min-width: 20px"
+                  >0</span
+                >
+              </a>
+
+              <a href="User.html" class="my-auto user-icon-link" onclick="handleUserIconClick(event)">
+                <i class="fas fa-user fa-2x"></i>
+              </a>
+            </div>
+          </div>
+        </nav>
     </div>
   </div>
   <!-- Navbar End -->

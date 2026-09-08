@@ -531,8 +531,8 @@ body {
 }
 .image-preview-item {
     position: relative;
-    width: 90px;
-    height: 90px;
+    width: 110px;
+    height: 110px;
     border-radius: 8px;
     overflow: hidden;
     border: 2px solid #cbd5e1;
@@ -565,4 +565,21 @@ body {
     padding: 2px 0;
     font-weight: 600;
     letter-spacing: 0.2px;
+}
+
+/* Image Preview Sharpness Fix (No Blur on Add/Update Product) */
+.image-preview-item img {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    background-color: #ffffff !important;
+    filter: none !important;
+    opacity: 1 !important;
+    image-rendering: -webkit-optimize-contrast !important;
+    image-rendering: crisp-edges !important;
+    will-change: auto !important;
+    transform: none !important;
+    backface-visibility: visible !important;
+    -webkit-backface-visibility: visible !important;
 }
