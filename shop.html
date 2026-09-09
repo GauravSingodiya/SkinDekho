@@ -164,15 +164,15 @@
         </div>
 
         <!-- Search Content Body -->
-        <div class="modal-body p-0" style="overflow-y: auto;">
+        <div class="modal-body p-0" style="overflow-y: auto; overflow-x: hidden;">
           <!-- Sub-header -->
           <div class="px-3 py-2 text-uppercase fw-bold text-muted small bg-light border-bottom d-flex align-items-center gap-2" id="searchSectionHeader" style="letter-spacing: 0.5px; font-size: 0.78rem;">
             <i class="fas fa-chart-line text-primary"></i> <span id="searchHeaderTitle">OUR EXPERT RECOMMENDATIONS</span>
           </div>
 
           <!-- Products Recommendations / Live Search Results List -->
-          <div class="container py-3" style="max-width: 650px;">
-            <div id="modalSearchResultsList" class="d-flex flex-column gap-2">
+          <div class="container py-3" style="max-width: 650px; width: 100%; box-sizing: border-box;">
+            <div id="modalSearchResultsList" class="d-flex flex-column gap-2" style="width: 100%; overflow-x: hidden;">
               <div class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Loading recommendations...</div>
             </div>
           </div>

@@ -335,15 +335,15 @@ export function smoothScroll($wrapper, dir = 1) {
               </div>
 
               <!-- Search Content Body -->
-              <div class="modal-body p-0" style="overflow-y: auto;">
+              <div class="modal-body p-0" style="overflow-y: auto; overflow-x: hidden;">
                 <!-- Sub-header -->
                 <div class="px-3 py-2 text-uppercase fw-bold text-muted small bg-light border-bottom d-flex align-items-center gap-2" id="searchSectionHeader" style="letter-spacing: 0.5px; font-size: 0.78rem;">
                   <i class="fas fa-chart-line text-primary"></i> <span id="searchHeaderTitle">OUR EXPERT RECOMMENDATIONS</span>
                 </div>
 
                 <!-- Products Recommendations / Live Search Results List -->
-                <div class="container py-3" style="max-width: 650px;">
-                  <div id="modalSearchResultsList" class="d-flex flex-column gap-2">
+                <div class="container py-3" style="max-width: 650px; width: 100%; box-sizing: border-box;">
+                  <div id="modalSearchResultsList" class="d-flex flex-column gap-2" style="width: 100%; overflow-x: hidden;">
                     <div class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Loading products...</div>
                   </div>
                 </div>
@@ -376,12 +376,12 @@ export function smoothScroll($wrapper, dir = 1) {
       : "";
 
     return `
-      <a href="product-detail.html?id=${id}" class="d-flex align-items-center p-2 bg-white rounded-3 shadow-sm text-decoration-none border hover-shadow" style="transition: transform 0.2s ease, box-shadow 0.2s ease; border-color: #e2e8f0 !important;">
+      <a href="product-detail.html?id=${id}" class="d-flex align-items-center p-2 bg-white rounded-3 shadow-sm text-decoration-none border hover-shadow" style="transition: transform 0.2s ease, box-shadow 0.2s ease; border-color: #e2e8f0 !important; width: 100%; box-sizing: border-box; overflow: hidden;">
         <div class="position-relative me-3 flex-shrink-0" style="width: 75px; height: 75px; background: #ffffff; border-radius: 8px; overflow: hidden; border: 1px solid #f1f5f9;">
-          <img src="${fullImgUrl}" alt="${name}" class="w-100 h-100" style="object-fit: contain; filter: none; opacity: 1;" onerror="this.onerror=null;this.src='img/product-default.jpg';" />
+          <img src="${fullImgUrl}" alt="${name}" class="w-100 h-100" style="object-fit: contain; filter: none; opacity: 1; font-size: 0;" onerror="this.onerror=null;this.src='img/product-default.jpg';" />
           ${discountBadge}
         </div>
-        <div class="flex-grow-1 min-w-0">
+        <div class="flex-grow-1" style="min-width: 0; overflow: hidden;">
           <h6 class="text-dark fw-bold mb-1 text-truncate" style="font-size: 0.92rem;">${name}</h6>
           <div class="d-flex align-items-center text-warning small mb-1" style="font-size: 0.78rem;">
             <i class="fas fa-star me-1"></i>

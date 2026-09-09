@@ -62,10 +62,14 @@ $(document).ready(async function() {
         const vRegPrice = currentSelectedVariant.price ?? currentSelectedVariant.Price ?? null;
         const vDiscPrice = currentSelectedVariant.discountPrice ?? currentSelectedVariant.DiscountPrice ?? null;
         const vEffPrice = vDiscPrice !== null && vDiscPrice !== "" && vDiscPrice !== void 0 && (!vRegPrice || parseFloat(vDiscPrice) < parseFloat(vRegPrice)) ? parseFloat(vDiscPrice) : vRegPrice ? parseFloat(vRegPrice) : null;
+        const vId = currentSelectedVariant.productVariantId ?? currentSelectedVariant.ProductVariantId ?? currentSelectedVariant.id ?? currentSelectedVariant.Id ?? null;
         cartVariants[productId] = {
           productId,
-          variantId: currentSelectedVariant.id ?? currentSelectedVariant.Id ?? null,
+          variantId: vId,
+          productVariantId: vId,
+          ProductVariantId: vId,
           size: vSize,
+          Size: vSize,
           name: vSize,
           price: vEffPrice,
           regularPrice: vRegPrice,
@@ -145,10 +149,14 @@ $(document).ready(async function() {
         const vRegPrice = currentSelectedVariant.price ?? currentSelectedVariant.Price ?? null;
         const vDiscPrice = currentSelectedVariant.discountPrice ?? currentSelectedVariant.DiscountPrice ?? null;
         const vEffPrice = vDiscPrice !== null && vDiscPrice !== "" && vDiscPrice !== void 0 && (!vRegPrice || parseFloat(vDiscPrice) < parseFloat(vRegPrice)) ? parseFloat(vDiscPrice) : vRegPrice ? parseFloat(vRegPrice) : null;
+        const vId = currentSelectedVariant.productVariantId ?? currentSelectedVariant.ProductVariantId ?? currentSelectedVariant.id ?? currentSelectedVariant.Id ?? null;
         cartVariants[productId] = {
           productId,
-          variantId: currentSelectedVariant.id ?? currentSelectedVariant.Id ?? null,
+          variantId: vId,
+          productVariantId: vId,
+          ProductVariantId: vId,
           size: vSize,
+          Size: vSize,
           name: vSize,
           price: vEffPrice,
           regularPrice: vRegPrice,
@@ -501,8 +509,10 @@ Link: ${window.location.href}`
           const parsed = JSON.parse(item);
           if (typeof parsed === "object" && parsed !== null) {
             const sizeVal2 = parsed.size || parsed.Size || parsed.name || parsed.Name || "";
+            const vId = parsed.productVariantId ?? parsed.ProductVariantId ?? parsed.id ?? parsed.Id ?? null;
             return {
-              id: parsed.id ?? parsed.Id ?? null,
+              id: vId,
+              productVariantId: vId,
               size: sizeVal2,
               name: sizeVal2,
               price: parsed.price ?? parsed.Price ?? product.price,
@@ -516,8 +526,10 @@ Link: ${window.location.href}`
         return { size: item, name: item, price: product.price, discountPrice: product.discountPrice };
       }
       const sizeVal = item.size || item.Size || item.name || item.Name || "";
+      const vId = item.productVariantId ?? item.ProductVariantId ?? item.id ?? item.Id ?? null;
       return {
-        id: item.id ?? item.Id ?? null,
+        id: vId,
+        productVariantId: vId,
         size: sizeVal,
         name: sizeVal,
         price: item.price ?? item.Price ?? product.price,
@@ -535,8 +547,10 @@ Link: ${window.location.href}`
             return { size: item, name: item, price: product.price, discountPrice: product.discountPrice };
           }
           const sizeVal = item.size || item.Size || item.name || item.Name || "";
+          const vId = item.productVariantId ?? item.ProductVariantId ?? item.id ?? item.Id ?? null;
           return {
-            id: item.id ?? item.Id ?? null,
+            id: vId,
+            productVariantId: vId,
             size: sizeVal,
             name: sizeVal,
             price: item.price ?? item.Price ?? product.price,

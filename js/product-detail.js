@@ -84,10 +84,14 @@ $(document).ready(async function () {
           ? parseFloat(vDiscPrice)
           : (vRegPrice ? parseFloat(vRegPrice) : null);
 
+        const vId = currentSelectedVariant.productVariantId ?? currentSelectedVariant.ProductVariantId ?? currentSelectedVariant.id ?? currentSelectedVariant.Id ?? null;
         cartVariants[productId] = {
           productId: productId,
-          variantId: currentSelectedVariant.id ?? currentSelectedVariant.Id ?? null,
+          variantId: vId,
+          productVariantId: vId,
+          ProductVariantId: vId,
           size: vSize,
+          Size: vSize,
           name: vSize,
           price: vEffPrice,
           regularPrice: vRegPrice,
@@ -180,10 +184,14 @@ $(document).ready(async function () {
           ? parseFloat(vDiscPrice)
           : (vRegPrice ? parseFloat(vRegPrice) : null);
 
+        const vId = currentSelectedVariant.productVariantId ?? currentSelectedVariant.ProductVariantId ?? currentSelectedVariant.id ?? currentSelectedVariant.Id ?? null;
         cartVariants[productId] = {
           productId: productId,
-          variantId: currentSelectedVariant.id ?? currentSelectedVariant.Id ?? null,
+          variantId: vId,
+          productVariantId: vId,
+          ProductVariantId: vId,
           size: vSize,
+          Size: vSize,
           name: vSize,
           price: vEffPrice,
           regularPrice: vRegPrice,
@@ -638,8 +646,10 @@ function renderProductDetails(product) {
           const parsed = JSON.parse(item);
           if (typeof parsed === "object" && parsed !== null) {
             const sizeVal = parsed.size || parsed.Size || parsed.name || parsed.Name || "";
+            const vId = parsed.productVariantId ?? parsed.ProductVariantId ?? parsed.id ?? parsed.Id ?? null;
             return {
-              id: parsed.id ?? parsed.Id ?? null,
+              id: vId,
+              productVariantId: vId,
               size: sizeVal,
               name: sizeVal,
               price: parsed.price ?? parsed.Price ?? product.price,
@@ -652,8 +662,10 @@ function renderProductDetails(product) {
         return { size: item, name: item, price: product.price, discountPrice: product.discountPrice };
       }
       const sizeVal = item.size || item.Size || item.name || item.Name || "";
+      const vId = item.productVariantId ?? item.ProductVariantId ?? item.id ?? item.Id ?? null;
       return {
-        id: item.id ?? item.Id ?? null,
+        id: vId,
+        productVariantId: vId,
         size: sizeVal,
         name: sizeVal,
         price: item.price ?? item.Price ?? product.price,
@@ -671,8 +683,10 @@ function renderProductDetails(product) {
             return { size: item, name: item, price: product.price, discountPrice: product.discountPrice };
           }
           const sizeVal = item.size || item.Size || item.name || item.Name || "";
+          const vId = item.productVariantId ?? item.ProductVariantId ?? item.id ?? item.Id ?? null;
           return {
-            id: item.id ?? item.Id ?? null,
+            id: vId,
+            productVariantId: vId,
             size: sizeVal,
             name: sizeVal,
             price: item.price ?? item.Price ?? product.price,

@@ -1285,8 +1285,8 @@
 
           const thumbHtml = `
               <div class="image-preview-item position-relative border rounded overflow-hidden ${isPrimary ? "border-warning shadow-sm" : ""}" draggable="true" data-type="existing" data-index="${idx}" data-id="${img.id}" title="Drag to reorder">
-                <img src="${fullImgUrl}" class="w-100 h-100" style="object-fit: contain; background: #ffffff; filter: none; opacity: 1; pointer-events: none; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;" onerror="this.onerror=null;this.src='img/MOISTURING_LOTION.png'">
-                <span class="image-order-badge badge bg-dark text-white position-absolute top-0 start-0 m-1" style="font-size: 0.6rem; opacity: 0.85;">#${currentOrderNum++}</span>
+                <img src="${fullImgUrl}" class="w-100 h-100" style="object-fit: contain; background: #ffffff; filter: none; opacity: 1; pointer-events: none; image-rendering: auto; image-rendering: -webkit-optimize-contrast;" onerror="this.onerror=null;this.src='img/MOISTURING_LOTION.png'">
+                <span class="image-order-badge">#${currentOrderNum++}</span>
                 
                 <div class="position-absolute top-0 end-0 m-1 d-flex gap-1" style="z-index: 10;">
                   <button type="button" class="btn btn-sm btn-light text-primary p-0 replace-existing-img" data-id="${img.id}" data-index="${idx}" style="line-height: 1; font-size: 0.75rem; background: rgba(255, 255, 255, 0.95); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Change/Replace Saved Image"><i class="fas fa-sync-alt"></i></button>
@@ -1304,8 +1304,8 @@
           const url = URL.createObjectURL(file);
           const thumbHtml = `
               <div class="image-preview-item position-relative border rounded overflow-hidden" draggable="true" data-type="new" data-index="${idx}" title="Drag to reorder">
-                <img src="${url}" class="w-100 h-100" style="object-fit: contain; background: #ffffff; filter: none; opacity: 1; pointer-events: none; image-rendering: -webkit-optimize-contrast; image-rendering: crisp-edges;">
-                <span class="image-order-badge badge bg-info text-white position-absolute top-0 start-0 m-1" style="font-size: 0.6rem;">#${currentOrderNum++} (New)</span>
+                <img src="${url}" class="w-100 h-100" style="object-fit: contain; background: #ffffff; filter: none; opacity: 1; pointer-events: none; image-rendering: auto; image-rendering: -webkit-optimize-contrast;">
+                <span class="image-order-badge">#${currentOrderNum++} (New)</span>
                 
                 <div class="position-absolute top-0 end-0 m-1 d-flex gap-1" style="z-index: 10;">
                   <button type="button" class="btn btn-sm btn-light text-primary p-0 replace-new-img" data-index="${idx}" style="line-height: 1; font-size: 0.75rem; background: rgba(255, 255, 255, 0.95); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; text-decoration: none;" title="Change/Replace Image"><i class="fas fa-sync-alt"></i></button>
