@@ -335,8 +335,78 @@
   color: var(--bs-white) !important;
 }
 
+/* Search Modal Styling & Responsive Mobile Optimization */
+#searchModal {
+  padding-right: 0 !important;
+  overflow-x: hidden !important;
+}
+
+#searchModal .modal-dialog.modal-fullscreen {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  height: 100% !important;
+  min-height: 100% !important;
+}
+
 #searchModal .modal-content {
-  background: rgba(255, 255, 255, 0.8);
+  background: #f8fafc !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  border-radius: 0 !important;
+  border: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow-x: hidden !important;
+}
+
+#searchModal .modal-header {
+  flex-shrink: 0;
+  background: #ffffff !important;
+  border-radius: 0 !important;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+#searchModal #searchSectionHeader {
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 9;
+}
+
+#searchModal .modal-body {
+  flex: 1 1 auto;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+  padding: 0 !important;
+}
+
+#searchModal .modal-body .container {
+  width: 100% !important;
+  max-width: 650px !important;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  box-sizing: border-box !important;
+}
+
+#searchModal #modalSearchResultsList {
+  width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+#searchModal #modalSearchResultsList a {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#searchModal #modalSearchResultsList a .flex-grow-1 {
+  min-width: 0 !important;
+  overflow: hidden !important;
 }
 
 /*** Navbar End ***/

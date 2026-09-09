@@ -7,9 +7,11 @@ import { API } from "./endpoints.js";
  * @param {number} productId 
  * @param {number} quantity 
  * @param {string} token 
+ * @param {object|number|string} [variant=null] - Selected variant object or variant ID
+ * @param {string} [optionalSize=null] - Optional size string
  * @returns {Promise}
  */
-export function addToCartAPI(productId, quantity, token, variant = null) {
+export function addToCartAPI(productId, quantity, token, variant = null, optionalSize = null) {
   const pId = parseInt(productId, 10) || productId;
   const qty = parseInt(quantity, 10) || 1;
 
@@ -20,38 +22,65 @@ export function addToCartAPI(productId, quantity, token, variant = null) {
     Quantity: qty,
   };
 
+  let productVariantId = null;
+  let selectedSize = null;
+
   if (variant) {
-    const sizeVal = typeof variant === "object" ? (variant.size || variant.Size || variant.name || variant.Name || "") : variant;
-    const vId = typeof variant === "object" ? (variant.id ?? variant.Id ?? null) : null;
-    const regPrice = typeof variant === "object" ? (variant.price ?? variant.Price ?? null) : null;
-    const discPrice = typeof variant === "object" ? (variant.discountPrice ?? variant.DiscountPrice ?? null) : null;
-    const effectivePrice = (discPrice !== null && discPrice !== "" && discPrice !== undefined && (!regPrice || parseFloat(discPrice) < parseFloat(regPrice)))
-      ? parseFloat(discPrice)
-      : (regPrice ? parseFloat(regPrice) : null);
+    if (typeof variant === "object") {
+      const vId =
+        variant.productVariantId ??
+        variant.ProductVariantId ??
+        variant.variantId ??
+        variant.VariantId ??
+        variant.id ??
+        variant.Id ??
+        null;
+      if (vId !== null && vId !== undefined && vId !== "" && !isNaN(vId)) {
+        productVariantId = parseInt(vId, 10);
+      }
 
-    body.variant = sizeVal;
-    body.Variant = sizeVal;
-    body.variantName = sizeVal;
-    body.VariantName = sizeVal;
-    body.size = sizeVal;
-    body.Size = sizeVal;
+      const rawSize =
+        variant.size ??
+        variant.Size ??
+        variant.variant ??
+        variant.Variant ??
+        variant.name ??
+        variant.Name ??
+        optionalSize ??
+        null;
+      if (rawSize !== null && rawSize !== undefined && String(rawSize).trim() !== "") {
+        selectedSize = String(rawSize).trim();
+      }
+    } else if (
+      typeof variant === "number" ||
+      (!isNaN(variant) && typeof variant === "string" && String(variant).trim() !== "" && !isNaN(Number(variant)))
+    ) {
+      productVariantId = parseInt(variant, 10);
+      if (optionalSize && String(optionalSize).trim()) {
+        selectedSize = String(optionalSize).trim();
+      }
+    } else if (typeof variant === "string" && variant.trim() !== "") {
+      selectedSize = variant.trim();
+      if (optionalSize !== null && optionalSize !== undefined && !isNaN(optionalSize)) {
+        productVariantId = parseInt(optionalSize, 10);
+      }
+    }
+  }
 
-    if (vId) {
-      body.variantId = vId;
-      body.VariantId = vId;
-      body.productVariantId = vId;
-      body.ProductVariantId = vId;
-    }
-    if (effectivePrice !== null && effectivePrice !== undefined) {
-      body.price = effectivePrice;
-      body.Price = effectivePrice;
-      body.unitPrice = effectivePrice;
-      body.UnitPrice = effectivePrice;
-    }
-    if (discPrice !== null && discPrice !== "" && discPrice !== undefined) {
-      body.discountPrice = parseFloat(discPrice);
-      body.DiscountPrice = parseFloat(discPrice);
-    }
+  if (!selectedSize && optionalSize && typeof optionalSize === "string" && optionalSize.trim()) {
+    selectedSize = optionalSize.trim();
+  }
+
+  // ✅ Send productVariantId ONLY IF selected
+  if (productVariantId !== null && productVariantId !== undefined && !isNaN(productVariantId)) {
+    body.productVariantId = productVariantId;
+    body.ProductVariantId = productVariantId;
+  }
+
+  // ✅ Send size ONLY IF selected
+  if (selectedSize !== null && selectedSize !== undefined && String(selectedSize).trim() !== "") {
+    body.size = String(selectedSize).trim();
+    body.Size = String(selectedSize).trim();
   }
 
   console.log("🛒 Sending Add to Cart Payload:", body);

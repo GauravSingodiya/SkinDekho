@@ -260,15 +260,15 @@ export function showConfirm(title, message) {
               </div>
 
               <!-- Search Content Body -->
-              <div class="modal-body p-0" style="overflow-y: auto;">
+              <div class="modal-body p-0" style="overflow-y: auto; overflow-x: hidden;">
                 <!-- Sub-header -->
                 <div class="px-3 py-2 text-uppercase fw-bold text-muted small bg-light border-bottom d-flex align-items-center gap-2" id="searchSectionHeader" style="letter-spacing: 0.5px; font-size: 0.78rem;">
                   <i class="fas fa-chart-line text-primary"></i> <span id="searchHeaderTitle">OUR EXPERT RECOMMENDATIONS</span>
                 </div>
 
                 <!-- Products Recommendations / Live Search Results List -->
-                <div class="container py-3" style="max-width: 650px;">
-                  <div id="modalSearchResultsList" class="d-flex flex-column gap-2">
+                <div class="container py-3" style="max-width: 650px; width: 100%; box-sizing: border-box;">
+                  <div id="modalSearchResultsList" class="d-flex flex-column gap-2" style="width: 100%; overflow-x: hidden;">
                     <div class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2"></div>Loading recommendations...</div>
                   </div>
                 </div>
@@ -288,12 +288,12 @@ export function showConfirm(title, message) {
     const discountPct = Math.round((mrp - currentPrice) / mrp * 100);
     const discountBadge = discountPct > 0 ? `<span class="position-absolute top-0 start-0 badge text-white px-1 py-1" style="background: #8b5cf6; font-size: 0.6rem; font-weight: 700; border-top-left-radius: 4px; border-bottom-right-radius: 6px; z-index: 2;">SAVE ${discountPct}%</span>` : "";
     return `
-      <a href="product-detail.html?id=${item.id}" class="d-flex align-items-center p-2 bg-white rounded shadow-sm text-decoration-none border hover-shadow" style="transition: transform 0.15s ease, box-shadow 0.15s ease;">
+      <a href="product-detail.html?id=${item.id}" class="d-flex align-items-center p-2 bg-white rounded shadow-sm text-decoration-none border hover-shadow" style="transition: transform 0.15s ease, box-shadow 0.15s ease; width: 100%; box-sizing: border-box; overflow: hidden;">
         <div class="position-relative me-3 flex-shrink-0" style="width: 75px; height: 75px; background: #ffffff; border-radius: 6px; overflow: hidden; border: 1px solid #f1f5f9;">
-          <img src="${fullImgUrl}" alt="${item.name}" class="w-100 h-100" style="object-fit: contain; filter: none; opacity: 1;" onerror="this.onerror=null;this.src='img/product-default.jpg';" />
+          <img src="${fullImgUrl}" alt="${item.name}" class="w-100 h-100" style="object-fit: contain; filter: none; opacity: 1; font-size: 0;" onerror="this.onerror=null;this.src='img/product-default.jpg';" />
           ${discountBadge}
         </div>
-        <div class="flex-grow-1 min-w-0">
+        <div class="flex-grow-1" style="min-width: 0; overflow: hidden;">
           <h6 class="text-dark fw-bold mb-1 text-truncate" style="font-size: 0.92rem; font-family: 'Raleway', sans-serif;">${item.name}</h6>
           <div class="d-flex align-items-center text-warning small mb-1" style="font-size: 0.78rem;">
             <i class="fas fa-star me-1"></i>
