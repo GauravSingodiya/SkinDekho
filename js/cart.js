@@ -3,21 +3,29 @@
 import { getCartAPI, removeFromCartAPI } from "./api/cartService.js";
 import { getAllProducts } from "./products.js";
 import { BASE_URL } from "./api/config.js";
-import { showConfirm, showToast } from "./main.js";
+import { showConfirm, showToast, syncCartBadge } from "./main.js";
+
+function getAuthToken() {
+  const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+  if (!token || token === "null" || token === "undefined") {
+    return null;
+  }
+  return token;
+}
 
 $(document).ready(function () {
-  const token = sessionStorage.getItem("token");
+  const token = getAuthToken();
   if (!token) {
     // ✅ Guest: show localStorage cart
     loadGuestCart();
   } else {
     loadCartItems(token);
-    syncCartBadge(token);
   }
+  syncCartBadge();
 
   // ✅ Proceed to Checkout — login required
   $(document).on("click", "#checkoutBtn, .checkout-btn, a[href='chackout.html'], a[href='checkout.html']", function (e) {
-    const t = sessionStorage.getItem("token");
+    const t = getAuthToken();
     if (!t) {
       e.preventDefault();
       e.stopImmediatePropagation();
@@ -38,7 +46,8 @@ function loadGuestCart() {
   }
 
   $cartTableBody.empty();
-  const mappedItems = guestCart.map((item) => ({
+  const mappedItems = guestCart.map((item, index) => ({
+    index: index,
     productId: item.id,
     productName: item.name,
     productPrice: item.price,
@@ -67,7 +76,7 @@ function loadGuestCart() {
       : "";
 
     const row = `
-      <tr data-id="${productId}">
+      <tr data-id="${productId}" data-index="${item.index}" data-variant="${item.variantSize || ''}">
         <th scope="row">
           <div class="d-flex align-items-center">
             <img src="${fullImgUrl}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="${name}">
@@ -105,10 +114,7 @@ function loadGuestCart() {
   });
 
   updateCartTotals(mappedItems);
-
-  // Update cart badge
-  const totalItems = guestCart.reduce((sum, item) => sum + item.quantity, 0);
-  $(".fa-shopping-bag").next("span").text(totalItems);
+  syncCartBadge();
 }
 
 async function loadCartItems(token) {
@@ -133,7 +139,7 @@ async function loadCartItems(token) {
       return;
     }
 
-    cartItems.forEach((item) => {
+    cartItems.forEach((item, index) => {
       const pId = item.productId || item.id;
       const savedVar = cartVariants[pId] || null;
 
@@ -202,7 +208,7 @@ async function loadCartItems(token) {
         : "";
 
       const row = `
-        <tr data-id="${pId}">
+        <tr data-id="${pId}" data-index="${index}" data-variant="${variantSize || ''}">
           <th scope="row">
             <div class="d-flex align-items-center">
               <img src="${fullImgUrl}" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="${name}">
@@ -244,6 +250,7 @@ async function loadCartItems(token) {
     });
 
     updateCartTotals(cartItems);
+    syncCartBadge();
   } catch (err) {
     console.error("Failed to load cart items:", err);
     $cartTableBody.html('<tr><td colspan="6" class="text-center text-danger">Failed to load cart. Please try again.</td></tr>');
@@ -275,50 +282,32 @@ function updateCartTotals(cartItems) {
 
 // Remove Item
 $(document).on("click", ".btn-remove", async function () {
-  const itemId = $(this).closest("tr").data("id");
-  const token = sessionStorage.getItem("token");
+  const $row = $(this).closest("tr");
+  const itemId = $row.data("id");
+  const itemIndex = $row.data("index");
+  const variantSize = $row.data("variant");
+  const token = getAuthToken();
 
   const confirmed = await showConfirm("Remove Item", "Are you sure you want to remove this item from your cart?");
   if (!confirmed) return;
 
-  try {
-    await removeFromCartAPI(itemId, token);
-    loadCartItems(token);
-    syncCartBadge(token);
-    showToast("Item removed from cart", "success");
-  } catch (err) {
-    showToast(err.message || "Failed to remove item", "error");
-  }
-});
-
-// Change Quantity
-$(document).on("click", ".btn-plus, .btn-minus", async function () {
-  const isPlus = $(this).hasClass("btn-plus");
-  const productId = $(this).closest("tr").data("id");
-  const token = sessionStorage.getItem("token");
-
-  const quantityChange = isPlus ? 1 : -1;
-  const currentQty = parseInt($(this).closest(".quantity").find("input").val());
-
-  if (!isPlus && currentQty <= 1) {
-    const confirmed = await showConfirm("Remove Item", "Are you sure you want to remove this item from your cart?");
-    if (confirmed) {
-      const $btn = $(this);
-      const originalHtml = $btn.html();
-      $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
-
-      try {
-        await removeFromCartAPI(productId, token);
-        loadCartItems(token);
-        syncCartBadge(token);
-        showToast("Item removed from cart", "success");
-      } catch (err) {
-        console.error("Remove Item Error:", err);
-        showToast("Failed to remove item. Please try again.", "error");
-      } finally {
-        $btn.prop("disabled", false).html(originalHtml);
+  if (!token) {
+    let guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+    if (typeof itemIndex !== "undefined" && itemIndex !== null && guestCart[itemIndex]) {
+      guestCart.splice(itemIndex, 1);
+    } else {
+      const idx = guestCart.findIndex((it) => {
+        const v = it.variant || (it.variantDetails ? (it.variantDetails.size || it.variantDetails.name) : null);
+        return it.id == itemId && (!variantSize || v == variantSize);
+      });
+      if (idx !== -1) {
+        guestCart.splice(idx, 1);
       }
     }
+    localStorage.setItem("guestCart", JSON.stringify(guestCart));
+    loadGuestCart();
+    syncCartBadge();
+    showToast("Item removed from cart", "success");
     return;
   }
 
@@ -327,14 +316,110 @@ $(document).on("click", ".btn-plus, .btn-minus", async function () {
   $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
 
   try {
+    await removeFromCartAPI(itemId, token);
+    loadCartItems(token);
+    syncCartBadge();
+    showToast("Item removed from cart", "success");
+  } catch (err) {
+    showToast(err.message || "Failed to remove item", "error");
+  } finally {
+    $btn.prop("disabled", false).html(originalHtml);
+  }
+});
+
+// Change Quantity
+$(document).on("click", ".btn-plus, .btn-minus", async function () {
+  const isPlus = $(this).hasClass("btn-plus");
+  const $row = $(this).closest("tr");
+  const productId = $row.data("id");
+  const itemIndex = $row.data("index");
+  const variantSize = $row.data("variant");
+  const token = getAuthToken();
+
+  const quantityChange = isPlus ? 1 : -1;
+  const currentQty = parseInt($row.find(".quantity input").val(), 10) || 1;
+
+  if (!isPlus && currentQty <= 1) {
+    const confirmed = await showConfirm("Remove Item", "Are you sure you want to remove this item from your cart?");
+    if (!confirmed) return;
+
+    if (!token) {
+      let guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+      if (typeof itemIndex !== "undefined" && itemIndex !== null && guestCart[itemIndex]) {
+        guestCart.splice(itemIndex, 1);
+      } else {
+        const idx = guestCart.findIndex((it) => {
+          const v = it.variant || (it.variantDetails ? (it.variantDetails.size || it.variantDetails.name) : null);
+          return it.id == productId && (!variantSize || v == variantSize);
+        });
+        if (idx !== -1) {
+          guestCart.splice(idx, 1);
+        }
+      }
+      localStorage.setItem("guestCart", JSON.stringify(guestCart));
+      loadGuestCart();
+      syncCartBadge();
+      showToast("Item removed from cart", "success");
+      return;
+    }
+
+    const $btn = $(this);
+    const originalHtml = $btn.html();
+    $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
+    try {
+      await removeFromCartAPI(productId, token);
+      loadCartItems(token);
+      syncCartBadge();
+      showToast("Item removed from cart", "success");
+    } catch (err) {
+      console.error("Remove Item Error:", err);
+      showToast("Failed to remove item. Please try again.", "error");
+    } finally {
+      $btn.prop("disabled", false).html(originalHtml);
+    }
+    return;
+  }
+
+  // Guest Cart Quantity Update
+  if (!token) {
+    let guestCart = JSON.parse(localStorage.getItem("guestCart") || "[]");
+    let targetItem = null;
+    if (typeof itemIndex !== "undefined" && itemIndex !== null && guestCart[itemIndex]) {
+      targetItem = guestCart[itemIndex];
+    } else {
+      targetItem = guestCart.find((it) => {
+        const v = it.variant || (it.variantDetails ? (it.variantDetails.size || it.variantDetails.name) : null);
+        return it.id == productId && (!variantSize || v == variantSize);
+      });
+    }
+
+    if (!targetItem) {
+      loadGuestCart();
+      return;
+    }
+
+    targetItem.quantity = Math.max(1, (parseInt(targetItem.quantity, 10) || 1) + quantityChange);
+    localStorage.setItem("guestCart", JSON.stringify(guestCart));
+    loadGuestCart();
+    syncCartBadge();
+    return;
+  }
+
+  // Logged-in User Quantity Update
+  const $btn = $(this);
+  const originalHtml = $btn.html();
+  $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+
+  try {
     const cartVariants = JSON.parse(localStorage.getItem("cartVariants") || "{}");
     const savedVar = cartVariants[productId] || null;
     const { addToCartAPI } = await import("./api/cartService.js");
-    const res = await addToCartAPI(productId, quantityChange, token, savedVar);
+    await addToCartAPI(productId, quantityChange, token, savedVar);
 
     // Refresh cart
     loadCartItems(token);
-    syncCartBadge(token);
+    syncCartBadge();
   } catch (err) {
     console.error("Update Quantity Error:", err);
     showToast("Failed to update quantity. Please try again.", "error");
@@ -342,16 +427,3 @@ $(document).on("click", ".btn-plus, .btn-minus", async function () {
     $btn.prop("disabled", false).html(originalHtml);
   }
 });
-
-async function syncCartBadge(token) {
-  try {
-    const res = await getCartAPI(token);
-    const cartItems = res.result?.items || res.result || [];
-    const totalItems = Array.isArray(cartItems)
-      ? cartItems.reduce((sum, item) => sum + (item.quantity || 1), 0)
-      : 0;
-    $(".fa-shopping-bag").next("span").text(totalItems);
-  } catch (err) {
-    console.error("Failed to sync badge:", err);
-  }
-}
